@@ -1,2 +1,2 @@
 # Genetic-algorithm-Graduation-project-KAYA
-This is a timetable scheduling system for university courses to solve conflict
+ A Timetable scheduling system for university courses to solve conflicts using genetic algorithm with Dynammic programming 
