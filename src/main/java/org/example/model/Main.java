@@ -11,11 +11,78 @@ import java.util.stream.Stream;
 
 public class Main {
     public static void main(String[] args) {
-        TimeTable timeTable;
-        ArrayList<Class> classes = new ArrayList<>();
-        AtomicInteger idCounter = new AtomicInteger(1);
         Map<String, Set<Room>> roomPools = new HashMap<>();
         Map<String, Set<TimeSlot>> timePools = new HashMap<>();
+        ArrayList<Class> classes = new ArrayList<>();
+
+
+        classes = excelParsing(roomPools, timePools);
+
+        int populationSize = 100;
+        int maxGenerations = 1000;
+        int tournamentSize = 5;
+        double mutationRate = 0.05;
+        int elitismCount = 2;
+
+        // 1. INITIALIZATION: Create the first generation
+        List<TimeTable> population = new ArrayList<>();
+        for (int i = 0; i < populationSize; i++) {
+            // Deep copy the initial class list so each schedule is unique
+            ArrayList<Class> individualClasses = new ArrayList<>();
+            for (Class c : classes) {
+                individualClasses.add(new Class(c.course, c.number, c.instructor, null, null, c.ID));
+            }
+            TimeTable tt = new TimeTable(individualClasses);
+            tt.initializeRandomly(timePools, roomPools);
+            tt.calculateFitness();
+            population.add(tt);
+        }
+
+        // 2. EVOLUTION LOOP
+        for (int gen = 1; gen <= maxGenerations; gen++) {
+            // Sort the timetables based on fitness for Elitism (Highest fitness first)
+            population.sort((a, b) -> Integer.compare(b.fitness, a.fitness));
+            System.out.println("Generation " + gen + " | Best Fitness: " + population.get(0).fitness);
+
+            // Check if we found a perfect solution
+            if (population.get(0).fitness == 0) {
+                System.out.println("--- Perfect Schedule Found! ---");
+                break;
+            }
+
+            List<TimeTable> nextGen = new ArrayList<>();
+
+            // ELITISM: Keep the best survivors
+            for (int i = 0; i < elitismCount; i++) {
+                nextGen.add(population.get(i));
+            }
+
+            // REPRODUCTION: Fill up the rest of the generation
+            while (nextGen.size() < populationSize) {
+                TimeTable p1 = TimeTable.tournamentSelection(population, tournamentSize);
+                TimeTable p2 = TimeTable.tournamentSelection(population, tournamentSize);
+
+                TimeTable child = TimeTable.crossover(p1, p2);
+
+                // MUTATION
+                if (Math.random() < mutationRate) {
+                    child.mutate(timePools, roomPools);
+                }
+
+                child.calculateFitness();
+                nextGen.add(child);
+            }
+            population = nextGen;
+        }
+
+        // 3. RESULTS: Print the best found schedule
+        population.sort((a, b) -> Integer.compare(b.fitness, a.fitness));
+        System.out.println("\nFinal Result:\n" + population.get(0));
+    }
+
+    public static ArrayList<Class> excelParsing(Map<String, Set<Room>> roomPools, Map<String, Set<TimeSlot>> timePools) {
+        AtomicInteger idCounter = new AtomicInteger(1);
+        ArrayList<Class> classes = new ArrayList<>();
 
         try (FileInputStream fis = new FileInputStream("src/main/resources/2526_first_term_sched.xlsx");
              ReadableWorkbook wb = new ReadableWorkbook(fis)) {
@@ -72,86 +139,23 @@ public class Main {
                     // it simply won't add it. No "if" check needed for uniqueness.
                     if (room.number.equals("Oline") || room.number.equals("ميدان"))
                         return ;
-                    timePools.get(time.group).add(time);
+                    timePools.get(r.getCellText(20)).add(time);
                     if (course.number.contains("L")){
-                        room.group = "LAB";
+                        room.groups.add ("LAB");
                         roomPools.get("LAB").add(room);
-                        System.out.println("lab");
                     }
                     else {
-                        room.group = "LECTURE";
+                        room.groups.add("LECTURE");
                         roomPools.get("LECTURE").add(room);
-                        System.out.println("lecture");
                     }
                     ID = idCounter.getAndIncrement();
                     gene = new Class(course, classNumber, instructor, null, null, ID);
                     classes.add(gene);
                 });
-            } // parsing the excel file and extracting classes
+            } // parsing the Excel file and extracting classes
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        int populationSize = 100;
-        int maxGenerations = 1000;
-        int tournamentSize = 7;
-        double mutationRate = 0.05;
-        int elitismCount = 2;
-
-        // 1. INITIALIZATION: Create the first generation
-        List<TimeTable> population = new ArrayList<>();
-        for (int i = 0; i < populationSize; i++) {
-            // Deep copy the initial class list so each schedule is unique
-            ArrayList<Class> individualClasses = new ArrayList<>();
-            for (Class c : classes) {
-                individualClasses.add(new Class(c.course, c.number, c.instructor, null, null, c.ID));
-            }
-            TimeTable tt = new TimeTable(individualClasses);
-            tt.initializeRandomly(timePools, roomPools);
-            tt.calculateFitness();
-            population.add(tt);
-        }
-
-        // 2. EVOLUTION LOOP
-        for (int gen = 1; gen <= maxGenerations; gen++) {
-            // Sort for Elitism (Highest fitness first)
-            population.sort((a, b) -> Integer.compare(b.fitness, a.fitness));
-
-            System.out.println("Generation " + gen + " | Best Fitness: " + population.get(0).fitness);
-
-            // Check if we found a perfect solution
-            if (population.get(0).fitness == 0) {
-                System.out.println("--- Perfect Schedule Found! ---");
-                break;
-            }
-
-            List<TimeTable> nextGen = new ArrayList<>();
-
-            // ELITISM: Keep the best survivors
-            for (int i = 0; i < elitismCount; i++) {
-                nextGen.add(population.get(i));
-            }
-
-            // REPRODUCTION: Fill up the rest of the generation
-            while (nextGen.size() < populationSize) {
-                TimeTable p1 = TimeTable.tournamentSelection(population, tournamentSize);
-                TimeTable p2 = TimeTable.tournamentSelection(population, tournamentSize);
-
-                TimeTable child = TimeTable.crossover(p1, p2);
-
-                // MUTATION
-                if (Math.random() < mutationRate) {
-                    child.mutate(timePools, roomPools);
-                }
-
-                child.calculateFitness();
-                nextGen.add(child);
-            }
-            population = nextGen;
-        }
-
-        // 3. RESULTS: Print the best found schedule
-        population.sort((a, b) -> Integer.compare(b.fitness, a.fitness));
-        System.out.println("\nFinal Result:\n" + population.get(0));
+        return (classes);
     }
 }

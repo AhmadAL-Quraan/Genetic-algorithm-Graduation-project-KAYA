@@ -2,17 +2,18 @@ package org.example.model;
 
 import org.dhatim.fastexcel.reader.Row;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 class Room {
     public String building;
     public String number;
-    public String group;
+    public ArrayList<String> groups;
 
-    Room(String building, String number, String group) {
+    Room(String building, String number, ArrayList<String> groups) {
         this.building = building;
         this.number = number;
-        this.group = group;
+        this.groups = groups;
     }
     public static Room extractRoom(Row r)
     {
@@ -33,7 +34,7 @@ class Room {
             return null;
         }
 
-        return new Room(building, number, "Unspecified");
+        return new Room(building, number, new ArrayList<String>());
     }
     @Override
     public boolean equals(Object o) {
@@ -41,15 +42,15 @@ class Room {
         if (o == null || getClass() != o.getClass()) return false;
         Room room = (Room) o;
         return Objects.equals(building, room.building) && Objects.equals(number, room.number)
-                && Objects.equals(group, room.group);
+                && Objects.equals(groups, room.groups);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(building, number, group);
+        return Objects.hash(building, number, groups);
     }
     @Override
     public String toString() {
-        return building + " " + number + " " + group;
+        return building + " " + number + " " + groups;
     }
 }
