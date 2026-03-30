@@ -7,27 +7,32 @@ import java.util.*;
 class TimeTable {
     public ArrayList<Class> classes;
     public int fitness;
+    public FitnessReport report;
 
     TimeTable(ArrayList<Class> classes) {
         this.classes = classes;
         this.fitness = 0;
+        this.report = new FitnessReport();
     }
 
-    public void mutate(Map<String, Set<TimeSlot>> timePools, Map<String, Set<Room>> roomPools) {
-        List<TimeSlot> timePool;
-        List<Room> roomPool;
+    public void mutate(Map<String, HashSet<TimeSlot>> timePools, Map<String, HashSet<Room>> roomPools) {
+        List<TimeSlot> finalTimePool;
+        List<Room> finalRoomPool;
+        ArrayList<Class> classPool;
 
         Random rand = new Random();
         // Pick ONE random class to change
-        Class randomClass = this.classes.get(rand.nextInt(this.classes.size()));
-        timePool = new ArrayList<>(timePools.get(randomClass.course.timeGroup));
-        roomPool = new ArrayList<>(roomPools.get(randomClass.course.roomGroup));
+        classPool = new ArrayList<>(report.conflictingClasses); // report.conflictingClasses contains all classes that
+        // face conflicts with other conflicts so that mutations don't change an already non-conflicting class. ذكاء مش صح ؟
+        Class randomClass = classPool.get(rand.nextInt(classPool.size()));
+        finalTimePool = new ArrayList<>(randomClass.getTimeSlots(timePools));
+        finalRoomPool = new ArrayList<>(randomClass.getRooms(roomPools));
         if (rand.nextBoolean()) {
             // 50% chance to change the Room
-            randomClass.room = roomPool.get(rand.nextInt(roomPool.size()));
+            randomClass.room = finalRoomPool.get(rand.nextInt(finalRoomPool.size()));
         } else {
             // 50% chance to change the TimeSlot
-            randomClass.time = timePool.get(rand.nextInt(timePool.size()));
+            randomClass.time = finalTimePool.get(rand.nextInt(finalTimePool.size()));
         }
     }
 
@@ -46,61 +51,65 @@ class TimeTable {
         return new TimeTable(childClasses);
     }
 
-    // Tournament Selection: Picks the best K random individuals out of the timeTables population
-    public static TimeTable tournamentSelection(List<TimeTable> population, int k) {
-        Random rand = new Random();
-        TimeTable best = null;
-        for (int i = 0; i < k; i++) {
-            TimeTable ind = population.get(rand.nextInt(population.size()));
-            if (best == null || ind.fitness > best.fitness) {
-                best = ind;
-            }
-        }
-        return best;
-    }
 
-    public void initializeRandomly(Map<String, Set<TimeSlot>> timePools, Map<String, Set<Room>> roomPools) {
+
+    public void initializeRandomly(Map<String, HashSet<TimeSlot>> timePools, Map<String, HashSet<Room>> roomPools) {
         List<TimeSlot> timePool;
         List<Room> roomPool;
 
 
         Random rand = new Random();
         for (Class c : this.classes) {
-            timePool = new ArrayList<>(timePools.get(c.course.timeGroup));
-            roomPool = new ArrayList<>(roomPools.get(c.course.roomGroup));
-            // Randomly pick an allele from the pools
+            timePool = new ArrayList<>(c.getTimeSlots(timePools));
+            roomPool = new ArrayList<>(c.getRooms(roomPools));
+            // Randomly pick an allele(or a gene) from the pools
             c.time = timePool.get(rand.nextInt(timePool.size()));
             c.room = roomPool.get(rand.nextInt(roomPool.size()));
         }
+        this.calculateFitness();
     }
 
     public int calculateFitness() {
         int totalFitness = 0;
+        report.totalPenalty = 0;
+        report.studentConflicts = 0;
+        report.instructorConflicts = 0;
+        report.roomConflicts = 0;
 
-        // 1. Group classes by Room and by Instructor
         Map<Room, List<Class>> roomGroups = new HashMap<>();
         Map<String, List<Class>> instructorGroups = new HashMap<>();
+        // NEW: Grouping by Department + Year Level
+        Map<String, List<Class>> deptYearGroups = new HashMap<>();
 
         for (Class c : classes) {
             roomGroups.computeIfAbsent(c.room, k -> new ArrayList<>()).add(c);
             instructorGroups.computeIfAbsent(c.instructor, k -> new ArrayList<>()).add(c);
+
+            // Create a unique key like "BIT-2"
+            String deptYearKey = c.course.symbol + "-" + c.course.number.charAt(0);
+            deptYearGroups.computeIfAbsent(deptYearKey, k -> new ArrayList<>()).add(c);
         }
 
-        // 2. Check conflicts only within the same Room
+        // 1. Hard Conflicts (Room)
         for (List<Class> roomList : roomGroups.values()) {
-            totalFitness += checkInternalConflicts(roomList, "Room Conflict");
+            totalFitness += checkInternalConflicts(roomList, "Room Conflict", 10);
         }
 
-        // 3. Check conflicts only within the same Instructor
+        // 2. Hard Conflicts (Instructor)
         for (List<Class> instructorList : instructorGroups.values()) {
-            totalFitness += checkInternalConflicts(instructorList, "Instructor Conflict");
+            totalFitness += checkInternalConflicts(instructorList, "Instructor Conflict", 10);
         }
 
+        // 3. Soft Conflicts (Same Year/Dept Students)
+        for (List<Class> deptYearList : deptYearGroups.values()) {
+            // Use a smaller penalty (e.g., -20) since this is a soft constraint
+            totalFitness += checkInternalConflicts(deptYearList, "Student Year Conflict", 5);
+        }
         this.fitness = totalFitness;
         return totalFitness;
     }
 
-    private int checkInternalConflicts(List<Class> group, String conflictType) {
+    private int checkInternalConflicts(List<Class> group, String conflictType, int penalty_weight) {
         int penalty = 0;
         // Only compare items within this specific small group
         for (int i = 0; i < group.size(); i++) {
@@ -109,13 +118,25 @@ class TimeTable {
                 Class c2 = group.get(j);
 
                 if (c1.time.conflictsWith(c2.time)) {
-                    //System.out.println(conflictType + " between: " + c1.ID + " and " + c2.ID);
-                    penalty -= 10;
+                    report.conflictingClasses.add(c1);
+                    report.conflictingClasses.add(c2);
+                    penalty -= penalty_weight;
+                    report.totalPenalty -= penalty_weight;
+                    if (conflictType.equals("Room Conflict")) {
+                        report.roomConflicts+=1;
+                    }
+                    else if(conflictType.equals("Instructor Conflict")) {
+                        report.instructorConflicts+=1;
+                    }
+                    else if(conflictType.equals("Student Year Conflict")) {
+                        report.studentConflicts+=1;
+                    }
                 }
             }
         }
         return penalty;
     }
+
     @Override
     public String toString() {
         String schedule;

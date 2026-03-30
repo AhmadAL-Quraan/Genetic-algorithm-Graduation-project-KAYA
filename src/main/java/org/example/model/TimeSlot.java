@@ -71,7 +71,7 @@ class TimeSlot {
                 Objects.equals(groups, timeSlot.groups);
         // Set equality ignores order!
     }
-
+    // to convert an array of TimeSlots to a HashSet.
     @Override
     public int hashCode() {
 
