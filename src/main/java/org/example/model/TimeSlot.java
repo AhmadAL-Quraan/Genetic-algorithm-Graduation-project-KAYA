@@ -50,6 +50,7 @@ class TimeSlot {
         timeGroup.add(r.getCellText(20));
         return new TimeSlot(startTime, endTime, days, timeGroup);
     }
+
     public boolean conflictsWith(TimeSlot other) {
         // Collections.disjoint returns true if they have NOTHING in common.
         // So we negate it (!) to see if they share at least one day.
