@@ -3,29 +3,26 @@ package org.example.model;
 import org.dhatim.fastexcel.reader.Row;
 
 import java.time.LocalTime;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 class TimeSlot {
     public LocalTime start_time;
     public LocalTime end_time;
     public Set<String> days;
-    public String group;
+    public ArrayList<String> groups;
 
-    TimeSlot(LocalTime start_time, LocalTime end_time, Set<String> days, String group) {
+    TimeSlot(LocalTime start_time, LocalTime end_time, Set<String> days, ArrayList<String> groups) {
         this.start_time = start_time;
         this.end_time = end_time;
         this.days = days;
-        this.group = group;
+        this.groups = groups;
     }
 
     public static TimeSlot extractTimeSlot(Row r, int startTimeIndex, int endTimeIndex) {
         Set<String> days = new HashSet<>();
-        LocalTime startTime =null;
+        LocalTime startTime = null;
         LocalTime endTime = null;
-        String timeGroup;
+        ArrayList<String> timeGroup = new ArrayList<String>();
 
         if (r.getCellText(6).equals("X")) days.add("Saturday");
         if (r.getCellText(7).equals("X")) days.add("Sunday");
@@ -50,7 +47,7 @@ class TimeSlot {
             System.out.println("error parsing time");
             System.exit(1);
         }
-        timeGroup = r.getCellText(20);
+        timeGroup.add(r.getCellText(20));
         return new TimeSlot(startTime, endTime, days, timeGroup);
     }
     public boolean conflictsWith(TimeSlot other) {
@@ -71,18 +68,18 @@ class TimeSlot {
         return Objects.equals(start_time, timeSlot.start_time) &&
                 Objects.equals(end_time, timeSlot.end_time) &&
                 Objects.equals(days, timeSlot.days) &&
-                Objects.equals(group, timeSlot.group);
+                Objects.equals(groups, timeSlot.groups);
         // Set equality ignores order!
     }
-
+    // to convert an array of TimeSlots to a HashSet.
     @Override
     public int hashCode() {
 
-        return Objects.hash(start_time, end_time, days, group);
+        return Objects.hash(start_time, end_time, days, groups);
     }
 
     @Override
     public String toString() {
-        return "Days : " + days + " Start : " + start_time + " End : " + end_time + " Group : " + group;
+        return "Days : " + days + " Start : " + start_time + " End : " + end_time + " Group : " + groups;
     }
 }

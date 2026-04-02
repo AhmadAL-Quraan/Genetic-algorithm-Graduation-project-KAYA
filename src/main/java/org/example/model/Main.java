@@ -11,11 +11,45 @@ import java.util.stream.Stream;
 
 public class Main {
     public static void main(String[] args) {
-        TimeTable timeTable;
-        ArrayList<Class> classes = new ArrayList<>();
+        Map<String, HashSet<Room>> roomPools = new HashMap<>(); // A dictionary that associates each room to its designated Room Group.
+        Map<String, HashSet<TimeSlot>> timePools = new HashMap<>(); // A dictionary that associates each time slot to its designated TimeSlot Group.
+        ArrayList<Class> classes;
+        //ArrayList<ArrayList<TimeTable>> islands = new ArrayList<>();
+
+        classes = excelParsing(roomPools, timePools); // returns an array of classes.
+        int maxGenerations = 200;
+
+        // 1. INITIALIZATION: Create the first generation
+        Evolution.mutationRate = 0.05;
+        Evolution.elitismCount = 2;
+        Evolution.populationSize = 200;
+        Evolution.tournamentSize = 5;
+        ArrayList<TimeTable> islandPop = Evolution.initializePopulation(classes, timePools, roomPools);
+        // 2. EVOLUTION LOOP
+        islandPop = Evolution.evolveGenerations(islandPop, maxGenerations, timePools, roomPools);
+        // 3. RESULTS: Print the best found schedule
+        islandPop.sort((a, b) -> Integer.compare(b.fitness, a.fitness)); // sorts the TimeTables based on their fitness.
+        System.out.println(islandPop.getFirst().report);
+        // هذا الكود الي تحت اسحب عليه، حاولت انه أحسن الخوارزمية بس ما زبطتش، لبعدين بشوفه إن شاء الله
+        /*
+        for (int i = 0; i < 5; i++) {
+            ArrayList<TimeTable> islandPop = Evolution.initializePopulation(classes, timePools, roomPools);
+            // 2. EVOLUTION LOOP
+            islandPop = Evolution.evolveGenerations(islandPop, maxGenerations, timePools, roomPools);
+            // 3. RESULTS: Print the best found schedule
+            islandPop.sort((a, b) -> Integer.compare(b.fitness, a.fitness));
+            islands.add(islandPop);
+        }
+        maxGenerations = 300;
+        ArrayList<TimeTable> finalPopulation = Evolution.islandsMerge(islands);
+        Evolution.mutationRate = 0.4;
+
+        finalPopulation =  Evolution.evolveGenerations(finalPopulation, maxGenerations, timePools, roomPools);         */
+    }
+    // this method simply parses the input Excel (.xlsx) file and extracts information like classes, courses, instructors, etc.
+    public static ArrayList<Class> excelParsing(Map<String, HashSet<Room>> roomPools, Map<String, HashSet<TimeSlot>> timePools) {
         AtomicInteger idCounter = new AtomicInteger(1);
-        Map<String, Set<Room>> roomPools = new HashMap<>();
-        Map<String, Set<TimeSlot>> timePools = new HashMap<>();
+        ArrayList<Class> classes = new ArrayList<>();
 
         try (FileInputStream fis = new FileInputStream("src/main/resources/2526_first_term_sched.xlsx");
              ReadableWorkbook wb = new ReadableWorkbook(fis)) {
@@ -23,6 +57,7 @@ public class Main {
             // 1. Get ONLY the header index without loading the whole file
             int foundStartTimeIndex = -1;
             int foundEndTimeIndex = -1;
+            // This try statement tries to find the index of وقت البداية column and وقت النهاية column.
             try (Stream<Row> headerStream = sheet.openStream()) {
                 Optional<Row> headerRow = headerStream.findFirst(); // Only reads the first line
                 if (headerRow.isPresent()) {
@@ -37,9 +72,11 @@ public class Main {
                     }
                 }
             }
+            // We categorize rooms to either a LECTURE or a LAB to put courses like (CS 111L) in LAB rooms and other
+            // courses in LECTURE rooms.
             roomPools.put("LECTURE", new LinkedHashSet<>());
             roomPools.put("LAB", new LinkedHashSet<>());
-
+            // We categorize time slots to either مدمج or وجاهي to put each course in its suitable time.
             timePools.put("مدمج", new LinkedHashSet<>());
             timePools.put("وجاهي", new LinkedHashSet<>());
             timePools.put("1st year", new LinkedHashSet<>());
@@ -50,7 +87,7 @@ public class Main {
             if (foundStartTimeIndex == -1) {
                 throw new RuntimeException("Could not find 'StartTime' column!");
             }
-
+            // here we go through all Excel rows
             try (Stream<Row> rows = sheet.openStream()) {
                 rows.skip(1).forEach(r -> {
                     int classNumber;
@@ -62,96 +99,31 @@ public class Main {
                     int ID;
 
                     course = Course.extractCourse(r);
-
                     classNumber = Integer.parseInt(r.getCellText(2));
                     instructor = r.getCellText(19);
-
                     time = TimeSlot.extractTimeSlot(r, startTimeIndex, endTimeIndex);
                     room  = Room.extractRoom(r);
+                    if (room.number.equals("Oline") || room.number.equals("ميدان")) // we ignore both Online and ميدان courses.
+                        return ;
+                    timePools.get(r.getCellText(20)).add(time);
                     // add() returns false if duplicate exists, but since it's a Set,
                     // it simply won't add it. No "if" check needed for uniqueness.
-                    if (room.number.equals("Oline") || room.number.equals("ميدان"))
-                        return ;
-                    timePools.get(time.group).add(time);
                     if (course.number.contains("L")){
-                        room.group = "LAB";
+                        room.groups.add ("LAB");
                         roomPools.get("LAB").add(room);
-                        System.out.println("lab");
                     }
                     else {
-                        room.group = "LECTURE";
+                        room.groups.add("LECTURE");
                         roomPools.get("LECTURE").add(room);
-                        System.out.println("lecture");
                     }
                     ID = idCounter.getAndIncrement();
                     gene = new Class(course, classNumber, instructor, null, null, ID);
                     classes.add(gene);
                 });
-            } // parsing the excel file and extracting classes
+            } // parsing the Excel file and extracting classes
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        int populationSize = 100;
-        int maxGenerations = 1000;
-        int tournamentSize = 7;
-        double mutationRate = 0.05;
-        int elitismCount = 2;
-
-        // 1. INITIALIZATION: Create the first generation
-        List<TimeTable> population = new ArrayList<>();
-        for (int i = 0; i < populationSize; i++) {
-            // Deep copy the initial class list so each schedule is unique
-            ArrayList<Class> individualClasses = new ArrayList<>();
-            for (Class c : classes) {
-                individualClasses.add(new Class(c.course, c.number, c.instructor, null, null, c.ID));
-            }
-            TimeTable tt = new TimeTable(individualClasses);
-            tt.initializeRandomly(timePools, roomPools);
-            tt.calculateFitness();
-            population.add(tt);
-        }
-
-        // 2. EVOLUTION LOOP
-        for (int gen = 1; gen <= maxGenerations; gen++) {
-            // Sort for Elitism (Highest fitness first)
-            population.sort((a, b) -> Integer.compare(b.fitness, a.fitness));
-
-            System.out.println("Generation " + gen + " | Best Fitness: " + population.get(0).fitness);
-
-            // Check if we found a perfect solution
-            if (population.get(0).fitness == 0) {
-                System.out.println("--- Perfect Schedule Found! ---");
-                break;
-            }
-
-            List<TimeTable> nextGen = new ArrayList<>();
-
-            // ELITISM: Keep the best survivors
-            for (int i = 0; i < elitismCount; i++) {
-                nextGen.add(population.get(i));
-            }
-
-            // REPRODUCTION: Fill up the rest of the generation
-            while (nextGen.size() < populationSize) {
-                TimeTable p1 = TimeTable.tournamentSelection(population, tournamentSize);
-                TimeTable p2 = TimeTable.tournamentSelection(population, tournamentSize);
-
-                TimeTable child = TimeTable.crossover(p1, p2);
-
-                // MUTATION
-                if (Math.random() < mutationRate) {
-                    child.mutate(timePools, roomPools);
-                }
-
-                child.calculateFitness();
-                nextGen.add(child);
-            }
-            population = nextGen;
-        }
-
-        // 3. RESULTS: Print the best found schedule
-        population.sort((a, b) -> Integer.compare(b.fitness, a.fitness));
-        System.out.println("\nFinal Result:\n" + population.get(0));
+        return (classes);
     }
 }

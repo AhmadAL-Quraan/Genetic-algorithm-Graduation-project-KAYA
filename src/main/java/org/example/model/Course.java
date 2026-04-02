@@ -2,40 +2,47 @@ package org.example.model;
 
 import org.dhatim.fastexcel.reader.Row;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 class Course {
     public String symbol;
     public String number;
     public String[] majors;
-    public String roomGroup;
-    public String timeGroup;
+    public HashSet<String> roomGroups;
+    public HashSet<String> timeGroups;
 
-    Course(String symbol, String number, String roomGroup, String timeGroup,String[] majors) {
+    Course(String symbol, String number, HashSet<String> roomGroups, HashSet<String> timeGroups,String[] majors) {
         this.majors = majors;
         this.number = number;
         this.symbol = symbol;
-        this.roomGroup = roomGroup;
-        this.timeGroup = timeGroup;
+        this.roomGroups = roomGroups;
+        this.timeGroups = timeGroups;
     }
-
+    // extracts course information from an Excel row.
     public static Course extractCourse(Row r) {
         String course_symbol;
         String course_number;
         String teaching_system;
-        String roomGroup = "";
-        String timeGroup = "";
+        HashSet<String> roomGroups = new HashSet<>();
+        HashSet<String> timeGroups = new HashSet<>();
 
         course_symbol = r.getCellText(0);
         course_number = r.getCellText(1);
         teaching_system = r.getCellText(20);
         if (course_number.contains("L")) {
-            roomGroup = "LAB";
+            roomGroups.add("LAB");
         }
         else {
-            roomGroup = "LECTURE";
+            roomGroups.add ( "LECTURE");
         }
-        timeGroup = teaching_system;
-        return new Course(course_symbol, course_number, roomGroup, timeGroup, new String[1]) ;
+        timeGroups.add(teaching_system);
+        return new Course(course_symbol, course_number, roomGroups, timeGroups, new String[1]) ;
     }
+
+
 
     @Override
     public String toString() {
