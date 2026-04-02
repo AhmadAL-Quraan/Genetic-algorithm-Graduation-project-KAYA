@@ -46,7 +46,7 @@ class Class {
 }
     @Override
     public String toString() {
-        return "Course" + course + "Class no : " + number + ", Time : "  + time + ", room : " + room + "\n";
-        //return "ID : " + ID + ", Course : " + course + ", Class no : " + number + ", Instructor : " + instructor + ", Time : "  + time + ", Room : " + room;
+        //return "Course" + course + "Class no : " + number + ", Time : "  + time + ", room : " + room + "\n";
+        return "ID : " + ID + ", Course : " + course + ", Class no : " + number + ", Instructor : " + instructor + ", Time : "  + time + ", Room : " + room;
     }
 }

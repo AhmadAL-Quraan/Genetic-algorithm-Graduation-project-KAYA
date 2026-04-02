@@ -17,12 +17,12 @@ public class Main {
         //ArrayList<ArrayList<TimeTable>> islands = new ArrayList<>();
 
         classes = excelParsing(roomPools, timePools); // returns an array of classes.
-        int maxGenerations = 200;
+        int maxGenerations = 400;
 
         // 1. INITIALIZATION: Create the first generation
-        Evolution.mutationRate = 0.05;
+        Evolution.mutationRate = 0.15;
         Evolution.elitismCount = 2;
-        Evolution.populationSize = 200;
+        Evolution.populationSize = 100;
         Evolution.tournamentSize = 5;
         ArrayList<TimeTable> islandPop = Evolution.initializePopulation(classes, timePools, roomPools);
         // 2. EVOLUTION LOOP
@@ -30,6 +30,7 @@ public class Main {
         // 3. RESULTS: Print the best found schedule
         islandPop.sort((a, b) -> Integer.compare(b.fitness, a.fitness)); // sorts the TimeTables based on their fitness.
         System.out.println(islandPop.getFirst().report);
+        System.out.println(islandPop.getFirst());
         // هذا الكود الي تحت اسحب عليه، حاولت انه أحسن الخوارزمية بس ما زبطتش، لبعدين بشوفه إن شاء الله
         /*
         for (int i = 0; i < 5; i++) {
@@ -79,7 +80,6 @@ public class Main {
             // We categorize time slots to either مدمج or وجاهي to put each course in its suitable time.
             timePools.put("مدمج", new LinkedHashSet<>());
             timePools.put("وجاهي", new LinkedHashSet<>());
-            timePools.put("1st year", new LinkedHashSet<>());
 
             final int startTimeIndex = foundStartTimeIndex;
             final int endTimeIndex = foundEndTimeIndex;
