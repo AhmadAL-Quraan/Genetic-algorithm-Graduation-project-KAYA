@@ -18,7 +18,7 @@ class TimeSlot {
         this.groups = groups;
     }
 
-    public static TimeSlot extractTimeSlot(Row r, int startTimeIndex, int endTimeIndex) {
+    public static TimeSlot extractTimeSlot(Row r, Map<String, Integer> columnIndexMap) {
         Set<String> days = new HashSet<>();
         LocalTime startTime = null;
         LocalTime endTime = null;
@@ -32,8 +32,8 @@ class TimeSlot {
         if (r.getCellText(11).equals("X")) days.add("Thursday");
         if (r.getCellText(12).equals("X")) days.add("Friday");
 
-        Double timeFractionStart = r.getCellAsNumber(startTimeIndex).get().doubleValue();
-        Double timeFractionEnd = r.getCellAsNumber(endTimeIndex).get().doubleValue();
+        Double timeFractionStart = r.getCellAsNumber(columnIndexMap.get("وقت البداية")).get().doubleValue();
+        Double timeFractionEnd = r.getCellAsNumber(columnIndexMap.get("وقت النهاية")).get().doubleValue();
 
         if (timeFractionStart != null && timeFractionEnd != null) {
             // Convert fraction of day to total seconds

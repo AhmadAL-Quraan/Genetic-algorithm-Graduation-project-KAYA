@@ -1,7 +1,9 @@
 package org.example.model;
 
 import org.example.model.*;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.util.*;
 
 class TimeTable {
@@ -135,6 +137,32 @@ class TimeTable {
             }
         }
         return penalty;
+    }
+    public String convertToJson(){
+        String json = null;
+        // 1. Initialize the Mapper
+        ObjectMapper mapper = new ObjectMapper();
+
+        // 2. Register the module to handle LocalTime
+        mapper.registerModule(new JavaTimeModule());
+
+        // 3. Make the JSON look "pretty" (indented)
+        mapper.enable(SerializationFeature.INDENT_OUTPUT);
+
+        try {
+            // Convert the object to a String
+            json = mapper.writeValueAsString(this);
+
+            // Print it or save it to a file
+            System.out.println(json);
+
+            // To save to a file:
+            // mapper.writeValue(new File("best_schedule.json"), bestSchedule);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return json;
     }
 
     @Override

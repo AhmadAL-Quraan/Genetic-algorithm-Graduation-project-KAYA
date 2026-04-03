@@ -30,46 +30,24 @@ public class Main {
         // 3. RESULTS: Print the best found schedule
         islandPop.sort((a, b) -> Integer.compare(b.fitness, a.fitness)); // sorts the TimeTables based on their fitness.
         System.out.println(islandPop.getFirst().report);
-        System.out.println(islandPop.getFirst());
-        // هذا الكود الي تحت اسحب عليه، حاولت انه أحسن الخوارزمية بس ما زبطتش، لبعدين بشوفه إن شاء الله
-        /*
-        for (int i = 0; i < 5; i++) {
-            ArrayList<TimeTable> islandPop = Evolution.initializePopulation(classes, timePools, roomPools);
-            // 2. EVOLUTION LOOP
-            islandPop = Evolution.evolveGenerations(islandPop, maxGenerations, timePools, roomPools);
-            // 3. RESULTS: Print the best found schedule
-            islandPop.sort((a, b) -> Integer.compare(b.fitness, a.fitness));
-            islands.add(islandPop);
-        }
-        maxGenerations = 300;
-        ArrayList<TimeTable> finalPopulation = Evolution.islandsMerge(islands);
-        Evolution.mutationRate = 0.4;
-
-        finalPopulation =  Evolution.evolveGenerations(finalPopulation, maxGenerations, timePools, roomPools);         */
+        System.out.println(islandPop.getFirst().convertToJson());
     }
     // this method simply parses the input Excel (.xlsx) file and extracts information like classes, courses, instructors, etc.
     public static ArrayList<Class> excelParsing(Map<String, HashSet<Room>> roomPools, Map<String, HashSet<TimeSlot>> timePools) {
         AtomicInteger idCounter = new AtomicInteger(1);
         ArrayList<Class> classes = new ArrayList<>();
+        Map<String, Integer> columnIndexMap = new HashMap<>();
 
-        try (FileInputStream fis = new FileInputStream("src/main/resources/2526_first_term_sched.xlsx");
-             ReadableWorkbook wb = new ReadableWorkbook(fis)) {
+        try (FileInputStream fis = new FileInputStream("src/main/resources/2526_first_term_sched.xlsx"); ReadableWorkbook wb = new ReadableWorkbook(fis)) {
             Sheet sheet = wb.getFirstSheet();
-            // 1. Get ONLY the header index without loading the whole file
-            int foundStartTimeIndex = -1;
-            int foundEndTimeIndex = -1;
-            // This try statement tries to find the index of وقت البداية column and وقت النهاية column.
+            // Get ONLY the header index without loading the whole file
             try (Stream<Row> headerStream = sheet.openStream()) {
                 Optional<Row> headerRow = headerStream.findFirst(); // Only reads the first line
                 if (headerRow.isPresent()) {
                     Row header = headerRow.get();
+                    // Store each column header name and its index in key/value pairs respectively
                     for (int i = 0; i < header.getCellCount(); i++) {
-                        if (header.getCellText(i).contains("وقت البداية")) {
-                            foundStartTimeIndex = i;
-                        }
-                        if (header.getCellText(i).contains("وقت النهاية")) {
-                            foundEndTimeIndex = i;
-                        }
+                            columnIndexMap.put(header.getCellText(i).trim(), i);
                     }
                 }
             }
@@ -81,12 +59,8 @@ public class Main {
             timePools.put("مدمج", new LinkedHashSet<>());
             timePools.put("وجاهي", new LinkedHashSet<>());
 
-            final int startTimeIndex = foundStartTimeIndex;
-            final int endTimeIndex = foundEndTimeIndex;
-            // If we didn't find the column, we can't continue
-            if (foundStartTimeIndex == -1) {
-                throw new RuntimeException("Could not find 'StartTime' column!");
-            }
+            // If we didn't find the column, we can't continue TBD
+
             // here we go through all Excel rows
             try (Stream<Row> rows = sheet.openStream()) {
                 rows.skip(1).forEach(r -> {
@@ -98,14 +72,14 @@ public class Main {
                     Class gene;
                     int ID;
 
-                    course = Course.extractCourse(r);
-                    classNumber = Integer.parseInt(r.getCellText(2));
-                    instructor = r.getCellText(19);
-                    time = TimeSlot.extractTimeSlot(r, startTimeIndex, endTimeIndex);
-                    room  = Room.extractRoom(r);
+                    course = Course.extractCourse(r, columnIndexMap);
+                    classNumber = Integer.parseInt(r.getCellText(columnIndexMap.get("الشعبة")));
+                    instructor = r.getCellText(columnIndexMap.get("المحاضر"));
+                    time = TimeSlot.extractTimeSlot(r, columnIndexMap);
+                    room  = Room.extractRoom(r, columnIndexMap);
                     if (room.number.equals("Oline") || room.number.equals("ميدان")) // we ignore both Online and ميدان courses.
                         return ;
-                    timePools.get(r.getCellText(20)).add(time);
+                    timePools.get(r.getCellText(columnIndexMap.get("طريقة  تدريس المساق"))).add(time);
                     // add() returns false if duplicate exists, but since it's a Set,
                     // it simply won't add it. No "if" check needed for uniqueness.
                     if (course.number.contains("L")){

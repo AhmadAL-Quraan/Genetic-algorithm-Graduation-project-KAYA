@@ -3,6 +3,7 @@ package org.example.model;
 import org.dhatim.fastexcel.reader.Row;
 
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Objects;
 
 class Room {
@@ -15,12 +16,12 @@ class Room {
         this.number = number;
         this.groups = groups;
     }
-    public static Room extractRoom(Row r)
+    public static Room extractRoom(Row r, Map<String, Integer> columnIndexMap)
     {
         String building;
         String number;
         //Room number extraction
-        String input = r.getCellText(17); // مق 205
+        String input = r.getCellText(columnIndexMap.get("رمز القاعة")); // مق 205
         // 1. trim() removes any sneaky spaces at the very beginning or end of the cell.
 // 2. split("\\s+") splits the string wherever there is one OR MORE spaces.
         String[] parts = input.trim().split("\\s+");
