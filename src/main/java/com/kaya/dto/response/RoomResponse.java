@@ -10,9 +10,5 @@ import lombok.NoArgsConstructor;
 public class RoomResponse {
     private Long id;
     private String building;
-<<<<<<< HEAD
     private String roomNumber;
-=======
-    private String number;
->>>>>>> 2f1def42acd0dd54877d40fc787cdfb45bbf7ddf
 }

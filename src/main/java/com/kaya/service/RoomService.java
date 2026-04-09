@@ -1,6 +1,5 @@
 package com.kaya.service;
 
-<<<<<<< HEAD
 import com.kaya.dto.request.RoomRequest;
 import com.kaya.dto.response.RoomResponse;
 import com.kaya.mapper.RoomMapper;
@@ -59,7 +58,4 @@ public class RoomService {
         Room updated = roomRepository.save(response);
         return RoomMapper.mapToResponse(updated);
     }
-=======
-public class RoomService {
->>>>>>> 2f1def42acd0dd54877d40fc787cdfb45bbf7ddf
 }
