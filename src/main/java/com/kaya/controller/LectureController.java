@@ -1,6 +1,9 @@
 package com.kaya.controller;
 
+<<<<<<< HEAD
 import com.kaya.dto.request.LectureRequest;
+=======
+>>>>>>> 2f1def42acd0dd54877d40fc787cdfb45bbf7ddf
 import com.kaya.dto.response.LectureResponse;
 import com.kaya.model.Lecture;
 import com.kaya.service.LectureService;
@@ -28,12 +31,20 @@ public class LectureController {
     }
 
     @PostMapping
+<<<<<<< HEAD
     public ResponseEntity<LectureResponse> create(@Valid  @RequestBody LectureRequest request) {
+=======
+    public ResponseEntity<LectureResponse> create(@Valid  @RequestBody Lecture request) {
+>>>>>>> 2f1def42acd0dd54877d40fc787cdfb45bbf7ddf
         return ResponseEntity.ok(lectureService.create(request));
     }
 
     @PutMapping("/{id}")
+<<<<<<< HEAD
     public ResponseEntity<LectureResponse> update(@PathVariable Long id, @Valid @RequestBody LectureRequest request) {
+=======
+    public ResponseEntity<LectureResponse> update(@PathVariable Long id, @Valid @RequestBody Lecture request) {
+>>>>>>> 2f1def42acd0dd54877d40fc787cdfb45bbf7ddf
         return ResponseEntity.ok(lectureService.update(id, request));
     }
 

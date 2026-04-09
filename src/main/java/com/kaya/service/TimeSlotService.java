@@ -1,5 +1,6 @@
 package com.kaya.service;
 
+<<<<<<< HEAD
 import com.kaya.dto.request.TimeSlotRequest;
 import com.kaya.dto.response.TimeSlotResponse;
 import com.kaya.mapper.TimeSlotMapper;
@@ -59,4 +60,7 @@ public class TimeSlotService {
         TimeSlot updated = courseRepository.save(response);
         return TimeSlotMapper.mapToResponse(updated);
     }
+=======
+public class TimeSlotService {
+>>>>>>> 2f1def42acd0dd54877d40fc787cdfb45bbf7ddf
 }

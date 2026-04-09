@@ -1,5 +1,6 @@
 package com.kaya.service;
 
+<<<<<<< HEAD
 import com.kaya.dto.request.LectureRequest;
 import com.kaya.dto.response.LectureResponse;
 import com.kaya.mapper.LectureMapper;
@@ -68,3 +69,7 @@ public class LectureService {
         return LectureMapper.mapToResponse(updated);
     }
 }
+=======
+public class LectureService {
+}
+>>>>>>> 2f1def42acd0dd54877d40fc787cdfb45bbf7ddf

@@ -1,5 +1,6 @@
 package com.kaya.service;
 
+<<<<<<< HEAD
 import com.kaya.dto.request.TimeTableRequest;
 import com.kaya.dto.response.TimeTableResponse;
 import com.kaya.mapper.TimeTableMapper;
@@ -67,4 +68,7 @@ public class TimeTableService {
         TimeTable updated = timeTableRepository.save(response);
         return TimeTableMapper.mapToResponse(updated);
     }
+=======
+public class TimeTableService {
+>>>>>>> 2f1def42acd0dd54877d40fc787cdfb45bbf7ddf
 }
