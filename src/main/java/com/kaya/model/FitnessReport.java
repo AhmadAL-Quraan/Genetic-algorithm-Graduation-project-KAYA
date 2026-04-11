@@ -25,9 +25,9 @@ public class FitnessReport {
     @Override
     public String toString() {
         return "--- FITNESS REPORT ---\n" +
-                "Room Conflicts:       " + roomConflicts + " (Penalty: " + (roomConflicts * -10) + ")\n" +
-                "Instructor Conflicts: " + instructorConflicts + " (Penalty: " + (instructorConflicts * -10) + ")\n" +
-                "Student Year Conflicts: " + studentConflicts + " (Penalty: " + (studentConflicts * -5) + ")\n" +
+                "Room Conflicts:       " + roomConflicts + " (Penalty: " + (roomConflicts * -100) + ")\n" +
+                "Instructor Conflicts: " + instructorConflicts + " (Penalty: " + (instructorConflicts * -100) + ")\n" +
+                "Student Year Conflicts: " + studentConflicts + " (Penalty: " + (studentConflicts * -1) + ")\n" +
                 "----------------------\n" +
                 "TOTAL FITNESS SCORE:  " + totalPenalty + "\n";
     }

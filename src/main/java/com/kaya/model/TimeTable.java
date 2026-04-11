@@ -21,7 +21,7 @@ public class TimeTable {
     public Long fitness;
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "timetable_id")
-    private List<Lecture> lectures;
+    public List<Lecture> lectures;
     @Transient
     public FitnessReport report;
 

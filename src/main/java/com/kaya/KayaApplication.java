@@ -1,5 +1,6 @@
 package com.kaya;
 
+import com.kaya.algorithm.run.SchedulerApp;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -7,7 +8,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class KayaApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(KayaApplication.class, args);
+        SchedulerApp.run();
+        //SpringApplication.run(KayaApplication.class, args);
     }
 
 }
