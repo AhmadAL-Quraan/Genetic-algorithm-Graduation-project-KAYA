@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.Set;
 
@@ -14,5 +16,5 @@ import java.util.Set;
 public class TimeSlotRequest {
     @NotNull private LocalTime startTime;
     @NotNull private LocalTime endTime;
-    @NotEmpty private Set<String> days;
+    @NotEmpty private Set<DayOfWeek> days;
 }

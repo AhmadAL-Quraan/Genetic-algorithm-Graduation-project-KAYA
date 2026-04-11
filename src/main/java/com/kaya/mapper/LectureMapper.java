@@ -9,7 +9,7 @@ public class LectureMapper {
         return new LectureResponse(
                 lecture.getId(),
                 CourseMapper.mapToResponse(lecture.getCourse()),
-                lecture.getNumber(),
+                lecture.getSectionNumber(),
                 lecture.getInstructor(),
                 TimeSlotMapper.mapToResponse(lecture.getTimeSlot()),
                 RoomMapper.mapToResponse(lecture.getRoom())

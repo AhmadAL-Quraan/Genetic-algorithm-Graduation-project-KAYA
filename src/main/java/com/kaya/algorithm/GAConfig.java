@@ -15,7 +15,7 @@ public class GAConfig {
 
     public GAConfig() {
         // القيم الافتراضية (Default Values)
-        this.maxGenerations = 200; // ممكن تزوده لـ 1000 بعدين لو لسه محتاج تحسين
+        this.maxGenerations = 400; // ممكن تزوده لـ 1000 بعدين لو لسه محتاج تحسين
         this.populationSize = 100; // ممكن تزوده لـ 200 لزيادة التنوع لو الجهاز يستحمل
         this.elitismCount = 2;
         this.tournamentSize = 5;

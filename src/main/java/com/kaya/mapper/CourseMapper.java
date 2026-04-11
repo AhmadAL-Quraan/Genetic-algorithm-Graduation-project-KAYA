@@ -11,8 +11,8 @@ public class CourseMapper {
                 course.getCourseSymbol(),
                 course.getCourseNumber(),
                 course.getMajors(),
-                course.getRoomGroups(),
-                course.getTimeGroups()
+                course.getRequiredRoomType(),
+                course.getTeachingMethod()
         );
     }
 }
