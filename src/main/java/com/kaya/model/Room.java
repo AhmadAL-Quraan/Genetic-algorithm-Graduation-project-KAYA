@@ -28,12 +28,12 @@ public class Room {
     // FetchType.EAGER عشان الخوارزمية بتسحب الداتا دي على طول فنوفر وقت الداتا بيز
     @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING) // السر هنا: عشان تتخزن كنص في الداتا بيز
-    private RoomType groups;
+    private RoomType roomType;
 
-    public Room(String building, String roomNumber, RoomType groups) {
+    public Room(String building, String roomNumber, RoomType roomType) {
         this.building = building;
         this.roomNumber = roomNumber;
-        this.groups = groups;
+        this.roomType = roomType;
     }
 
     // Senior Tip: المقارنة بتتم بالمبنى ورقم القاعة بس، لأنهم بيميزوا أي قاعة في الجامعة
@@ -52,6 +52,6 @@ public class Room {
 
     @Override
     public String toString() {
-        return building + " " + roomNumber + " " + groups;
+        return building + " " + roomNumber + " " + roomType;
     }
 }

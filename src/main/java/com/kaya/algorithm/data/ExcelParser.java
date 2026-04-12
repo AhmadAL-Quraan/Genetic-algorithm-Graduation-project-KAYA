@@ -92,10 +92,10 @@ public class ExcelParser {
 
                     // إضافة القاعة للـ roomPools المناسب وتحديد نوعها
                     if (course.getRequiredRoomType() == RoomType.LAB){
-                        room.setGroups(RoomType.LAB);
+                        room.setRoomType(RoomType.LAB);
                         roomPools.get(RoomType.LAB).add(room);
                     } else {
-                        room.setGroups(RoomType.LECTURE);
+                        room.setRoomType(RoomType.LECTURE);
                         roomPools.get(RoomType.LECTURE).add(room);
                     }
 

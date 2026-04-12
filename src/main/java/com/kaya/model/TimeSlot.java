@@ -9,6 +9,7 @@ import lombok.Setter;
 
 import java.time.DayOfWeek;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Set;
 
@@ -33,6 +34,7 @@ public class TimeSlot {
 
     // [تعديل]: الوقت ده مخصص لطريقة تدريس معينة (مثلاً وقت للمدمج أو وقت للوجاهي)
     @Enumerated(EnumType.STRING)
+    //public ArrayList<TeachingMethod> teachingMethod; //groups;
     private TeachingMethod teachingMethod;
 
     public TimeSlot(LocalTime startTime, LocalTime endTime, Set<DayOfWeek> days, TeachingMethod teachingMethod) {

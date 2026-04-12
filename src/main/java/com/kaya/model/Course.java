@@ -24,7 +24,7 @@ public class Course {
     private String courseSymbol;
     private String courseNumber;
 
-    // سؤالي ليك: هل دي التخصصات اللي بتدرس الكورس؟
+
     @ElementCollection
     private List<String> majors;
 

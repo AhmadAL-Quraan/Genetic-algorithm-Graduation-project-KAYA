@@ -20,6 +20,6 @@ public class GAConfig {
         this.elitismCount = 2;
         this.tournamentSize = 5;
         this.initialMutationRate = 0.15;
-        this.mutationImpactRatio = 0.10; // [جديد]: تغيير 10% من الكورسات المتعارضة في كل طفرة
+        //this.mutationImpactRatio = 0.10; // [جديد]: تغيير 10% من الكورسات المتعارضة في كل طفرة
     }
 }
