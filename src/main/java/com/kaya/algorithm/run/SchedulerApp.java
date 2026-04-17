@@ -7,6 +7,8 @@ import com.kaya.model.Room;
 import com.kaya.model.TimeSlot;
 import com.kaya.model.TimeTable;
 import com.kaya.algorithm.data.ExcelParser;
+import com.kaya.model.enums.RoomType;
+import com.kaya.model.enums.TeachingMethod;
 
 import java.util.*;
 
@@ -17,8 +19,11 @@ public class SchedulerApp {
         System.out.println("Starting KAYA Timetable Scheduler...");
 
         // 1. Data Preparation
-        Map<String, HashSet<Room>> roomPools = new HashMap<>();
-        Map<String, HashSet<TimeSlot>> timePools = new HashMap<>();
+        //Map<String, HashSet<Room>> roomPools = new HashMap<>();
+        //Map<String, HashSet<TimeSlot>> timePools = new HashMap<>();
+        Map<RoomType, HashSet<Room>> roomPools = new HashMap<>();
+        Map<TeachingMethod, HashSet<TimeSlot>> timePools = new HashMap<>();
+
 
         System.out.println("Parsing Excel Data...");
         ArrayList<Lecture> lectures = ExcelParser.excelParsing(roomPools, timePools);
@@ -42,7 +47,7 @@ public class SchedulerApp {
         TimeTable bestSchedule = finalPop.get(0);
         System.out.println("=====================================");
         System.out.println("Best Fitness Report:");
-        System.out.println(bestSchedule.report);
+        System.out.println(bestSchedule.getReport());
         System.out.println("=====================================");
         System.out.println(bestSchedule); // شيل الكومنت لو عايز تطبع الجدول نفسه
     }

@@ -59,7 +59,7 @@ public class LectureService {
     private LectureResponse saveLecture(LectureRequest request, Lecture response) {
 
         response.setCourse(courseRepository.getReferenceById(request.getCourseId()));
-        response.setNumber(request.getNumber());
+        response.setSectionNumber(request.getNumber());
         response.setInstructor(request.getInstructor());
         response.setRoom(roomRepository.getReferenceById(request.getRoomId()));
         response.setTimeSlot(timeSlotRepository.getReferenceById(request.getTimeSlotId()));

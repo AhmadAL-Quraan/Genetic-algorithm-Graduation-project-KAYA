@@ -55,8 +55,8 @@ public class CourseService {
         response.setCourseSymbol(request.getCourseSymbol());
         response.setCourseNumber(request.getCourseNumber());
         response.setMajors(request.getMajors());
-        response.setTimeGroups(request.getTimeGroups());
-        response.setRoomGroups(request.getRoomGroups());
+        response.setTeachingMethod(request.getTimeGroups());
+        response.setRequiredRoomType(request.getRoomGroups());
 
         Course updated = courseRepository.save(response);
         return CourseMapper.mapToResponse(updated);
