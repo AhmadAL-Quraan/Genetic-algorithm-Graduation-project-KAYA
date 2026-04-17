@@ -30,6 +30,9 @@ public class TimeSlot {
     @Enumerated(EnumType.STRING)
     private Set<DayOfWeek> days;
 
+    @Enumerated(EnumType.STRING)
+    private TeachingMethod teachingMethod;
+
     public TimeSlot(LocalTime startTime, LocalTime endTime, Set<DayOfWeek> days, TeachingMethod teachingMethod) {
         this.startTime = startTime;
         this.endTime = endTime;
