@@ -1,6 +1,6 @@
 package com.kaya.model;
 
-import com.kaya.model.enums.TeachingMethod;
+// Removed the enum import since TeachingMethod is now an Entity in the same package
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,24 +22,27 @@ public class TimeSlot {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private LocalTime startTime;
-    private LocalTime endTime;
+    private LocalTime startTime; // 8
+    private LocalTime endTime; // 9
 
-    // [تعديل جوهري]: استخدام الـ Enum الجاهز بتاع الجافا لأيام الأسبوع!
+    // [NO CHANGE HERE]: We keep DayOfWeek as an Enum because days of the week are static.
     @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
     private Set<DayOfWeek> days;
 
-    @Enumerated(EnumType.STRING)
-    private TeachingMethod teachingMethod;
+    // [MODIFIED]: Replaced Enum with a ManyToOne relationship to the TeachingMethod entity.
+    @ManyToOne
+    @JoinColumn(name = "time_slot_type_id")
+    private TimeSlotType timeSlotType;
 
-    public TimeSlot(LocalTime startTime, LocalTime endTime, Set<DayOfWeek> days, TeachingMethod teachingMethod) {
+    public TimeSlot(LocalTime startTime, LocalTime endTime, Set<DayOfWeek> days, TimeSlotType timeSlotType) {
         this.startTime = startTime;
         this.endTime = endTime;
         this.days = days;
+        this.timeSlotType = timeSlotType;
     }
 
-    // ضفتلك الـ equals والـ hashCode عشان الخوارزمية تعرف تقارن الأوقات ببعضها بدقة
+    // Equals and HashCode to help the algorithm compare TimeSlots accurately
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

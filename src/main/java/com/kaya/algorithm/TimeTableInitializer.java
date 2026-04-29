@@ -4,8 +4,8 @@ import com.kaya.model.Lecture;
 import com.kaya.model.Room;
 import com.kaya.model.TimeSlot;
 import com.kaya.model.TimeTable;
-import com.kaya.model.enums.RoomType;
-import com.kaya.model.enums.TeachingMethod;
+import com.kaya.model.RoomType;
+import com.kaya.model.TimeSlotType;
 
 import java.util.*;
 
@@ -17,7 +17,7 @@ public class TimeTableInitializer {
     // نقلنا الميثود هنا وبقت بتاخد الـ TimeTable كـ Parameter عشان تعدل عليه
     // [تم التعديل]: استخدمنا الـ Enums في الـ Maps عشان تتوافق مع التعديلات الجديدة في الـ Models
     public static void initializeRandomly(TimeTable tt,
-                                          Map<TeachingMethod, HashSet<TimeSlot>> timePools,
+                                          Map<TimeSlotType, HashSet<TimeSlot>> timePools,
                                           Map<RoomType, HashSet<Room>> roomPools) {
         List<TimeSlot> timePool;
         List<Room> roomPool;

@@ -68,7 +68,7 @@ public class ManualEntryService {
                 request.getCourseNumber(),
                 null,
                 request.getRequiredRoomType(),
-                request.getTeachingMethod()
+                request.getTimeSlotType()
         );
 
         courseRepository.save(course);

@@ -1,9 +1,7 @@
 package com.kaya.dataManager.manualEntry;
 
-import com.kaya.model.enums.RoomType;
-import com.kaya.model.enums.TeachingMethod;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
+import com.kaya.model.RoomType;
+import com.kaya.model.TimeSlotType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -18,10 +16,10 @@ public class ManualEntryRequest {
     // Course Data
     @NotBlank private String courseSymbol;
     @NotBlank private String courseNumber;
-    @NotNull @Enumerated(EnumType.STRING)
+    @NotNull
     private RoomType requiredRoomType;
-    @NotNull @Enumerated(EnumType.STRING)
-    private TeachingMethod teachingMethod;
+    @NotNull
+    private TimeSlotType timeSlotType;
 
     // Instructor
     @NotBlank private String instructor;

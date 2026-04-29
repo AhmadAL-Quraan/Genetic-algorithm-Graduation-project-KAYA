@@ -4,8 +4,8 @@ import com.kaya.model.Lecture;
 import com.kaya.model.Room;
 import com.kaya.model.TimeSlot;
 import com.kaya.model.TimeTable;
-import com.kaya.model.enums.RoomType;
-import com.kaya.model.enums.TeachingMethod;
+import com.kaya.model.RoomType;
+import com.kaya.model.TimeSlotType;
 
 import java.util.*;
 
@@ -22,7 +22,7 @@ public class EvolutionEngine {
 
     // [تم التعديل]: استخدام Enums في تعريف الـ Pools بدل String
     public ArrayList<TimeTable> initializePopulation(ArrayList<Lecture> lectures,
-                                                     Map<TeachingMethod, HashSet<TimeSlot>> timePools,
+                                                     Map<TimeSlotType, HashSet<TimeSlot>> timePools,
                                                      Map<RoomType, HashSet<Room>> roomPools) {
 
         ArrayList<TimeTable> population = new ArrayList<>();
@@ -45,7 +45,7 @@ public class EvolutionEngine {
 
     // [تم التعديل]: استخدام Enums في الـ Pools
     public ArrayList<TimeTable> evolveGenerations(ArrayList<TimeTable> population,
-                                                  Map<TeachingMethod, HashSet<TimeSlot>> timePools,
+                                                  Map<TimeSlotType, HashSet<TimeSlot>> timePools,
                                                   Map<RoomType, HashSet<Room>> roomPools) {
 
         int unevolvedGenerations = 0;

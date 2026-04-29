@@ -3,8 +3,8 @@ package com.kaya.algorithm;
 import com.kaya.model.Lecture;
 import com.kaya.model.Room;
 import com.kaya.model.TimeSlot;
-import com.kaya.model.enums.RoomType;
-import com.kaya.model.enums.TeachingMethod;
+import com.kaya.model.RoomType;
+import com.kaya.model.TimeSlotType;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -28,12 +28,12 @@ public class PoolHelper {
     }
     */
 
-    public static HashSet<TimeSlot> getValidTimeSlots(Lecture lecture, Map<TeachingMethod, HashSet<TimeSlot>> timePools) {
+    public static HashSet<TimeSlot> getValidTimeSlots(Lecture lecture, Map<TimeSlotType, HashSet<TimeSlot>> timePools) {
         // بنجيب طريقة التدريس بتاعة الكورس من الـ Enum، ونسحب الأوقات بتاعتها مباشرة
-        TeachingMethod method = lecture.getCourse().getTeachingMethod();
+        TimeSlotType timeSlotType = lecture.getCourse().getTimeSlotType();
 
         // بنعمل نسخة (new HashSet) عشان الخوارزمية متعدلش على الـ Pool الأساسي بتاع الجامعة بالغلط
-        return new HashSet<>(timePools.get(method));
+        return new HashSet<>(timePools.get(timeSlotType));
     }
 
     /* // --- الكود القديم للتوضيح ---

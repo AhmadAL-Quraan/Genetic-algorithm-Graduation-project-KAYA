@@ -13,7 +13,7 @@ public class CourseMapper {
                 course.getCourseSymbol(),
                 course.getCourseNumber(),
                 course.getRequiredRoomType(),
-                course.getTeachingMethod()
+                course.getTimeSlotType()
         );
     }
 
@@ -23,7 +23,7 @@ public class CourseMapper {
                 response.getCourseSymbol(),
                 response.getCourseNumber(),
                 response.getRoomGroups(),
-                response.getTimeGroups()
+                response.getTimeSlotType()
         );
     }
 }

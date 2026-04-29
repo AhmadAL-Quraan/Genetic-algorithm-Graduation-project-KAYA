@@ -1,7 +1,7 @@
 package com.kaya.dto.request;
 
-import com.kaya.model.enums.RoomType;
-import com.kaya.model.enums.TeachingMethod;
+import com.kaya.model.RoomType;
+import com.kaya.model.TimeSlotType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
@@ -19,5 +19,5 @@ public class CourseRequest {
     @NotBlank private String courseNumber;
     @NotEmpty private List<String> majors;
     @NotEmpty private RoomType roomGroups;
-    @NotEmpty private TeachingMethod timeGroups;
+    @NotEmpty private TimeSlotType timeGroups;
 }

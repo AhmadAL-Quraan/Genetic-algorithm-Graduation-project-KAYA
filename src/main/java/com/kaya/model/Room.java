@@ -1,6 +1,5 @@
 package com.kaya.model;
 
-import com.kaya.model.enums.RoomType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,7 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Objects;
-import java.util.Set;
 
 @Entity
 @Getter
@@ -24,17 +22,19 @@ public class Room {
     private String building;
     private String roomNumber;
 
-    // استخدمنا Set بدل List لمنع التكرار
-    // FetchType.EAGER عشان الخوارزمية بتسحب الداتا دي على طول فنوفر وقت الداتا بيز
-    @Enumerated(EnumType.STRING) // السر هنا: عشان تتخزن كنص في الداتا بيز
+    // [MODIFIED]: Replaced Enum with a ManyToOne relationship to the RoomType entity.
+    // This allows users to dynamically add new room types from the frontend.
+    @ManyToOne
+    @JoinColumn(name = "room_type_id")
     private RoomType roomType;
 
     public Room(String building, String roomNumber, RoomType roomType) {
         this.building = building;
         this.roomNumber = roomNumber;
+        this.roomType = roomType;
     }
 
-    // Senior Tip: المقارنة بتتم بالمبنى ورقم القاعة بس، لأنهم بيميزوا أي قاعة في الجامعة
+    // Senior Tip: Comparison is done by building and room number only, as they uniquely identify a room.
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -50,6 +50,6 @@ public class Room {
 
     @Override
     public String toString() {
-        return building + " " + roomNumber + " " + roomType;
+        return building + " " + roomNumber + " " + (roomType != null ? roomType.getTypeName() : "null");
     }
 }

@@ -9,8 +9,8 @@ import com.kaya.model.Room;
 import com.kaya.model.TimeSlot;
 import com.kaya.model.TimeTable;
 import com.kaya.algorithm.data.ExcelParser;
-import com.kaya.model.enums.RoomType;
-import com.kaya.model.enums.TeachingMethod;
+import com.kaya.model.RoomType;
+import com.kaya.model.TimeSlotType;
 
 import java.util.*;
 
@@ -22,14 +22,14 @@ public class SchedulerApp {
         System.out.println("Starting KAYA Timetable Scheduler...");
 
         // 1. Data Preparation
-        Map<RoomType, HashSet<Room>> roomPools = new HashMap<>();
-        Map<TeachingMethod, HashSet<TimeSlot>> timePools = new HashMap<>();
+      /* Map<RoomType, HashSet<Room>> roomPools = new HashMap<>();
+        Map<TimeSlotType, HashSet<TimeSlot>> timePools = new HashMap<>();
 
         roomPools.put(RoomType.LECTURE, new LinkedHashSet<>());
         roomPools.put(RoomType.LAB, new LinkedHashSet<>());
-        timePools.put(TeachingMethod.BLENDED, new LinkedHashSet<>());
-        timePools.put(TeachingMethod.IN_PERSON, new LinkedHashSet<>());
-        timePools.put(TeachingMethod.ONLINE, new LinkedHashSet<>());
+        timePools.put(TimeSlotType.BLENDED, new LinkedHashSet<>());
+        timePools.put(TimeSlotType.IN_PERSON, new LinkedHashSet<>());
+        timePools.put(TimeSlotType.ONLINE, new LinkedHashSet<>());
 
         for (int i = 0; i < lectures.size(); i++) {
             System.out.println(lectures.get(i));
@@ -58,11 +58,9 @@ public class SchedulerApp {
         System.out.println(bestSchedule.getReport());
         System.out.println("=====================================");
         System.out.println(bestSchedule); // شيل الكومنت لو عايز تطبع الجدول نفسه
+    */
     }
 
-    public static void run() {
-
-    }
 
     public static void runOld() {
 
@@ -88,7 +86,7 @@ public class SchedulerApp {
 
         System.out.println("Starting KAYA Timetable Scheduler...");
 
-        // 1. Data Preparation
+    /*    // 1. Data Preparation
         //Map<String, HashSet<Room>> roomPools = new HashMap<>();
         //Map<String, HashSet<TimeSlot>> timePools = new HashMap<>();
         Map<RoomType, HashSet<Room>> roomPools = new HashMap<>();
@@ -122,7 +120,7 @@ public class SchedulerApp {
         System.out.println(bestSchedule.getReport());
         System.out.println("=====================================");
         System.out.println(bestSchedule); // شيل الكومنت لو عايز تطبع الجدول نفسه
-
+    */
 
 
 

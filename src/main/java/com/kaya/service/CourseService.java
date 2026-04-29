@@ -54,7 +54,7 @@ public class CourseService {
 
         response.setCourseSymbol(request.getCourseSymbol());
         response.setCourseNumber(request.getCourseNumber());
-        response.setTeachingMethod(request.getTimeGroups());
+        response.setTimeSlotType(request.getTimeGroups());
         response.setRequiredRoomType(request.getRoomGroups());
 
         Course updated = courseRepository.save(response);

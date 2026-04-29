@@ -1,9 +1,6 @@
 package com.kaya.model;
 
-import com.kaya.model.enums.RoomType;
-import com.kaya.model.enums.TeachingMethod;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,19 +21,21 @@ public class Course {
     private String courseSymbol;
     private String courseNumber;
 
-    // [تعديل]: بدل Set، خلينا الكورس يطلب نوع قاعة واحد (معمل أو قاعة عادية)
-    @Enumerated(EnumType.STRING)
+    // [MODIFIED]: Replaced Enum with a ManyToOne relationship to the Lookup Table (RoomType)
+    @ManyToOne
+    @JoinColumn(name = "required_room_type_id")
     private RoomType requiredRoomType;
 
-    // [تعديل]: بدل Set، خلينا الكورس يتبع طريقة تدريس واحدة (مدمج، وجاهي، الخ)
-    @Enumerated(EnumType.STRING)
-    private TeachingMethod teachingMethod;
+    // [MODIFIED]: Replaced Enum with a ManyToOne relationship to the Lookup Table (TeachingMethod)
+    @ManyToOne
+    @JoinColumn(name = "time_slot_type_id")
+    private TimeSlotType timeSlotType;
 
-    public Course(String courseSymbol, String courseNumber, List<String> majors, RoomType requiredRoomType, TeachingMethod teachingMethod) {
+    public Course(String courseSymbol, String courseNumber, List<String> majors, RoomType requiredRoomType, TimeSlotType timeSlotType) {
         this.courseSymbol = courseSymbol;
         this.courseNumber = courseNumber;
         this.requiredRoomType = requiredRoomType;
-        this.teachingMethod = teachingMethod;
+        this.timeSlotType = timeSlotType;
     }
 
     @Override
