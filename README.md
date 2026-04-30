@@ -10,39 +10,10 @@ KAYA — a university timetable scheduler powered by a Java/Spring Boot genetic-
 - **Backend**: Java 17/19, Spring Boot 3.2.5, Spring Data JPA, Hibernate, PostgreSQL, Maven
 - **Genetic algorithm**: KAYA engine (uniform crossover, adaptive mutation, elitism, tournament selection)
 - **Frontend**: React 19, Vite, TypeScript, TanStack Query, wouter, shadcn/ui, Tailwind
-- **Database**: PostgreSQL (managed by Replit, accessed via JDBC)
+- **Database**: PostgreSQL (accessed via JDBC)
+- Dev Environment: Docker
 
-## Structure
 
-```text
-backend/             # Spring Boot KAYA backend (Java) — was artifacts/api-server
-├── pom.xml
-├── src/main/java/com/kaya/
-│   ├── KayaApplication.java
-│   ├── config/CorsConfig.java
-│   ├── controller/       # Rooms, Teachers, Departments, TimeSlots, Courses,
-│   │                     #   Lectures, TimeTables, Conflicts, Export
-│   ├── service/          # CourseService, TeacherService, DepartmentService, ...
-│   ├── repository/       # 7 JPA repos: Course, Room, TimeSlot, Lecture,
-│   │                     #   TimeTable, Department, Teacher
-│   ├── model/            # JPA entities (all 7 + enums)
-│   ├── algorithm/        # GA (EvolutionEngine, GeneticOperators, FitnessCalculator, ...)
-│   ├── dto/              # Request/response DTOs
-│   └── mapper/           # Entity ↔ DTO mappers
-└── src/main/resources/application.properties
-frontend/            # React + Vite SPA — was artifacts/university-scheduler
-├── src/pages/       # dashboard, courses, rooms, teachers, departments,
-│                    #   time-slots, timetables, conflicts, not-found
-├── src/components/  # layout, timetable-calendar, excel-import-button, ui/…
-├── src/lib/api.ts   # Typed fetch helpers + TanStack Query hooks
-└── vite.config.ts
-artifacts/
-├── api-server/      # Reverse proxy (Node.js http-proxy, port 3000) — the registered entry point
-│                    #   Routes /api/* → Spring Boot (8080), /* → Vite frontend (5000)
-└── mockup-sandbox/  # Vite component preview server (canvas prototyping)
-scripts/
-└── src/proxy.ts     # Reverse proxy source (http-proxy, reads PORT env)
-```
 
 ## Backend (`@workspace/api-server`)
 
@@ -102,6 +73,43 @@ React + Vite SPA. All API calls proxy to `/api/...`.
 - `src/components/layout.tsx` — sidebar with SETUP & DATA / OVERVIEW sections, live conflict badge
 - `src/App.tsx` — all routes
 
+
+
+# Run the project
+
+### 1. Requirements 
+
+* `pnpm-lock.yaml`
+* `package-lock.json`)
+
+- Docker
+- Docker Compose
+
+### 2. Clone the repo
+
+```bash
+git clone https://github.com/your-username/university-scheduler.git
+cd university-scheduler
+```
+
+### 3. Run everything
+
+```bash
+docker compose up --build
+```
+
+### 4. Open in browser
+
+* Frontend: http://localhost:5000
+* Backend: http://localhost:8080
+
+
+---
+
+##  Notes
+
+* First run may take time (dependencies download)
+* Make sure ports 5000, 8080, 5432 are free
 ## How to use
 
 1. Set up **Rooms**, **Teachers**, **Departments**, and **Time Slots** (Setup & Data section).
