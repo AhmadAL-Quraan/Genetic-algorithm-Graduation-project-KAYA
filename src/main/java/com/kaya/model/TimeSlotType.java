@@ -7,6 +7,10 @@ import lombok.Setter;
 
 import java.util.Objects;
 
+/**
+ * Defines the mode of teaching for a TimeSlot (e.g., "In-Person", "Online", "Hybrid").
+ * Allows dynamic management of teaching modes without altering the source code.
+ */
 @Entity
 @Getter
 @Setter
@@ -18,12 +22,17 @@ public class TimeSlotType {
     private Long id;
 
     @Column(unique = true, nullable = false)
-    private String typeName; // مثلاً: "وجاهي"، "مدمج"، "أونلاين"
+    private String typeName;
 
     public TimeSlotType(String typeName) {
         this.typeName = typeName;
     }
 
+    /**
+     * Crucial for the Genetic Algorithm Mapping structure.
+     * Allows TimeSlotType to be correctly used as a Key in HashMaps
+     * (e.g., Map<TimeSlotType, HashSet<TimeSlot>>).
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

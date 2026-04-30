@@ -1,6 +1,5 @@
 package com.kaya.model;
 
-// Removed the enum import since TeachingMethod is now an Entity in the same package
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,6 +10,10 @@ import java.time.LocalTime;
 import java.util.Objects;
 import java.util.Set;
 
+/**
+ * Represents a specific time block during the week (e.g., Sun/Tue 08:00 to 09:30).
+ * Acts as a 'Gene' pool component in the Genetic Algorithm.
+ */
 @Entity
 @Getter
 @Setter
@@ -22,15 +25,16 @@ public class TimeSlot {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private LocalTime startTime; // 8
-    private LocalTime endTime; // 9
+    private LocalTime startTime;
+    private LocalTime endTime;
 
-    // [NO CHANGE HERE]: We keep DayOfWeek as an Enum because days of the week are static.
+    // EAGER fetch is used here because the Genetic Algorithm needs the days immediately
+    // to check for conflicts during the Fitness Calculation phase.
     @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
     private Set<DayOfWeek> days;
 
-    // [MODIFIED]: Replaced Enum with a ManyToOne relationship to the TeachingMethod entity.
+    // Extracted as an Entity to allow dynamic additions (e.g., "In-Person", "Online").
     @ManyToOne
     @JoinColumn(name = "time_slot_type_id")
     private TimeSlotType timeSlotType;
@@ -42,7 +46,12 @@ public class TimeSlot {
         this.timeSlotType = timeSlotType;
     }
 
-    // Equals and HashCode to help the algorithm compare TimeSlots accurately
+    /**
+     * Business Key Equality:
+     * Compares TimeSlots based on actual time (Start, End, Days).
+     * We exclude the 'timeSlotType' because the physical time block remains the same
+     * regardless of the teaching method. This is critical for detecting overlaps in the GA.
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -53,6 +62,9 @@ public class TimeSlot {
                 Objects.equals(days, timeSlot.days);
     }
 
+    /**
+     * Ensures high performance when caching TimeSlots in HashSets inside the PoolHelper.
+     */
     @Override
     public int hashCode() {
         return Objects.hash(startTime, endTime, days);

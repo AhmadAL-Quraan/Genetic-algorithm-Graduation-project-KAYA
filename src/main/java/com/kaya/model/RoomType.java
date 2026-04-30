@@ -7,6 +7,10 @@ import lombok.Setter;
 
 import java.util.Objects;
 
+/**
+ * Defines the classification of a Room (e.g., Lab, Lecture Hall).
+ * Extracted as a standalone Entity to allow dynamic additions via the UI.
+ */
 @Entity
 @Getter
 @Setter
@@ -18,13 +22,16 @@ public class RoomType {
     private Long id;
 
     @Column(unique = true, nullable = false)
-    private String typeName; // مثلاً: "مختبر"، "قاعة عادية"
+    private String typeName;
 
     public RoomType(String typeName) {
         this.typeName = typeName;
     }
 
-    // مهم جداً للخوارزمية عشان تعرف تقارن الأنواع في الـ Maps
+    /**
+     * Crucial for the Genetic Algorithm's Mapping structure.
+     * Allows RoomType to be correctly used as a Key in HashMaps (e.g., Map<RoomType, HashSet<Room>>).
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -8,6 +8,11 @@ import lombok.Setter;
 
 import java.util.Objects;
 
+/**
+ * Represents a physical Room in the university.
+ * Uses Business Key Equality (building + roomNumber) to ensure consistent
+ * identification across Collections and JPA contexts without relying on database IDs.
+ */
 @Entity
 @Getter
 @Setter
@@ -22,8 +27,6 @@ public class Room {
     private String building;
     private String roomNumber;
 
-    // [MODIFIED]: Replaced Enum with a ManyToOne relationship to the RoomType entity.
-    // This allows users to dynamically add new room types from the frontend.
     @ManyToOne
     @JoinColumn(name = "room_type_id")
     private RoomType roomType;
@@ -34,7 +37,11 @@ public class Room {
         this.roomType = roomType;
     }
 
-    // Senior Tip: Comparison is done by building and room number only, as they uniquely identify a room.
+    /**
+     * Compares rooms based on their unique business identifiers.
+     * We strictly exclude the 'roomType' from this comparison because the physical identity
+     * of a room (Building + Number) remains the same even if its type/purpose changes.
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -43,6 +50,10 @@ public class Room {
         return Objects.equals(building, room.building) && Objects.equals(roomNumber, room.roomNumber);
     }
 
+    /**
+     * Generates a hash code strictly based on the business keys to maintain
+     * high performance in Hash-based collections (e.g., HashSet in the Genetic Algorithm).
+     */
     @Override
     public int hashCode() {
         return Objects.hash(building, roomNumber);

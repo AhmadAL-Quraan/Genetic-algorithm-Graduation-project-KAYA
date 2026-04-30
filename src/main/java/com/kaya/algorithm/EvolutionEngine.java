@@ -12,15 +12,18 @@ import java.util.*;
 // الكلاس ده هو المحرك الجيني (Genetic Engine) اللي بيدير عملية التطور بالكامل
 public class EvolutionEngine {
     private final GAConfig config;
+
+    // لازم تحذفه
     private double currentMutationRate;
 
     // الـ Constructor بياخد الإعدادات (Config) عشان يشتغل بيها
     public EvolutionEngine(GAConfig config) {
         this.config = config;
+        // لازم تحذفه
         this.currentMutationRate = config.initialMutationRate;
     }
 
-    // [تم التعديل]: استخدام Enums في تعريف الـ Pools بدل String
+    // [تم التعديل]: استخدام Entities في تعريف الـ Pools بدل Enums
     public ArrayList<TimeTable> initializePopulation(ArrayList<Lecture> lectures,
                                                      Map<TimeSlotType, HashSet<TimeSlot>> timePools,
                                                      Map<RoomType, HashSet<Room>> roomPools) {
@@ -30,6 +33,8 @@ public class EvolutionEngine {
         // بنعمل عدد من الجداول العشوائية بناءً على حجم الـ Population المطلوب
         for (int i = 0; i < config.populationSize; i++) {
             ArrayList<Lecture> individualClasses = new ArrayList<>();
+
+            // Deep Copy
             for (Lecture c : lectures) {
                 // بنعمل نسخة جديدة من الكورس لكل جدول، وبنسيب القاعة والوقت null عشان الـ Initializer هو اللي هيحطهم
                 individualClasses.add(new Lecture(c.getId(), c.getCourse(), null, null, c.getSectionNumber(), c.getInstructor()));
