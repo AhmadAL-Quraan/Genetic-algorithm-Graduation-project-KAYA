@@ -1,0 +1,15 @@
+.env
+.local
+
+node_modules/
+.pnpm-store/
+
+__pycache__/
+*.pyc
+
+artifacts/
+dist/
+build/
+
+.DS_Store
+

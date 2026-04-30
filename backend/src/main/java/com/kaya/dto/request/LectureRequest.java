@@ -1,6 +1,5 @@
 package com.kaya.dto.request;
 
-import com.kaya.model.Instructor;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -11,9 +10,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class LectureRequest {
-    @NotNull private Long courseId;
-    private Integer number;
-    @NotNull private Long instructorId;
-    private Long timeSlotId;
-    private Long roomId;
+    @NotNull  private Long courseId;
+    @NotBlank private String instructor;
+    private Long number;       // section number; defaults to 1 if null
+    private Long timeSlotId;   // optional — assigned by GA when null
+    private Long roomId;       // optional — assigned by GA when null
 }

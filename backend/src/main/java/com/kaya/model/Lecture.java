@@ -1,43 +1,40 @@
 package com.kaya.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
+@Getter @Setter
+@AllArgsConstructor @NoArgsConstructor
 public class Lecture {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "course_id")
     private Course course;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "room_id")
     private Room room;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "time_slot_id")
     private TimeSlot timeSlot;
 
-    private Integer sectionNumber;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "teacher_id")
+    private Teacher teacher;
 
-    @ManyToOne
-    @JoinColumn(name = "instructor_id")
-    private Instructor instructor;
+    private Long sectionNumber;
+    private String instructor;
 
     @Override
     public String toString() {
         return String.format("ID: %d | Course: %s | Section: %d | Instructor: %s | Time: [%s] | Room: [%s]",
-                id, course, sectionNumber, instructor, timeSlot, room);
+                id, course, sectionNumber, instructor != null ? instructor : (teacher != null ? teacher.getName() : "—"),
+                timeSlot, room);
     }
 }

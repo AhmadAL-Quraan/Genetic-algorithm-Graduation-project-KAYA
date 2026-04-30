@@ -2,114 +2,66 @@ package com.kaya.service;
 
 import com.kaya.dto.request.TimeSlotRequest;
 import com.kaya.dto.response.TimeSlotResponse;
-import com.kaya.dto.mapper.TimeSlotMapper;
+import com.kaya.mapper.TimeSlotMapper;
+import com.kaya.model.Lecture;
 import com.kaya.model.TimeSlot;
+import com.kaya.repository.LectureRepository;
 import com.kaya.repository.TimeSlotRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalTime;
-import java.util.ArrayList;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
 public class TimeSlotService {
 
-    private final TimeSlotRepository timeSlotRepository;
+    private final TimeSlotRepository courseRepository;
+    private final LectureRepository lectureRepository;
 
     public List<TimeSlotResponse> getAll() {
-        return timeSlotRepository.findAll()
-                .stream()
-                .map(TimeSlotMapper::mapToResponse)
-                .toList();
+        return courseRepository.findAll().stream().map(TimeSlotMapper::mapToResponse).toList();
     }
 
     public TimeSlotResponse getById(Long id) {
-        TimeSlot timeSlot = timeSlotRepository.findById(id)
+        TimeSlot ts = courseRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("TimeSlot not found"));
-
-        return TimeSlotMapper.mapToResponse(timeSlot);
+        return TimeSlotMapper.mapToResponse(ts);
     }
 
-    public TimeSlot getEntityById(Long id) {
-        return timeSlotRepository.findById(id)
+    public TimeSlotResponse create(TimeSlotRequest request) {
+        return saveTimeSlot(request, new TimeSlot());
+    }
+
+    public TimeSlotResponse update(Long id, TimeSlotRequest request) {
+        TimeSlot ts = courseRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("TimeSlot not found"));
+        return saveTimeSlot(request, ts);
     }
 
-    public List<TimeSlotResponse> create(TimeSlotRequest request) {
-        return saveTimeSlot(request);
-    }
-
-//    public List<TimeSlotResponse> createBulk(List<TimeSlotRequest> request) {
-//        List<TimeSlotResponse> l = new ArrayList<>();
-//
-//        for (TimeSlotRequest timeSlotRequest : request) {
-//            TimeSlot response = new TimeSlot();
-//            l.add(saveTimeSlot(timeSlotRequest));
-//        }
-//        return l;
-//    }
-
-//    public List<TimeSlotResponse> update(Long id, TimeSlotRequest request) {
-//        TimeSlot response = timeSlotRepository.findById(id)
-//                .orElseThrow(() -> new RuntimeException("TimeSlot not found"));
-//
-//        return saveTimeSlot(request);
-//    }
-
+    @Transactional
     public void delete(Long id) {
-        if (!timeSlotRepository.existsById(id)) {
-            throw new RuntimeException("TimeSlot not found");
-        }
-        timeSlotRepository.deleteById(id);
+        if (!courseRepository.existsById(id)) throw new RuntimeException("TimeSlot not found");
+        List<Lecture> lectures = lectureRepository.findAll().stream()
+                .filter(l -> l.getTimeSlot() != null && id.equals(l.getTimeSlot().getId()))
+                .toList();
+        lectures.forEach(l -> l.setTimeSlot(null));
+        lectureRepository.saveAll(lectures);
+        courseRepository.deleteById(id);
     }
 
+    @Transactional
     public void deleteAll() {
-        timeSlotRepository.deleteAll();
+        lectureRepository.findAll().forEach(l -> l.setTimeSlot(null));
+        lectureRepository.saveAll(lectureRepository.findAll());
+        courseRepository.deleteAll();
     }
 
-    // --- Helper methods --- //
-
-//    private TimeSlotResponse saveTimeSlot(TimeSlotRequest request, TimeSlot response) {
-//
-//        response.setStartTime(request.getStartTime());
-//        response.setEndTime(request.getEndTime());
-//        response.setDays(request.getDays());
-//        response.setTeachingMethod(request.getTeachingMethod());
-//
-//        TimeSlot updated = timeSlotRepository.save(response);
-//        return TimeSlotMapper.mapToResponse(updated);
-//    }
-
-    private List<TimeSlotResponse> saveTimeSlot(TimeSlotRequest request) {
-
-        List<TimeSlotResponse> responses = new ArrayList<>();
-
-        LocalTime currentStart = request.getStartTime();
-        LocalTime windowEnd = request.getEndTime();
-        int duration = request.getDurationMinutes();
-
-        while (!currentStart.plusMinutes(duration).isAfter(windowEnd)) {
-
-            LocalTime currentEnd = currentStart.plusMinutes(duration);
-
-            TimeSlot timeSlot = new TimeSlot();
-
-            timeSlot.setStartTime(currentStart);
-            timeSlot.setEndTime(currentEnd);
-            timeSlot.setDays(request.getDays());
-            timeSlot.setTeachingMethod(request.getTeachingMethod());
-            timeSlot.setDurationMinutes(duration);
-
-            TimeSlot saved = timeSlotRepository.save(timeSlot);
-
-            responses.add(TimeSlotMapper.mapToResponse(saved));
-
-            currentStart = currentEnd;
-        }
-
-        return responses;
+    private TimeSlotResponse saveTimeSlot(TimeSlotRequest request, TimeSlot ts) {
+        ts.setStartTime(request.getStartTime());
+        ts.setEndTime(request.getEndTime());
+        ts.setDays(request.getDays());
+        ts.setTeachingMethod(request.getTeachingMethod());
+        return TimeSlotMapper.mapToResponse(courseRepository.save(ts));
     }
 }

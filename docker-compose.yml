@@ -1,0 +1,44 @@
+services:
+  db:
+    image: postgres:15
+    container_name: scheduler-db
+    environment:
+      POSTGRES_USER: kaya
+      POSTGRES_PASSWORD: kaya     
+      POSTGRES_DB: kaya
+    ports:
+      - "5432:5432"
+
+  backend:
+    image: maven:3.9-eclipse-temurin-17
+    container_name: scheduler-backend
+    working_dir: /app
+    volumes:
+      - ./backend:/app
+    command: ./mvnw spring-boot:run
+    environment:
+      PGHOST: db
+      PGPORT: 5432
+      PGDATABASE: kaya
+      PGUSER: kaya 
+      PGPASSWORD: kaya
+    depends_on:
+      - db
+    ports:
+      - "8080:8080"
+
+  frontend:
+    image: node:20
+    container_name: scheduler-frontend
+    working_dir: /app
+    volumes:
+      - .:/app
+    command: sh -c "npm install -g pnpm && pnpm install && pnpm --filter @workspace/university-scheduler run dev -- --host 0.0.0.0"
+    ports:
+      - "5000:5000"
+    depends_on:
+      - backend
+    environment:
+      PORT: 5000
+      BASE_PATH: /
+  

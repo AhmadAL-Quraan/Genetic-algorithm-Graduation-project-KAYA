@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -18,14 +20,19 @@ public class TimeTable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    private Long fitness;
+
+    private LocalDateTime generatedAt;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "timetable_id")
     private List<Lecture> lectures;
 
-    @OneToOne(cascade = CascadeType.MERGE, orphanRemoval = true)
-    private FitnessReport report;
+    @Transient
+    private FitnessReport report = new FitnessReport();
 
     public TimeTable(List<Lecture> lectures) {
+        this.fitness = 0L;
         this.lectures = lectures;
         this.report = new FitnessReport();
     }

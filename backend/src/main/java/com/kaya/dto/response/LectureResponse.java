@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 public class LectureResponse {
     private Long id;
     private CourseResponse course;
-    private Integer number;
-    private InstructorResponse instructor;
+    private Long number;
+    private String instructor;
     private TimeSlotResponse timeSlot;
     private RoomResponse room;
 }

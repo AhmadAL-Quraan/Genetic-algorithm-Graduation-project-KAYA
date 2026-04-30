@@ -15,9 +15,8 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TimeSlotRequest {
-    @NotNull private LocalTime startTime;
-    @NotNull private LocalTime endTime;
+    @NotNull  private LocalTime startTime;
+    @NotNull  private LocalTime endTime;
     @NotEmpty private Set<DayOfWeek> days;
-    @NotNull private TeachingMethod teachingMethod;
-    @NotNull private Integer durationMinutes;
+    @NotNull  private TeachingMethod teachingMethod;
 }

@@ -4,7 +4,6 @@ import com.kaya.dto.request.RoomRequest;
 import com.kaya.dto.response.RoomResponse;
 import com.kaya.model.Room;
 import com.kaya.service.RoomService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,11 +29,6 @@ public class RoomController {
     @PostMapping
     public ResponseEntity<RoomResponse> create(@RequestBody RoomRequest request) {
         return ResponseEntity.ok(roomService.create(request));
-    }
-
-    @PostMapping("/bulk")
-    public ResponseEntity<List<RoomResponse> > createBulk(@Valid @RequestBody List<RoomRequest> request) {
-        return ResponseEntity.ok(roomService.createBulk(request));
     }
 
     @PutMapping("/{id}")

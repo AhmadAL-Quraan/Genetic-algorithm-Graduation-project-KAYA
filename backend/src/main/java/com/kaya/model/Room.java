@@ -15,13 +15,6 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(
-        uniqueConstraints = {
-                @UniqueConstraint(
-                        columnNames = {"building", "roomNumber"}
-                )
-        }
-)
 public class Room {
 
     @Id
@@ -31,9 +24,17 @@ public class Room {
     private String building;
     private String roomNumber;
 
+    // [FIX] roomType is a single enum value, not a collection
     @Enumerated(EnumType.STRING)
     private RoomType roomType;
 
+    public Room(String building, String roomNumber, RoomType roomType) {
+        this.building = building;
+        this.roomNumber = roomNumber;
+        this.roomType = roomType;
+    }
+
+    // Senior Tip: المقارنة بتتم بالمبنى ورقم القاعة بس، لأنهم بيميزوا أي قاعة في الجامعة
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
