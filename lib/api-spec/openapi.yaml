@@ -1,0 +1,935 @@
+openapi: 3.1.0
+info:
+  title: Api
+  version: 0.1.0
+  description: University Scheduling System API
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: rooms
+    description: Room management
+  - name: teachers
+    description: Teacher management
+  - name: departments
+    description: Department management
+  - name: timeslots
+    description: Time slot management
+  - name: courses
+    description: Course management
+  - name: schedules
+    description: Schedule management
+  - name: conflicts
+    description: Conflict detection
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      description: Returns server health status
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+
+  /rooms:
+    get:
+      operationId: getRooms
+      tags: [rooms]
+      summary: List all rooms
+      responses:
+        "200":
+          description: List of rooms
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Room"
+    post:
+      operationId: createRoom
+      tags: [rooms]
+      summary: Create a room
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateRoomInput"
+      responses:
+        "201":
+          description: Created room
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Room"
+
+  /rooms/{id}:
+    put:
+      operationId: updateRoom
+      tags: [rooms]
+      summary: Update a room
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateRoomInput"
+      responses:
+        "200":
+          description: Updated room
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Room"
+    delete:
+      operationId: deleteRoom
+      tags: [rooms]
+      summary: Delete a room
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeleteResult"
+
+  /teachers:
+    get:
+      operationId: getTeachers
+      tags: [teachers]
+      summary: List all teachers
+      responses:
+        "200":
+          description: List of teachers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Teacher"
+    post:
+      operationId: createTeacher
+      tags: [teachers]
+      summary: Create a teacher
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateTeacherInput"
+      responses:
+        "201":
+          description: Created teacher
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Teacher"
+
+  /teachers/{id}:
+    put:
+      operationId: updateTeacher
+      tags: [teachers]
+      summary: Update a teacher
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateTeacherInput"
+      responses:
+        "200":
+          description: Updated teacher
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Teacher"
+    delete:
+      operationId: deleteTeacher
+      tags: [teachers]
+      summary: Delete a teacher
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeleteResult"
+
+  /teachers/{id}/availability:
+    get:
+      operationId: getTeacherAvailability
+      tags: [teachers]
+      summary: Get teacher unavailability slots
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Teacher availability list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TeacherAvailability"
+    put:
+      operationId: setTeacherAvailability
+      tags: [teachers]
+      summary: Set teacher unavailability
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SetAvailabilityInput"
+      responses:
+        "200":
+          description: Updated availability
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TeacherAvailability"
+
+  /departments:
+    get:
+      operationId: getDepartments
+      tags: [departments]
+      summary: List all departments
+      responses:
+        "200":
+          description: List of departments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Department"
+    post:
+      operationId: createDepartment
+      tags: [departments]
+      summary: Create a department
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateDepartmentInput"
+      responses:
+        "201":
+          description: Created department
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Department"
+
+  /departments/{id}:
+    put:
+      operationId: updateDepartment
+      tags: [departments]
+      summary: Update a department
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateDepartmentInput"
+      responses:
+        "200":
+          description: Updated department
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Department"
+    delete:
+      operationId: deleteDepartment
+      tags: [departments]
+      summary: Delete a department
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeleteResult"
+
+  /timeslots:
+    get:
+      operationId: getTimeslots
+      tags: [timeslots]
+      summary: List all timeslots
+      responses:
+        "200":
+          description: List of timeslots
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Timeslot"
+    post:
+      operationId: createTimeslot
+      tags: [timeslots]
+      summary: Create a timeslot
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateTimeslotInput"
+      responses:
+        "201":
+          description: Created timeslot
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Timeslot"
+
+  /timeslots/{id}:
+    delete:
+      operationId: deleteTimeslot
+      tags: [timeslots]
+      summary: Delete a timeslot
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeleteResult"
+
+  /courses:
+    get:
+      operationId: getCourses
+      tags: [courses]
+      summary: List all courses
+      responses:
+        "200":
+          description: List of courses
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Course"
+    post:
+      operationId: createCourse
+      tags: [courses]
+      summary: Create a course
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateCourseInput"
+      responses:
+        "201":
+          description: Created course
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Course"
+
+  /courses/{id}:
+    put:
+      operationId: updateCourse
+      tags: [courses]
+      summary: Update a course
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateCourseInput"
+      responses:
+        "200":
+          description: Updated course
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Course"
+    delete:
+      operationId: deleteCourse
+      tags: [courses]
+      summary: Delete a course
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeleteResult"
+
+  /schedules:
+    get:
+      operationId: getSchedules
+      tags: [schedules]
+      summary: List all schedule entries
+      responses:
+        "200":
+          description: List of schedule entries
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ScheduleEntry"
+
+  /schedules/generate:
+    post:
+      operationId: generateSchedule
+      tags: [schedules]
+      summary: Auto-generate a schedule
+      responses:
+        "200":
+          description: Generated schedule result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenerateResult"
+
+  /schedules/publish:
+    post:
+      operationId: publishSchedule
+      tags: [schedules]
+      summary: Publish the current schedule
+      responses:
+        "200":
+          description: Published
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublishResult"
+
+  /schedules/clear:
+    post:
+      operationId: clearSchedule
+      tags: [schedules]
+      summary: Clear the schedule
+      responses:
+        "200":
+          description: Cleared
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeleteResult"
+
+  /schedules/{id}:
+    put:
+      operationId: updateScheduleEntry
+      tags: [schedules]
+      summary: Update a schedule entry (move to different room/timeslot)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateScheduleEntryInput"
+      responses:
+        "200":
+          description: Updated schedule entry
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ScheduleEntry"
+    delete:
+      operationId: deleteScheduleEntry
+      tags: [schedules]
+      summary: Remove a schedule entry
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeleteResult"
+
+  /conflicts:
+    get:
+      operationId: getConflicts
+      tags: [conflicts]
+      summary: Get all current schedule conflicts
+      responses:
+        "200":
+          description: List of conflicts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Conflict"
+
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
+
+    DeleteResult:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+      required:
+        - success
+        - message
+
+    Room:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        capacity:
+          type: integer
+        type:
+          type: string
+          description: "lecture, lab, seminar"
+        building:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+      required:
+        - id
+        - name
+        - capacity
+        - type
+        - building
+        - createdAt
+
+    CreateRoomInput:
+      type: object
+      properties:
+        name:
+          type: string
+        capacity:
+          type: integer
+        type:
+          type: string
+        building:
+          type: ["string", "null"]
+      required:
+        - name
+        - capacity
+        - type
+
+    Teacher:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: ["string", "null"]
+        departmentId:
+          type: ["integer", "null"]
+        departmentName:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+      required:
+        - id
+        - name
+        - email
+        - departmentId
+        - departmentName
+        - createdAt
+
+    CreateTeacherInput:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: ["string", "null"]
+        departmentId:
+          type: ["integer", "null"]
+      required:
+        - name
+
+    TeacherAvailability:
+      type: object
+      properties:
+        id:
+          type: integer
+        teacherId:
+          type: integer
+        timeslotId:
+          type: integer
+        timeslotLabel:
+          type: string
+        isUnavailable:
+          type: boolean
+      required:
+        - id
+        - teacherId
+        - timeslotId
+        - timeslotLabel
+        - isUnavailable
+
+    SetAvailabilityInput:
+      type: object
+      properties:
+        unavailableTimeslotIds:
+          type: array
+          items:
+            type: integer
+      required:
+        - unavailableTimeslotIds
+
+    Department:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        code:
+          type: string
+        createdAt:
+          type: string
+      required:
+        - id
+        - name
+        - code
+        - createdAt
+
+    CreateDepartmentInput:
+      type: object
+      properties:
+        name:
+          type: string
+        code:
+          type: string
+      required:
+        - name
+        - code
+
+    Timeslot:
+      type: object
+      properties:
+        id:
+          type: integer
+        day:
+          type: string
+        startTime:
+          type: string
+        endTime:
+          type: string
+        label:
+          type: string
+        createdAt:
+          type: string
+      required:
+        - id
+        - day
+        - startTime
+        - endTime
+        - label
+        - createdAt
+
+    CreateTimeslotInput:
+      type: object
+      properties:
+        day:
+          type: string
+        startTime:
+          type: string
+        endTime:
+          type: string
+      required:
+        - day
+        - startTime
+        - endTime
+
+    Course:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        code:
+          type: string
+        teacherId:
+          type: ["integer", "null"]
+        teacherName:
+          type: ["string", "null"]
+        departmentId:
+          type: ["integer", "null"]
+        departmentName:
+          type: ["string", "null"]
+        studentCount:
+          type: integer
+        roomType:
+          type: string
+        studentGroups:
+          type: array
+          items:
+            type: string
+          description: "list of student group names e.g. ['IT Year 1', 'Science Year 1']"
+        isShared:
+          type: boolean
+        createdAt:
+          type: string
+      required:
+        - id
+        - name
+        - code
+        - teacherId
+        - teacherName
+        - departmentId
+        - departmentName
+        - studentCount
+        - roomType
+        - studentGroups
+        - isShared
+        - createdAt
+
+    CreateCourseInput:
+      type: object
+      properties:
+        name:
+          type: string
+        code:
+          type: string
+        teacherId:
+          type: ["integer", "null"]
+        departmentId:
+          type: ["integer", "null"]
+        studentCount:
+          type: integer
+        roomType:
+          type: string
+        studentGroups:
+          type: array
+          items:
+            type: string
+        isShared:
+          type: boolean
+      required:
+        - name
+        - code
+        - studentCount
+        - roomType
+        - studentGroups
+        - isShared
+
+    ScheduleEntry:
+      type: object
+      properties:
+        id:
+          type: integer
+        courseId:
+          type: integer
+        courseName:
+          type: string
+        courseCode:
+          type: string
+        teacherId:
+          type: ["integer", "null"]
+        teacherName:
+          type: ["string", "null"]
+        roomId:
+          type: integer
+        roomName:
+          type: string
+        timeslotId:
+          type: integer
+        timeslotLabel:
+          type: string
+        day:
+          type: string
+        startTime:
+          type: string
+        endTime:
+          type: string
+        departmentId:
+          type: ["integer", "null"]
+        departmentName:
+          type: ["string", "null"]
+        studentGroups:
+          type: array
+          items:
+            type: string
+        status:
+          type: string
+          description: "draft or published"
+        hasConflict:
+          type: boolean
+      required:
+        - id
+        - courseId
+        - courseName
+        - courseCode
+        - teacherId
+        - teacherName
+        - roomId
+        - roomName
+        - timeslotId
+        - timeslotLabel
+        - day
+        - startTime
+        - endTime
+        - departmentId
+        - departmentName
+        - studentGroups
+        - status
+        - hasConflict
+
+    UpdateScheduleEntryInput:
+      type: object
+      properties:
+        roomId:
+          type: integer
+        timeslotId:
+          type: integer
+      required:
+        - roomId
+        - timeslotId
+
+    GenerateResult:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+        entriesCreated:
+          type: integer
+        conflictCount:
+          type: integer
+      required:
+        - success
+        - message
+        - entriesCreated
+        - conflictCount
+
+    PublishResult:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+        publishedCount:
+          type: integer
+      required:
+        - success
+        - message
+        - publishedCount
+
+    Conflict:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          description: "teacher_conflict, room_conflict, student_conflict, teacher_availability, capacity_exceeded"
+        description:
+          type: string
+        scheduleEntryIds:
+          type: array
+          items:
+            type: integer
+        severity:
+          type: string
+          description: "error or warning"
+      required:
+        - id
+        - type
+        - description
+        - scheduleEntryIds
+        - severity

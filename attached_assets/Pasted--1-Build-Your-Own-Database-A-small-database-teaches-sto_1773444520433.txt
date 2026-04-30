@@ -1,0 +1,572 @@
+
+
+---
+
+# 1. Build Your Own Database
+
+A small database teaches **storage systems and data structures**.
+
+What you implement:
+
+- B-Trees or LSM trees
+- Disk pages
+- Indexing
+- Query parsing (`SELECT`, `INSERT`)
+- Write-ahead logging (optional)
+
+Things you learn:
+
+- Disk I/O
+- caching
+- indexing
+- data serialization
+
+Real systems inspired by this:
+
+- SQLite
+- PostgreSQL
+    
+
+Famous learning resource:  
+**“Build Your Own SQLite”**
+
+---
+
+# 2. Build a Chat Server
+
+This teaches **network programming**, which most programmers never learn deeply.
+
+What you implement:
+
+- TCP sockets
+- multi-client handling
+- message broadcasting
+- simple protocol
+
+Concepts learned:
+
+- sockets
+- async I/O
+- concurrency
+- networking protocols
+
+Real systems using similar ideas:
+
+- IRC
+- Discord
+
+Languages often used: **C, C++, Go, Rust**
+
+---
+
+# 3. Build an HTTP Web Server
+
+This project teaches **how the web actually works**.
+
+Features to implement:
+
+- HTTP parsing
+- request routing
+- static file serving
+- concurrenc
+
+Concepts learned:
+
+- networking
+- protocols
+- performance
+
+Real servers:
+
+- Nginx
+- Apache HTTP Server
+
+---
+
+# 4. Build a Programming Language or Interpreter
+
+This project changes how you see programming languages.
+
+You implement:
+
+- tokenizer (lexer)
+- parser
+- abstract syntax tree
+- interpreter
+
+Concepts learned:
+
+- parsing
+- compilers
+- language design
+
+Real languages:
+
+- Python
+- Lua
+
+Popular learning project:  
+**“Build Your Own Lisp”**
+
+---
+
+# 5. Build a Redis-like Key-Value Store
+
+This teaches **high-performance systems design**.
+
+Features:
+
+- hash table storage.    
+- TCP protocol
+- command parser
+- persistence
+
+Concepts learned:
+
+- memory optimization
+- networking
+- event loops
+
+Real system:
+
+- Redis
+
+---
+
+# 6. Build a Unix Shell
+
+This is one of the **best projects for learning operating systems**.
+
+Features:
+
+- command parsing
+- pipes
+- process creation
+- job control
+
+Concepts learned:
+
+- `fork()`
+- `exec()`
+- pipes
+- signals
+
+Inspired by:
+
+- Bash
+- Zsh
+
+---
+
+# 7. Build a BitTorrent Client
+
+This is an **advanced networking project**.
+
+Features:
+
+- peer-to-peer networking
+- file chunking
+- tracker communication
+- piece verification
+
+Concepts learned:
+
+- distributed systems
+- networking
+- hashing
+
+Real system:
+
+- BitTorrent
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 1️⃣ The Problem Today (Manual Scheduling)
+
+Right now in most universities (including many in **Jordan**), scheduling works like this:
+
+1. Each **Head of Department** creates a schedule manually.
+    
+2. They write it on Excel or paper.
+    
+3. Departments compare schedules.
+    
+4. They fix conflicts manually.
+    
+
+Example problems:
+
+### Problem 1 — Teacher Conflict
+
+Dr. Ahmad  
+CS101 → Mon 8-10  
+CS201 → Mon 8-10
+
+He cannot teach two classes at the same time.
+
+---
+
+### Problem 2 — Room Conflict
+
+Room 201  
+  
+CS101 → Mon 8-10  
+MATH101 → Mon 8-10
+
+Two courses assigned to the same room.
+
+---
+
+### Problem 3 — Student Conflict (very common)
+
+IT students must take:
+
+- Programming
+    
+- Linear Algebra
+    
+
+But schedule becomes:
+
+Mon 8-10  
+Programming  
+  
+Mon 8-10  
+Linear Algebra
+
+Students cannot attend both.
+
+---
+
+### Problem 4 — Teacher Availability
+
+Example:
+
+Dr. Lina unavailable Monday morning
+
+But manual schedule ignores it.
+
+---
+
+### Problem 5 — Shared Courses Between Departments
+
+Example course:
+
+- Linear Algebra
+    
+
+Students from:
+
+IT  
+Science  
+Engineering
+
+take the same course.
+
+So scheduling must consider **multiple departments together**.
+
+---
+
+# 2️⃣ What the System Does
+
+Your system **automates most of the hard work**.
+
+Instead of humans trying thousands of combinations, the system:
+
+Collects information  
+↓  
+Generates a schedule automatically  
+↓  
+Shows conflicts  
+↓  
+Allows humans to adjust
+
+So the system **assists humans**, it doesn't replace them.
+
+---
+
+# 3️⃣ Step-by-Step Workflow of the System
+
+### Step 1 — University Adds Basic Data
+
+Administrator enters:
+
+Rooms  
+Teachers  
+Departments  
+Timeslots
+
+Example timeslots:
+
+Mon 8-10  
+Mon 10-12  
+Tue 8-10  
+Tue 10-12
+
+---
+
+### Step 2 — Departments Add Courses
+
+Example IT department adds:
+
+Programming 1  
+Data Structures  
+Operating Systems  
+Algorithms
+
+Each course includes:
+
+teacher  
+number of students  
+required room type  
+student group
+
+Example:
+
+Programming 1  
+Teacher: Dr. Ahmad  
+Students: 80  
+Group: IT Year 1
+
+---
+
+### Step 3 — Teachers Add Preferences
+
+Teachers enter preferences such as:
+
+Unavailable:  
+Monday 8-10  
+  
+Prefer:  
+Morning classes
+
+These are **preferences**, not strict rules.
+
+---
+
+### Step 4 — Define Shared Courses
+
+Example:
+
+Linear Algebra  
+Groups:  
+IT Year 1  
+Science Year 1
+
+So the system knows:
+
+Linear Algebra conflicts with any course taken by those students
+
+---
+
+# 4️⃣ System Generates a Schedule
+
+The scheduling engine runs an algorithm.
+
+It tries thousands of possible schedules.
+
+Then produces something like:
+
+Mon 8-10  
+Programming 1  → Room 201  
+  
+Mon 10-12  
+Linear Algebra → Room 105  
+  
+Tue 8-10  
+Data Structures → Room 202
+
+---
+
+# 5️⃣ System Automatically Checks Conflicts
+
+The system verifies:
+
+Teacher conflicts  
+Room conflicts  
+Student conflicts  
+Room capacity  
+Teacher availability
+
+If conflicts exist, it tries to fix them.
+
+---
+
+# 6️⃣ Department Reviews the Schedule
+
+The Head of IT department opens the timetable.
+
+Example view:
+
+        Mon       Tue       Wed  
+8-10    CS101     CS201  
+10-12   MATH101   CS102
+
+If they don't like something, they can move it.
+
+Example:
+
+Move CS201 from Tue → Wed
+
+The system immediately checks if that causes conflicts.
+
+---
+
+# 7️⃣ Cross-Department Conflict Detection
+
+Example problem:
+
+Linear Algebra
+
+is taken by:
+
+IT  
+Science
+
+If Science department schedules another course at the same time:
+
+Mon 10-12  
+Linear Algebra  
+  
+Mon 10-12  
+Physics
+
+The system warns:
+
+⚠ Student conflict detected
+
+---
+
+# 8️⃣ Final Schedule
+
+After reviewing, the administrator **publishes the schedule**.
+
+Students then see:
+
+IT Year 1 Schedule  
+  
+Mon 8-10  
+Programming  
+  
+Mon 10-12  
+Linear Algebra  
+  
+Tue 8-10  
+Data Structures
+
+---
+
+# 9️⃣ The Main Problems Your System Solves
+
+Your project solves these **real problems**:
+
+### Problem A
+
+Manual scheduling takes **days or weeks**.
+
+Your system generates schedules in **seconds**.
+
+---
+
+### Problem B
+
+Humans miss conflicts.
+
+Your system **detects conflicts automatically**.
+
+---
+
+### Problem C
+
+Departments don't coordinate well.
+
+Your system **handles shared courses**.
+
+---
+
+### Problem D
+
+Teachers preferences ignored.
+
+Your system **tries to satisfy preferences**.
+
+---
+
+# 🔟 Simplified System Architecture
+
+Users (Admins / Departments / Teachers)  
+            ↓  
+        Web Interface  
+            ↓  
+        Backend API  
+            ↓  
+      Scheduling Engine  
+            ↓  
+          Database
+
+---
+
+# 1️⃣1️⃣ Example Technologies
+
+Example stack:
+
+Frontend:
+
+- React
+    
+
+Backend:
+
+- **FastAPI**  
+    
+
+Scheduling Engine:
+
+- **C++**  
+    
+
+Database:
+
+- **PostgreSQL**
+    
+
+---
+
+# The Three Questions We'll Continue Exploring
+
+(keeping your request)
+
+### 1️⃣ How Google-level timetabling systems are designed
+
+(big-scale optimization architecture)
+
+### 2️⃣ The best data structure for timetable GA
+
+(fast conflict detection)
+
+### 3️⃣ How to generate a timetable for **1000+ courses in seconds**
+
+(incremental evaluation and constraint graphs)
+
+---
+
+✅ If you want, the **next thing I can show you** is extremely useful:
+
+**A complete minimal architecture for your graduation project (database tables + API + algorithm).**
+
+This makes the project **much easier to implement step-by-step.**
