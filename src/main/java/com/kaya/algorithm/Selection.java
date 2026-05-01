@@ -5,34 +5,34 @@ import com.kaya.model.TimeTable;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * Utility class responsible for the Selection phase of the Genetic Algorithm.
+ * Implements strategies to choose high-quality parents for reproduction.
+ */
 public class Selection {
 
-    // Tournament Selection: Picks the best TimeTable out of tournamentSize random individuals from the population.
+    /**
+     * Implements Tournament Selection.
+     * Randomly picks a specified number of individuals (tournamentSize) from the population
+     * and selects the one with the best fitness score to become a parent.
+     * This strategy effectively balances selection pressure with genetic diversity.
+     *
+     * @param population     The current generation of TimeTables.
+     * @param tournamentSize The number of random chromosomes to compete in the tournament.
+     * @return The TimeTable (Chromosome) with the best fitness score from the selected subset.
+     */
     public static TimeTable tournamentSelection(List<TimeTable> population, int tournamentSize) {
 
-        /*
-        // =============== الكود القديم ===============
         TimeTable best = null;
         Random rand = new Random();
-        for (int i = 0; i < tournamentSize; i++) {
-            TimeTable ind = population.get(rand.nextInt(population.size()));
-            if (best == null || ind.fitness > best.fitness) {
-                    best = ind;
-            }
-        }
-        return best;
-        // ============================================
-        */
 
-        // =============== الكود الجديد ===============
-        // الفكرة: بنختار عدد معين (tournamentSize) عشوائياً من الجيل (Population)
-        // وبنرجع أحسن جدول فيهم من ناحية الـ Fitness Score عشان يتزاوج.
-        TimeTable best = null;
-        Random rand = new Random();
         for (int i = 0; i < tournamentSize; i++) {
+            // Select a random individual from the entire population
             TimeTable ind = population.get(rand.nextInt(population.size()));
 
-            // [تم التعديل]: استخدمنا getFitness() بدل .fitness لأننا احترمنا الـ Encapsulation وخليناه private
+            // Compare fitness scores.
+            // Note: Fitness score is encapsulated, so we strictly use the getter.
+            // A higher fitness score (closer to 0) indicates a better schedule.
             if (best == null || ind.getFitness() > best.getFitness()) {
                 best = ind;
             }

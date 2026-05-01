@@ -22,8 +22,9 @@ public class EvolutionEngine {
 
     /**
      * Initializes the engine with the provided genetic algorithm configurations.
-     * * @param config The configuration object containing parameters like population size,
-     * mutation rate, max generations, etc.
+     *
+     * @param config The configuration object containing parameters like population size,
+     *               mutation rate, max generations, etc.
      */
     public EvolutionEngine(GAConfig config) {
         this.config = config;
@@ -31,7 +32,8 @@ public class EvolutionEngine {
 
     /**
      * Phase 1: Generates the initial random population (Generation 0).
-     * * @param lectures  The master list of all lectures to be scheduled.
+     *
+     * @param lectures  The master list of all lectures to be scheduled.
      * @param timePools A categorized map of available time slots.
      * @param roomPools A categorized map of available rooms.
      * @return An ArrayList containing the initially generated random TimeTables.
@@ -51,11 +53,11 @@ public class EvolutionEngine {
             for (Lecture c : lectures) {
                 individualClasses.add(new Lecture(c.getId(), c.getCourse(), null, null, c.getSectionNumber(), c.getInstructor()));
             }
-            TimeTable tt = new TimeTable(individualClasses);
+            TimeTable timeTable = new TimeTable(individualClasses);
 
             // Assign random but requirement-compliant times and rooms to each lecture
-            TimeTableInitializer.initializeRandomly(tt, timePools, roomPools);
-            population.add(tt);
+            TimeTableInitializer.initializeRandomly(timeTable, timePools, roomPools);
+            population.add(timeTable);
         }
         return population;
     }
@@ -63,7 +65,8 @@ public class EvolutionEngine {
     /**
      * Phase 2: The evolutionary loop. Applies selection, crossover, and mutation
      * across multiple generations to progressively find the optimal clash-free schedule.
-     * * @param population The initial generation of timetables.
+     *
+     * @param population The initial generation of timetables.
      * @param timePools  A categorized map of available time slots.
      * @param roomPools  A categorized map of available rooms.
      * @return The final evolved population, sorted by fitness (best schedule at index 0).
@@ -72,34 +75,43 @@ public class EvolutionEngine {
                                                   Map<TimeSlotType, HashSet<TimeSlot>> timePools,
                                                   Map<RoomType, HashSet<Room>> roomPools) {
 
+        // Tracks consecutive generations without any fitness improvement
         int unevolvedGenerations = 0;
 
+        // Dynamically calculates the stagnation limit based on max generations and tolerance ratio
+        int stagnationThreshold = Math.max(1, (int) (config.maxGenerations * config.stagnationToleranceRatio));
+
         // Local variable for thread-safety. Allows dynamic mutation adjustment
-        // without affecting concurrent generation requests.
+        // without affecting concurrent generation requests from other threads.
         double currentMutationRate = config.initialMutationRate;
 
-        // The main Evolutionary Loop
+        // Labeled Loop: Allows us to break out of the ENTIRE algorithm instantly if a perfect schedule is found
+        evolutionLoop:
         for (int gen = 1; gen <= config.maxGenerations; gen++) {
 
             // 1. Evaluation & Sorting: Rank schedules from best (fitness closest to 0) to worst.
             population.sort((a, b) -> Long.compare(b.getFitness(), a.getFitness()));
             System.out.println("Generation " + gen + " | Best Fitness: " + population.get(0).getFitness());
 
-            // Early Stopping Condition: If a flawless schedule is found, halt evolution to save resources.
+            // Early Stopping Condition: If a flawless schedule is found at the start of a generation.
             if (population.get(0).getFitness() == 0) {
                 System.out.println("--- Perfect Schedule Found! ---");
-                break;
+                break evolutionLoop;
             }
 
             ArrayList<TimeTable> nextGen = new ArrayList<>();
 
+            // Track the best fitness of the current generation and initialize the tracker for the new generation.
+            // This isolates the improvement check from the Elitism step to avoid false stagnation.
+            long currentBestFitness = population.get(0).getFitness();
+            long newGenerationBestFitness = currentBestFitness;
+
             // 2. ELITISM: Carry over the absolute best schedules to the next generation unchanged.
-            // This guarantees that the algorithm never loses its best-found solutions.
             for (int i = 0; i < config.elitismCount; i++) {
                 nextGen.add(population.get(i));
             }
 
-            // 3. REPRODUCTION: Fill the remainder of the new generation via Selection & Crossover.
+            // 3. REPRODUCTION: Fill the remainder of the new generation via Selection, Crossover, and Mutation.
             while (nextGen.size() < config.populationSize) {
                 // Tournament Selection: Pick strong parents from the population.
                 TimeTable p1 = Selection.tournamentSelection(population, config.tournamentSize);
@@ -108,34 +120,61 @@ public class EvolutionEngine {
                 // Crossover: Combine genetic material of parents to create an offspring.
                 TimeTable child = GeneticOperators.crossover(p1, p2);
 
-                // Initial child evaluation to identify conflicting lectures before mutation.
+                // Initial evaluation immediately after crossover to identify conflicts.
                 FitnessCalculator.calculateFitness(child);
+
+                // If crossover alone resulted in a perfect schedule, halt everything immediately.
+                if (child.getFitness() == 0) {
+                    System.out.println("--- Perfect Schedule Found During Crossover! ---");
+                    nextGen.add(child);
+                    population = nextGen; // Update population to reflect the final child before returning
+                    break evolutionLoop;
+                }
+
+                // Monitor if this new child sets a new fitness record for the current generation
+                if (child.getFitness() > newGenerationBestFitness) {
+                    newGenerationBestFitness = child.getFitness();
+                }
 
                 // 4. MUTATION: Inject random alterations to resolve existing conflicts.
                 if (Math.random() < currentMutationRate) {
                     GeneticOperators.mutate(child, timePools, roomPools, config.mutationImpactRatio);
+
+                    // Recalculate fitness ONLY if a mutation actually occurred to save CPU cycles.
+                    FitnessCalculator.calculateFitness(child);
+
+                    // Check again if the mutation successfully created a perfect schedule.
+                    if (child.getFitness() == 0) {
+                        System.out.println("--- Perfect Schedule Found During Mutation! ---");
+                        nextGen.add(child);
+                        population = nextGen;
+                        break evolutionLoop;
+                    }
+
+                    // Update the generation's best fitness record if the mutation improved the child
+                    if (child.getFitness() > newGenerationBestFitness) {
+                        newGenerationBestFitness = child.getFitness();
+                    }
                 }
 
-                // Final evaluation after potential mutation to update the fitness score.
-                FitnessCalculator.calculateFitness(child);
                 nextGen.add(child);
             }
 
             // 5. ADAPTIVE MUTATION LOGIC: Prevents stagnation in Local Optima.
-            // If the best fitness score hasn't improved compared to the previous generation,
-            // we increment the stagnation counter.
-            if (population.get(0).getFitness() >= nextGen.get(0).getFitness()) {
+            // Compares the best fitness of the old generation with the best newly bred child.
+            if (currentBestFitness >= newGenerationBestFitness) {
                 unevolvedGenerations++;
             } else {
-                // Reset counter and restore baseline mutation rate upon improvement.
+                // Reset the stagnation counter and restore the baseline mutation rate upon improvement.
                 unevolvedGenerations = 0;
                 currentMutationRate = config.initialMutationRate;
             }
 
-            // If the algorithm has stagnated for 50 generations, incrementally boost the
-            // mutation rate (up to a 50% cap) to forcefully introduce genetic diversity.
-            if (unevolvedGenerations > 0 && unevolvedGenerations % 50 == 0 && currentMutationRate < 0.5) {
+            // If the algorithm has stagnated beyond the calculated threshold, incrementally boost the
+            // mutation rate (up to a 50% cap) to forcefully introduce genetic diversity and escape local optima.
+            if (unevolvedGenerations > 0 && unevolvedGenerations % stagnationThreshold == 0 && currentMutationRate < 0.5) {
                 currentMutationRate += 0.05;
+                System.out.println("Mutation Boost Triggered! New Rate: " + currentMutationRate); // For debugging purposes
             }
 
             // Replace the old generation with the newly evolved generation.
