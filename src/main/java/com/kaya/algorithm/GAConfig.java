@@ -8,25 +8,26 @@ package com.kaya.algorithm;
  */
 public class GAConfig {
 
-    public int maxGenerations;
-    public int populationSize;
-    public int tournamentSize;
-    public double elitismRatio;
-    public double initialMutationRate;
+    public int maxGenerations = 400;
+    public int populationSize = 100;
+    public int tournamentSize = 5;
+    public double elitismRatio = 0.015;
+    public double initialMutationRate = 0.15;
 
     // Controls the intensity of the mutation operation.
     // Defines the percentage of conflicting courses to be altered when a mutation occurs (e.g., 0.10 = 10%).
-    public double mutationImpactRatio;
+    public double mutationImpactRatio = 0.10;
 
     // Defines the tolerance threshold for fitness stagnation (e.g., 0.10 means 10% of total generations).
     // If the algorithm fails to improve for this percentage of generations, the Adaptive Mutation logic is triggered.
-    public double stagnationToleranceRatio;
+    public double stagnationToleranceRatio = 0.10;
 
 
     // --- ISLAND MODEL PARAMETERS (NEW) ---
-    public int numIslands;          // Number of isolated populations
-    public int migrationInterval;   // Number of generations before a migration occurs (Epoch length)
-    public int migrationRate;       // Number of elite schedules to transfer between islands
+    public int numIslands = 4;          // Number of isolated populations
+    public int migrationInterval = 20;   // Number of generations before a migration occurs (Epoch length)
+    public int migrationRate = 2;       // Number of elite schedules to transfer between islands
+
 
     /**
      * Default Constructor.
