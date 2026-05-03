@@ -4,6 +4,7 @@ import com.kaya.model.enums.RoomType;
 import com.kaya.model.enums.TeachingMethod;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,10 +15,8 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CourseRequest {
-
     @NotBlank private String courseSymbol;
     @NotBlank private String courseNumber;
-    @NotEmpty private List<String> majors;
-    @NotEmpty private RoomType roomGroups;
-    @NotEmpty private TeachingMethod timeGroups;
+    @NotNull private RoomType roomGroups;
+    @NotNull private TeachingMethod timeGroups;
 }

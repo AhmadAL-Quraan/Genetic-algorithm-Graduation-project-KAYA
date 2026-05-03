@@ -4,13 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class TimeTableResponse {
+public class InstructorResponse {
     private Long id;
-    private FitnessReportResponse fitnessReport;
-    private List<LectureResponse> lectures;
+    private String instructorName;
 }

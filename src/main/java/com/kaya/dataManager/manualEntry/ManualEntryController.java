@@ -44,4 +44,10 @@ public class ManualEntryController {
         manualEntryService.delete(id);
         return ResponseEntity.noContent().build();
     }
+
+    @DeleteMapping
+    public ResponseEntity<Void> deleteAll() {
+        manualEntryService.deleteAll();
+        return ResponseEntity.noContent().build();
+    }
 }

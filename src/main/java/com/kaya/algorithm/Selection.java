@@ -33,7 +33,7 @@ public class Selection {
             TimeTable ind = population.get(rand.nextInt(population.size()));
 
             // [تم التعديل]: استخدمنا getFitness() بدل .fitness لأننا احترمنا الـ Encapsulation وخليناه private
-            if (best == null || ind.getFitness() > best.getFitness()) {
+            if (best == null || ind.getReport().getTotalPenalty() > best.getReport().getTotalPenalty()) {
                 best = ind;
             }
         }

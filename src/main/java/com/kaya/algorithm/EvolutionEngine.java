@@ -54,11 +54,11 @@ public class EvolutionEngine {
         for (int gen = 1; gen <= config.maxGenerations; gen++) {
 
             // 1. ترتيب الجداول من الأحسن (أقرب للصفر) للأسوأ
-            population.sort((a, b) -> Long.compare(b.getFitness(), a.getFitness()));
-            System.out.println("Generation " + gen + " | Best Fitness: " + population.get(0).getFitness());
+            population.sort((a, b) -> Long.compare(b.getReport().getTotalPenalty(), a.getReport().getTotalPenalty()));
+            System.out.println("Generation " + gen + " | Best Fitness: " + population.get(0).getReport().getTotalPenalty());
 
             // لو وصلنا لجدول مثالي (مفيش ولا تعارض)، بنوقف الخوارزمية عشان نوفر وقت
-            if (population.get(0).getFitness() == 0) {
+            if (population.get(0).getReport().getTotalPenalty() == 0) {
                 System.out.println("--- Perfect Schedule Found! ---");
                 break;
             }
@@ -94,7 +94,7 @@ public class EvolutionEngine {
 
             // 5. الطفرة التكيفية (Adaptive Mutation Logic)
             // لو الفيتنس مش بيتحسن (الخوارزمية علقت في Local Optima)، بنزود قوة الطفرة
-            if (population.get(0).getFitness() >= nextGen.get(0).getFitness()) {
+            if (population.get(0).getReport().getTotalPenalty() >= nextGen.get(0).getReport().getTotalPenalty()) {
                 unevolvedGenerations++;
             } else {
                 unevolvedGenerations = 0;
@@ -110,7 +110,7 @@ public class EvolutionEngine {
         }
 
         // ترتيب الجيل الأخير عشان نرجع أحسن جدول في أول إندكس
-        population.sort((a, b) -> Long.compare(b.getFitness(), a.getFitness()));
+        population.sort((a, b) -> Long.compare(b.getReport().getTotalPenalty(), a.getReport().getTotalPenalty()));
         return population;
     }
 }

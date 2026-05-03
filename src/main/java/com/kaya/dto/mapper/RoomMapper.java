@@ -1,4 +1,4 @@
-package com.kaya.mapper;
+package com.kaya.dto.mapper;
 
 import com.kaya.dto.response.RoomResponse;
 import com.kaya.model.Room;

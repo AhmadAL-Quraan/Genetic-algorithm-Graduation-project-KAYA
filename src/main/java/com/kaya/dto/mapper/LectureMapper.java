@@ -1,6 +1,5 @@
-package com.kaya.mapper;
+package com.kaya.dto.mapper;
 
-import com.kaya.dto.request.LectureRequest;
 import com.kaya.dto.response.LectureResponse;
 import com.kaya.model.Lecture;
 

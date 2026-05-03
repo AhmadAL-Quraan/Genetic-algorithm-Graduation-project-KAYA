@@ -29,11 +29,6 @@ public class Room {
     @Enumerated(EnumType.STRING) // السر هنا: عشان تتخزن كنص في الداتا بيز
     private RoomType roomType;
 
-    public Room(String building, String roomNumber, RoomType roomType) {
-        this.building = building;
-        this.roomNumber = roomNumber;
-    }
-
     // Senior Tip: المقارنة بتتم بالمبنى ورقم القاعة بس، لأنهم بيميزوا أي قاعة في الجامعة
     @Override
     public boolean equals(Object o) {

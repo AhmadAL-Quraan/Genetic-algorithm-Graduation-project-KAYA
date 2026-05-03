@@ -1,4 +1,4 @@
-package com.kaya.mapper;
+package com.kaya.dto.mapper;
 
 import com.kaya.dto.response.CourseResponse;
 import com.kaya.dto.response.LectureResponse;

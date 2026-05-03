@@ -4,15 +4,14 @@ import com.kaya.algorithm.run.StartPoint;
 import com.kaya.dataManager.manualEntry.*;
 import com.kaya.dto.request.LectureRequest;
 import com.kaya.dto.response.LectureResponse;
-import com.kaya.dto.response.RoomResponse;
-import com.kaya.dto.response.TimeSlotResponse;
-import com.kaya.mapper.LectureMapper;
-import com.kaya.mapper.RoomMapper;
-import com.kaya.mapper.TimeSlotMapper;
+import com.kaya.dto.mapper.LectureMapper;
+import com.kaya.dto.mapper.RoomMapper;
+import com.kaya.dto.mapper.TimeSlotMapper;
+import com.kaya.dto.mapper.TimeTableMapper;
 import com.kaya.model.Lecture;
 import com.kaya.model.Room;
 import com.kaya.model.TimeSlot;
-import com.kaya.repository.LectureRepository;
+import com.kaya.model.TimeTable;
 import com.kaya.service.LectureService;
 import com.kaya.service.RoomService;
 import com.kaya.service.TimeSlotService;
@@ -34,32 +33,24 @@ public class manualEntryGeneratorService {
     private final TimeTableService timeTableService;
 
     public void create() {
-        lectureService.deleteAll();
         makeRequest(getLectures(), getRooms(), getTimeSlots());
     }
 
     private void makeRequest(List<Lecture> lectures, List<Room> rooms, List<TimeSlot> timeSlots) {
-        StartPoint.runFromDatabase(lectures, rooms, timeSlots);
+        TimeTable table = StartPoint.runFromDatabase(lectures, rooms, timeSlots);
+        timeTableService.create(TimeTableMapper.mapToRequest(table));
     }
 
     private List<Room> getRooms() {
-
-        List<Room> rooms = new ArrayList<>();
-        List<RoomResponse> roomResponses = roomService.getAll();
-        for (RoomResponse response : roomResponses){
-            rooms.add(RoomMapper.mapToEntity(response));
-        }
-        return rooms;
+        return roomService.getAll().stream()
+                .map(RoomMapper::mapToEntity)
+                .toList();
     }
 
     private List<TimeSlot> getTimeSlots() {
-
-        List<TimeSlot> timeSlots = new ArrayList<>();
-        List<TimeSlotResponse> timeSlotResponses = timeSlotService.getAll();
-        for (TimeSlotResponse response : timeSlotResponses){
-            timeSlots.add(TimeSlotMapper.mapToEntity(response));
-        }
-        return timeSlots;
+        return timeSlotService.getAll().stream()
+                .map(TimeSlotMapper::mapToEntity)
+                .toList();
     }
 
     private List<Lecture> getLectures() {

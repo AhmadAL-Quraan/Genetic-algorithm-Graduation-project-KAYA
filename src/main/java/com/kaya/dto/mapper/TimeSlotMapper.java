@@ -1,4 +1,4 @@
-package com.kaya.mapper;
+package com.kaya.dto.mapper;
 
 import com.kaya.dto.response.TimeSlotResponse;
 import com.kaya.model.TimeSlot;

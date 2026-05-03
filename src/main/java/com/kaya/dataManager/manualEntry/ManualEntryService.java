@@ -58,6 +58,10 @@ public class ManualEntryService {
         manualEntryRepository.deleteById(id);
     }
 
+    public void deleteAll() {
+        manualEntryRepository.deleteAll();
+    }
+
     // --- Helper methods --- //
 
     private ManualEntryResponse saveDataManager(ManualEntryRequest request, ManualEntry response) {
@@ -66,7 +70,6 @@ public class ManualEntryService {
         Course course = new Course(
                 request.getCourseSymbol(),
                 request.getCourseNumber(),
-                null,
                 request.getRequiredRoomType(),
                 request.getTeachingMethod()
         );

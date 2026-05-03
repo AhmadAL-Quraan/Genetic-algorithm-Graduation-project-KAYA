@@ -8,5 +8,4 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-public interface TimeSlotRepository extends JpaRepository<TimeSlot, Long> {
-}
+public interface TimeSlotRepository extends JpaRepository<TimeSlot, Long> {}

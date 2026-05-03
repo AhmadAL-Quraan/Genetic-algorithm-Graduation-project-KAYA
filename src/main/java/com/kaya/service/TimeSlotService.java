@@ -1,11 +1,8 @@
 package com.kaya.service;
 
-import com.kaya.dataManager.manualEntry.ManualEntry;
-import com.kaya.dataManager.manualEntry.ManualEntryRequest;
-import com.kaya.dataManager.manualEntry.ManualEntryResponse;
 import com.kaya.dto.request.TimeSlotRequest;
 import com.kaya.dto.response.TimeSlotResponse;
-import com.kaya.mapper.TimeSlotMapper;
+import com.kaya.dto.mapper.TimeSlotMapper;
 import com.kaya.model.TimeSlot;
 import com.kaya.repository.TimeSlotRepository;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +29,11 @@ public class TimeSlotService {
                 .orElseThrow(() -> new RuntimeException("TimeSlot not found"));
 
         return TimeSlotMapper.mapToResponse(timeSlot);
+    }
+
+    public TimeSlot getEntityById(Long id) {
+        return timeSlotRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("TimeSlot not found"));
     }
 
     public TimeSlotResponse create(TimeSlotRequest request) {

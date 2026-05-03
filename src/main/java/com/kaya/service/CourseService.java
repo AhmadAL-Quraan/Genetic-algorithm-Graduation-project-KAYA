@@ -2,7 +2,7 @@ package com.kaya.service;
 
 import com.kaya.dto.request.CourseRequest;
 import com.kaya.dto.response.CourseResponse;
-import com.kaya.mapper.CourseMapper;
+import com.kaya.dto.mapper.CourseMapper;
 import com.kaya.model.Course;
 import com.kaya.repository.CourseRepository;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +27,11 @@ public class CourseService {
                 .orElseThrow(() -> new RuntimeException("Course not found"));
 
         return CourseMapper.mapToResponse(course);
+    }
+
+    public Course getEntityById(Long id) {
+        return courseRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Course not found"));
     }
 
     public CourseResponse create(CourseRequest request) {

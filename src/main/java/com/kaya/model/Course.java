@@ -32,7 +32,7 @@ public class Course {
     @Enumerated(EnumType.STRING)
     private TeachingMethod teachingMethod;
 
-    public Course(String courseSymbol, String courseNumber, List<String> majors, RoomType requiredRoomType, TeachingMethod teachingMethod) {
+    public Course(String courseSymbol, String courseNumber, RoomType requiredRoomType, TeachingMethod teachingMethod) {
         this.courseSymbol = courseSymbol;
         this.courseNumber = courseNumber;
         this.requiredRoomType = requiredRoomType;

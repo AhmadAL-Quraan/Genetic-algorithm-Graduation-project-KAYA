@@ -2,7 +2,7 @@ package com.kaya.service;
 
 import com.kaya.dto.request.RoomRequest;
 import com.kaya.dto.response.RoomResponse;
-import com.kaya.mapper.RoomMapper;
+import com.kaya.dto.mapper.RoomMapper;
 import com.kaya.model.Room;
 import com.kaya.repository.RoomRepository;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +28,11 @@ public class RoomService {
                 .orElseThrow(() -> new RuntimeException("Room not found"));
 
         return RoomMapper.mapToResponse(room);
+    }
+
+    public Room getEntityById(Long id) {
+        return roomRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Room not found"));
     }
 
     public RoomResponse create(RoomRequest request) {

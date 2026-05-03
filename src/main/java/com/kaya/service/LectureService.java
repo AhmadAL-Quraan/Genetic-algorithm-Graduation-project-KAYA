@@ -2,12 +2,9 @@ package com.kaya.service;
 
 import com.kaya.dto.request.LectureRequest;
 import com.kaya.dto.response.LectureResponse;
-import com.kaya.mapper.LectureMapper;
+import com.kaya.dto.mapper.LectureMapper;
 import com.kaya.model.Lecture;
-import com.kaya.repository.CourseRepository;
 import com.kaya.repository.LectureRepository;
-import com.kaya.repository.RoomRepository;
-import com.kaya.repository.TimeSlotRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -16,10 +13,13 @@ import java.util.List;
 @RequiredArgsConstructor
 public class LectureService {
 
+    // Direct access
     private final LectureRepository lectureRepository;
-    private final CourseRepository courseRepository;
-    private final RoomRepository roomRepository;
-    private final TimeSlotRepository timeSlotRepository;
+
+    // Access by service
+    private final CourseService courseService;
+    private final RoomService roomService;
+    private final TimeSlotService timeSlotService;
 
     public List<LectureResponse> getAll() {
         return lectureRepository.findAll()
@@ -62,16 +62,17 @@ public class LectureService {
 
     private LectureResponse saveLecture(LectureRequest request, Lecture response) {
 
-        response.setCourse(courseRepository.getReferenceById(request.getCourseId()));
+        if (request.getCourseId() != null) {
+            response.setCourse(courseService.getEntityById(request.getCourseId()));
+        }
+        if (request.getRoomId() != null) {
+            response.setRoom(roomService.getEntityById(request.getRoomId()));
+        }
+        if (request.getTimeSlotId() != null) {
+            response.setTimeSlot(timeSlotService.getEntityById(request.getTimeSlotId()));
+        }
         response.setSectionNumber(request.getNumber());
         response.setInstructor(request.getInstructor());
-        if (request.getRoomId() != null && roomRepository.existsById(request.getRoomId())) {
-            response.setRoom(roomRepository.getReferenceById(request.getRoomId()));
-        }
-
-        if (request.getTimeSlotId() != null && timeSlotRepository.existsById(request.getTimeSlotId())) {
-            response.setTimeSlot(timeSlotRepository.getReferenceById(request.getTimeSlotId()));
-        }
 
         Lecture updated = lectureRepository.save(response);
         return LectureMapper.mapToResponse(updated);

@@ -1,13 +1,11 @@
 package com.kaya.model;
 
-import com.kaya.dto.response.FitnessReportDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 // شلنا @Component لأن ده Data Model مش Spring Bean
@@ -22,18 +20,14 @@ public class TimeTable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // خليناهم private احتراماً للـ Encapsulation
-    private Long fitness;
-
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "timetable_id")
     private List<Lecture> lectures;
 
-    @Transient
+    @OneToOne
     private FitnessReport report;
 
     public TimeTable(List<Lecture> lectures) {
-        this.fitness = 0L;
         this.lectures = lectures;
         this.report = new FitnessReport();
     }

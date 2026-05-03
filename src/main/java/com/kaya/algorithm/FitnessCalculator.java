@@ -1,8 +1,8 @@
 package com.kaya.algorithm;
 
-import com.kaya.algorithm.data.ExcelDataExtractor;
 import com.kaya.model.Lecture;
 import com.kaya.model.Room;
+import com.kaya.model.TimeSlot;
 import com.kaya.model.TimeTable;
 
 import java.util.*;
@@ -53,7 +53,7 @@ public class FitnessCalculator {
             // Use a smaller penalty (e.g., -20) since this is a soft constraint
             totalFitness += checkInternalConflicts(tt, deptYearList, "Student Year Conflict", 5);
         }
-        tt.setFitness(totalFitness);
+        tt.getReport().setTotalPenalty(totalFitness);
         return totalFitness;
         // ============================================================
 
@@ -103,6 +103,17 @@ public class FitnessCalculator {
         */
     }
 
+    // التحقق من التعارض (بقينا نستخدم getDays و getStartTime عشان المتغيرات بقت private)
+    public static boolean conflictsWith(TimeSlot self, TimeSlot other) {
+        // Collections.disjoint بترجع True لو مفيش أيام مشتركة
+        // فبنعكسها (!) عشان لو في أيام مشتركة، نفحص تقاطع الأوقات
+        if (!Collections.disjoint(self.getDays(), other.getDays())) {
+            return self.getStartTime().isBefore(other.getEndTime()) &&
+                    other.getStartTime().isBefore(self.getEndTime());
+        }
+        return false;
+    }
+
     private static int checkInternalConflicts(TimeTable tt, List<Lecture> group, String conflictType, int penalty_weight) {
 
         // ======================= الكود القديم =======================
@@ -113,7 +124,7 @@ public class FitnessCalculator {
                 Lecture c1 = group.get(i);
                 Lecture c2 = group.get(j);
 
-                if (ExcelDataExtractor.conflictsWith(c1.getTimeSlot(),c2.getTimeSlot())) {
+                if (conflictsWith(c1.getTimeSlot(),c2.getTimeSlot())) {
                     tt.getReport().getConflictingLectures().add(c1);
                     tt.getReport().getConflictingLectures().add(c2);
                     penalty -= penalty_weight;
