@@ -18,10 +18,10 @@ public class FitnessReport {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long roomConflicts;
-    private Long instructorConflicts;
-    private Long studentConflicts;
-    private Long totalPenalty;
+    private Integer roomConflicts;
+    private Integer instructorConflicts;
+    private Integer studentConflicts;
+    private Integer totalPenalty;
 
     // برمجنا على الـ Interface (Set) بدل الـ Implementation (HashSet)
     @OneToMany

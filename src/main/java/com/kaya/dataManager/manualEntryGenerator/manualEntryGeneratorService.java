@@ -1,7 +1,7 @@
 package com.kaya.dataManager.manualEntryGenerator;
 
-import com.kaya.algorithm.GAConfig;
 import com.kaya.algorithm.run.StartPoint;
+import com.kaya.dataManager.SectionGenerator;
 import com.kaya.dataManager.manualEntry.*;
 import com.kaya.dto.request.LectureRequest;
 import com.kaya.dto.response.LectureResponse;
@@ -17,7 +17,6 @@ import com.kaya.service.LectureService;
 import com.kaya.service.RoomService;
 import com.kaya.service.TimeSlotService;
 import com.kaya.service.TimeTableService;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -39,13 +38,10 @@ public class manualEntryGeneratorService {
     }
 
     private void makeRequest(List<Lecture> lectures, List<Room> rooms, List<TimeSlot> timeSlots) {
-
-        // Edit on here
-        GAConfig config = new GAConfig();
-        boolean useIslandModel = false;
-
-        TimeTable table = StartPoint.runAlgorithm(lectures, rooms, timeSlots, config, useIslandModel);
+        TimeTable table = StartPoint.runFromDatabase(lectures, rooms, timeSlots);
+        SectionGenerator.generate(table);
         timeTableService.create(TimeTableMapper.mapToRequest(table));
+        System.out.println(table);
     }
 
     private List<Room> getRooms() {
@@ -74,7 +70,7 @@ public class manualEntryGeneratorService {
             LectureRequest request = new LectureRequest();
             request.setCourseId(data.getCourseId());
             request.setInstructor(data.getInstructor());
-            request.setNumber(1L);
+            request.setNumber(null);
             request.setTimeSlotId(null);
             request.setRoomId(null);
 

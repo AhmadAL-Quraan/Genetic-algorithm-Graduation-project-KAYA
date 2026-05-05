@@ -29,7 +29,7 @@ public class Lecture {
     @JoinColumn(name = "time_slot_id")
     private TimeSlot timeSlot;
 
-    private Long sectionNumber;
+    private Integer sectionNumber;
     private String instructor;
 
     @Override

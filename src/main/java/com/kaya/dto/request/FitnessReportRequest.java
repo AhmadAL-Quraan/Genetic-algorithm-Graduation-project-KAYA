@@ -12,9 +12,9 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FitnessReportRequest {
-    @NotNull private Long roomConflicts;
-    @NotNull private Long instructorConflicts;
-    @NotNull private Long studentConflicts;
-    @NotNull private Long totalPenalty;
+    @NotNull private Integer roomConflicts;
+    @NotNull private Integer instructorConflicts;
+    @NotNull private Integer studentConflicts;
+    @NotNull private Integer totalPenalty;
     private Set<Lecture> conflictingLectures;
 }

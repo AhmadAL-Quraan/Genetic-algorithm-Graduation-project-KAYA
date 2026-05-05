@@ -12,36 +12,24 @@ import java.util.*;
 import static com.kaya.algorithm.PoolHelper.getValidRooms;
 import static com.kaya.algorithm.PoolHelper.getValidTimeSlots;
 
-/**
- * Utility class dedicated to the construction of the initial population (Generation 0).
- * Ensures that the first generation of schedules is populated with valid, randomly
- * assigned resources before the evolutionary process begins.
- */
 public class TimeTableInitializer {
 
-    /**
-     * Iterates through every lecture in an empty TimeTable and assigns a random,
-     * requirement-compliant Room and TimeSlot based on the dynamically generated pools.
-     *
-     * @param tt        The newly created TimeTable (Chromosome) to be initialized.
-     * @param timePools The master map containing categorized available time slots.
-     * @param roomPools The master map containing categorized available rooms.
-     */
+    // نقلنا الميثود هنا وبقت بتاخد الـ TimeTable كـ Parameter عشان تعدل عليه
+    // [تم التعديل]: استخدمنا الـ Enums في الـ Maps عشان تتوافق مع التعديلات الجديدة في الـ Models
     public static void initializeRandomly(TimeTable tt,
                                           Map<TeachingMethod, HashSet<TimeSlot>> timePools,
                                           Map<RoomType, HashSet<Room>> roomPools) {
-
         List<TimeSlot> timePool;
         List<Room> roomPool;
-        Random rand = new Random();
 
+        Random rand = new Random();
         for (Lecture c : tt.getLectures()) {
-            // Fetch dynamically constrained pools using the highly optimized O(1) PoolHelper
+            // بنسحب القاعات والأوقات المناسبة للكورس ده باستخدام الـ PoolHelper الأسرع من البرق
             timePool = new ArrayList<>(getValidTimeSlots(c, timePools));
             roomPool = new ArrayList<>(getValidRooms(c, roomPools));
 
-            // Safety Check: Ensure the pool is not empty before attempting a random assignment
-            // to prevent IndexOutOfBoundsException in highly constrained datasets.
+            // Randomly pick an allele (or a gene) from the pools
+            // خطوة أمان: بنتأكد إن الـ Pool مش فاضي عشان ميرميش IndexOutOfBoundsException
             if (!timePool.isEmpty()) {
                 c.setTimeSlot(timePool.get(rand.nextInt(timePool.size())));
             }
@@ -50,7 +38,7 @@ public class TimeTableInitializer {
             }
         }
 
-        // Establish the baseline fitness score for this randomly generated schedule
+        // حساب التقييم بعد التهيئة العشوائية
         FitnessCalculator.calculateFitness(tt);
     }
 }

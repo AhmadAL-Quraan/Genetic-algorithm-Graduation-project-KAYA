@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class LectureRequest {
     @NotNull private Long courseId;
-    private Long number;
+    private Integer number;
     @NotBlank private String instructor;
     private Long timeSlotId;
     private Long roomId;
