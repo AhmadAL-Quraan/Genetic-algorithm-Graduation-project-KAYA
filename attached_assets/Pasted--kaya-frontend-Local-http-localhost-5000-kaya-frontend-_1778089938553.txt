@@ -1,0 +1,48 @@
+ 
+kaya-frontend  |   ➜  Local:   http://localhost:5000/
+kaya-frontend  |   ➜  Network: http://172.20.0.4:5000/
+kaya-frontend  | 5:51:23 PM [vite] http proxy error: /api/conflicts
+kaya-frontend  | Error: connect ECONNREFUSED 172.20.0.3:8080
+kaya-frontend  |     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1611:16)
+kaya-frontend  | 5:51:24 PM [vite] http proxy error: /api/conflicts
+kaya-frontend  | Error: connect ECONNREFUSED 172.20.0.3:8080
+kaya-frontend  |     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1611:16)
+kaya-frontend  | 5:51:27 PM [vite] http proxy error: /api/courses
+kaya-frontend  | Error: connect ECONNREFUSED 172.20.0.3:8080
+kaya-frontend  |     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1611:16)
+kaya-frontend  | 5:51:27 PM [vite] http proxy error: /api/rooms
+kaya-frontend  | Error: connect ECONNREFUSED 172.20.0.3:8080
+kaya-frontend  |     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1611:16)
+kaya-frontend  | 5:51:27 PM [vite] http proxy error: /api/time-table
+kaya-frontend  | Error: connect ECONNREFUSED 172.20.0.3:8080
+kaya-frontend  |     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1611:16)
+kaya-frontend  | 5:51:27 PM [vite] http proxy error: /api/teachers
+kaya-frontend  | Error: connect ECONNREFUSED 172.20.0.3:8080
+kaya-frontend  |     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1611:16)
+kaya-frontend  | 5:51:27 PM [vite] http proxy error: /api/departments
+kaya-frontend  | Error: connect ECONNREFUSED 172.20.0.3:8080
+kaya-frontend  |     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1611:16)
+kaya-frontend  | 5:51:27 PM [vite] http proxy error: /api/time-slots
+kaya-frontend  | Error: connect ECONNREFUSED 172.20.0.3:8080
+kaya-frontend  |     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1611:16)
+kaya-frontend  | 5:51:27 PM [vite] http proxy error: /api/conflicts
+kaya-frontend  | Error: connect ECONNREFUSED 172.20.0.3:8080
+kaya-frontend  |     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1611:16)
+kaya-frontend  | 5:51:28 PM [vite] http proxy error: /api/courses
+kaya-frontend  | Error: connect ECONNREFUSED 172.20.0.3:8080
+kaya-frontend  |     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1611:16)
+kaya-frontend  | 5:51:28 PM [vite] http proxy error: /api/teachers
+kaya-frontend  | Error: connect ECONNREFUSED 172.20.0.3:8080
+kaya-frontend  |     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1611:16)
+kaya-frontend  | 5:51:28 PM [vite] http proxy error: /api/conflicts
+kaya-frontend  | Error: connect ECONNREFUSED 172.20.0.3:8080
+kaya-frontend  |     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1611:16)
+kaya-frontend  | 5:51:29 PM [vite] http proxy error: /api/conflicts
+kaya-frontend  | Error: connect ECONNREFUSED 172.20.0.3:8080
+kaya-frontend  |     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1611:16)
+kaya-frontend  | 5:51:29 PM [vite] http proxy error: /api/courses
+kaya-frontend  | Error: connect ECONNREFUSED 172.20.0.3:8080
+kaya-frontend  |     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1611:16)
+kaya-frontend  | 5:51:29 PM [vite] http proxy error: /api/teachers
+kaya-frontend  | Error: connect ECONNREFUSED 172.20.0.3:8080
+kaya-frontend  |     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1611:16)

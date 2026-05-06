@@ -1,6 +1,7 @@
 package com.kaya.model;
 
 import com.kaya.model.enums.RoomType;
+import com.kaya.model.enums.SlotType;
 import com.kaya.model.enums.TeachingMethod;
 import jakarta.persistence.*;
 import lombok.*;
@@ -30,6 +31,17 @@ public class Course {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "department_id")
     private Department department;
+
+    /** SPECIFIC → locked to exactly this slot. GENERAL → use slot as a time window. Null = no preference. */
+    @Enumerated(EnumType.STRING)
+    private SlotType preferredSlotType;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "preferred_time_slot_id")
+    private TimeSlot preferredTimeSlot;
+
+    /** Lecture session length in minutes — required when preferredSlotType = GENERAL. */
+    private Integer lectureDurationMinutes;
 
     public Course(String courseSymbol, String courseNumber, List<String> majors,
                   RoomType requiredRoomType, TeachingMethod teachingMethod) {

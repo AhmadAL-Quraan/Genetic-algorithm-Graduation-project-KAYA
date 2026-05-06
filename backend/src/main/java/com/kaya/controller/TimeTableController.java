@@ -52,6 +52,25 @@ public class TimeTableController {
         return ResponseEntity.noContent().build();
     }
 
+    /**
+     * Signals the running generation to stop without saving any result.
+     */
+    @PostMapping("/cancel")
+    public ResponseEntity<Void> cancel() {
+        TimeTableService.requestCancel();
+        return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * Returns the latest GenerationProgress snapshot (for polling-based UI).
+     * Returns 204 No Content if no generation has run yet.
+     */
+    @GetMapping("/progress")
+    public ResponseEntity<GenerationProgress> getProgress() {
+        GenerationProgress p = TimeTableService.getLatestProgress();
+        return p == null ? ResponseEntity.noContent().build() : ResponseEntity.ok(p);
+    }
+
     @PostMapping("/generate")
     public ResponseEntity<TimeTableResponse> generate(@RequestBody(required = false) Map<String, Object> body) {
         GAConfig cfg = buildConfig(body);

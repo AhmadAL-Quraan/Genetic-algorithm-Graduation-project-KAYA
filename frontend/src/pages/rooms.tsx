@@ -35,7 +35,7 @@ export default function RoomsPage() {
     <div className="space-y-6">
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div>
-          <h1 className="text-2xl font-semibold">Rooms</h1>
+          <h1 className="text-2xl font-semibold">Room</h1>
           <p className="text-muted-foreground text-sm">Lecture halls, labs, and other spaces available for scheduling.</p>
         </div>
         <AlertDialog>

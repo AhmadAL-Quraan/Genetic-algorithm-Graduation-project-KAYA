@@ -2,7 +2,6 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import path from "path";
-import runtimeErrorOverlay from "@replit/vite-plugin-runtime-error-modal";
 
 const rawPort = process.env.PORT;
 
@@ -31,10 +30,12 @@ export default defineConfig({
   plugins: [
     react(),
     tailwindcss(),
-    runtimeErrorOverlay(),
     ...(process.env.NODE_ENV !== "production" &&
     process.env.REPL_ID !== undefined
       ? [
+          await import("@replit/vite-plugin-runtime-error-modal").then((m) =>
+            m.default(),
+          ),
           await import("@replit/vite-plugin-cartographer").then((m) =>
             m.cartographer({
               root: path.resolve(import.meta.dirname, ".."),
@@ -64,8 +65,17 @@ export default defineConfig({
     allowedHosts: true,
     proxy: {
       "/api": {
-        target: "http://backend:8080",
+        target: process.env.VITE_API_TARGET ?? "http://localhost:8080",
         changeOrigin: true,
+        configure: (proxy) => {
+          proxy.on("proxyRes", (proxyRes, _req, res) => {
+            const ct = proxyRes.headers["content-type"] ?? "";
+            if (ct.includes("text/event-stream")) {
+              res.setHeader("X-Accel-Buffering", "no");
+              res.setHeader("Cache-Control", "no-cache");
+            }
+          });
+        },
       },
     },
     fs: {

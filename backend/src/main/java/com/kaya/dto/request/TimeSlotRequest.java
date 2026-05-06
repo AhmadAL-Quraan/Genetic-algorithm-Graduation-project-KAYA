@@ -1,6 +1,7 @@
 package com.kaya.dto.request;
 
 import com.kaya.model.enums.TeachingMethod;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -19,4 +20,5 @@ public class TimeSlotRequest {
     @NotNull  private LocalTime endTime;
     @NotEmpty private Set<DayOfWeek> days;
     @NotNull  private TeachingMethod teachingMethod;
+    @NotNull @Min(1) private Integer durationMinutes;
 }

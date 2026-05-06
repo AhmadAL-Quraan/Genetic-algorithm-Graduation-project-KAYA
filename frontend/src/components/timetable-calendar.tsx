@@ -13,9 +13,9 @@ import {
 } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
+import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { Maximize2, Minimize2 } from "lucide-react";
+import { Maximize2 } from "lucide-react";
 
 const DAY_TO_INDEX: Record<DayOfWeek, number> = {
   SUNDAY: 0, MONDAY: 1, TUESDAY: 2, WEDNESDAY: 3,
@@ -62,7 +62,7 @@ interface Props {
   isFullscreen?: boolean;
 }
 
-function CalendarInner({ timetable, onMutated, isFullscreen = false }: Props) {
+export function CalendarInner({ timetable, onMutated, isFullscreen = false }: Props) {
   const { toast } = useToast();
   const qc = useQueryClient();
   const calRef = useRef<FullCalendar | null>(null);
@@ -121,11 +121,13 @@ function CalendarInner({ timetable, onMutated, isFullscreen = false }: Props) {
     const uniqueDays = Array.from(new Set(newDays));
     const newDay = INDEX_TO_DAY[newDayIdx];
     try {
+      const durationMinutes = Math.round((newEnd.getTime() - newStart.getTime()) / 60000);
       const ts = await findOrCreateTimeSlot({
         startTime: toHHMMSS(newStart),
         endTime: toHHMMSS(newEnd),
         days: uniqueDays,
         teachingMethod: lecture.timeSlot.teachingMethod,
+        durationMinutes,
       });
       await updateLectureAssignment(lecture, { timeSlotId: ts.id });
       await qc.invalidateQueries({ queryKey: ["time-table"] });
@@ -203,36 +205,20 @@ function CalendarInner({ timetable, onMutated, isFullscreen = false }: Props) {
 }
 
 export function TimetableCalendar({ timetable, onMutated }: Omit<Props, "isFullscreen">) {
-  const [expanded, setExpanded] = useState(false);
+  const [, navigate] = useLocation();
 
   return (
-    <>
-      <div className="relative">
-        <Button
-          variant="outline"
-          size="sm"
-          className="absolute top-0 right-0 z-10 gap-1.5 text-xs"
-          onClick={() => setExpanded(true)}
-        >
-          <Maximize2 className="h-3.5 w-3.5" />
-          Expand
-        </Button>
-        <CalendarInner timetable={timetable} onMutated={onMutated} />
-      </div>
-
-      <Dialog open={expanded} onOpenChange={setExpanded}>
-        <DialogContent className="max-w-[98vw] w-[98vw] h-[96vh] flex flex-col p-4 gap-2">
-          <div className="flex items-center justify-between shrink-0">
-            <h2 className="text-base font-semibold">Timetable — Full View</h2>
-            <Button variant="ghost" size="sm" className="gap-1.5" onClick={() => setExpanded(false)}>
-              <Minimize2 className="h-4 w-4" /> Close
-            </Button>
-          </div>
-          <div className="flex-1 overflow-auto">
-            <CalendarInner timetable={timetable} onMutated={() => { onMutated(); }} isFullscreen />
-          </div>
-        </DialogContent>
-      </Dialog>
-    </>
+    <div className="relative">
+      <Button
+        variant="outline"
+        size="sm"
+        className="absolute top-0 right-0 z-10 gap-1.5 text-xs"
+        onClick={() => navigate(`/timetable/${timetable.id}`)}
+      >
+        <Maximize2 className="h-3.5 w-3.5" />
+        Expand
+      </Button>
+      <CalendarInner timetable={timetable} onMutated={onMutated} />
+    </div>
   );
 }

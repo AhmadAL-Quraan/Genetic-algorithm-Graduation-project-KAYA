@@ -9,8 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalTime;
-import java.util.HashSet;
 import java.util.List;
 
 @Service
@@ -64,7 +62,7 @@ public class CourseService {
     private CourseResponse saveCourse(CourseRequest req, Course course) {
         course.setCourseSymbol(req.getCourseSymbol());
         course.setCourseNumber(req.getCourseNumber());
-        course.setMajors(req.getMajors());
+        course.setMajors(req.getMajors() != null ? req.getMajors() : List.of());
         course.setRequiredRoomType(req.getRoomGroups());
         course.setTeachingMethod(req.getTimeGroups());
 
@@ -80,62 +78,29 @@ public class CourseService {
             teacher = teacherRepository.findById(req.getTeacherId()).orElse(null);
         }
 
-        // Determine if we have any scheduling info
-        boolean hasTeacher   = teacher != null || (req.getInstructor() != null && !req.getInstructor().isBlank());
-        boolean hasRoom      = req.getRoomId() != null
-                || (req.getBuilding() != null && !req.getBuilding().isBlank()
-                    && req.getRoomNumber() != null && !req.getRoomNumber().isBlank());
-        boolean hasTimeSlot  = req.getTimeSlotId() != null
-                || (req.getStartTime() != null && req.getEndTime() != null
-                    && req.getDays() != null && !req.getDays().isEmpty());
+        boolean hasTeacher = teacher != null
+                || (req.getInstructor() != null && !req.getInstructor().isBlank());
 
-        if (!hasTeacher && !hasRoom && !hasTimeSlot) {
+        if (!hasTeacher) {
             return CourseMapper.mapToResponse(saved, null);
         }
 
-        // Resolve room
-        Room room = null;
-        if (req.getRoomId() != null) {
-            room = roomRepository.findById(req.getRoomId()).orElse(null);
-        } else if (req.getBuilding() != null && !req.getBuilding().isBlank()
-                && req.getRoomNumber() != null && !req.getRoomNumber().isBlank()) {
-            final String bld = req.getBuilding().trim();
-            final String num = req.getRoomNumber().trim();
-            room = roomRepository.findAll().stream()
-                    .filter(r -> bld.equals(r.getBuilding()) && num.equals(r.getRoomNumber()))
-                    .findFirst()
-                    .orElseGet(() -> roomRepository.save(new Room(bld, num,
-                            req.getRoomType() != null ? req.getRoomType() : req.getRoomGroups())));
-        }
-
-        // Resolve time slot
-        TimeSlot slot = null;
-        if (req.getTimeSlotId() != null) {
-            slot = timeSlotRepository.findById(req.getTimeSlotId()).orElse(null);
-        } else if (req.getStartTime() != null && req.getEndTime() != null
-                && req.getDays() != null && !req.getDays().isEmpty()) {
-            LocalTime start = LocalTime.parse(req.getStartTime());
-            LocalTime end   = LocalTime.parse(req.getEndTime());
-            var days   = new HashSet<>(req.getDays());
-            var method = req.getTimeGroups();
-            slot = timeSlotRepository.findAll().stream()
-                    .filter(ts -> ts.getStartTime().equals(start) && ts.getEndTime().equals(end)
-                            && ts.getDays().equals(days) && ts.getTeachingMethod() == method)
-                    .findFirst()
-                    .orElseGet(() -> timeSlotRepository.save(new TimeSlot(start, end, days, method)));
-        }
-
+        // Resolve existing lecture or create new
         List<Lecture> existing = lectureRepository.findAllByCourse_Id(saved.getId());
         Lecture lecture = existing.isEmpty() ? new Lecture() : existing.get(0);
         lecture.setCourse(saved);
         lecture.setTeacher(teacher);
-        lecture.setInstructor(teacher != null ? teacher.getName()
-                : (req.getInstructor() != null ? req.getInstructor().trim() : null));
+        lecture.setInstructor(teacher != null ? teacher.getName() : req.getInstructor().trim());
         lecture.setSectionNumber(req.getSectionNumber() != null ? req.getSectionNumber() : 1L);
-        lecture.setRoom(room);
-        lecture.setTimeSlot(slot);
-        Lecture savedLecture = lectureRepository.save(lecture);
 
+        if (req.getRoomId() != null) {
+            roomRepository.findById(req.getRoomId()).ifPresent(lecture::setRoom);
+        }
+        if (req.getTimeSlotId() != null) {
+            timeSlotRepository.findById(req.getTimeSlotId()).ifPresent(lecture::setTimeSlot);
+        }
+
+        Lecture savedLecture = lectureRepository.save(lecture);
         return CourseMapper.mapToResponse(saved, savedLecture);
     }
 }

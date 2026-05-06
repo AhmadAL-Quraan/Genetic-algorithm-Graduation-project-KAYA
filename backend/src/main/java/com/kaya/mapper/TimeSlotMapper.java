@@ -11,7 +11,8 @@ public class TimeSlotMapper {
                 t.getStartTime(),
                 t.getEndTime(),
                 t.getDays(),
-                t.getTeachingMethod()
+                t.getTeachingMethod(),
+                t.getDurationMinutes()
         );
     }
 }

@@ -5,8 +5,6 @@ import com.kaya.dto.response.DepartmentResponse;
 import com.kaya.dto.response.TeacherResponse;
 import com.kaya.model.Course;
 import com.kaya.model.Lecture;
-import com.kaya.service.DepartmentService;
-import com.kaya.service.TeacherService;
 
 public class CourseMapper {
 
@@ -18,10 +16,12 @@ public class CourseMapper {
         r.setMajors(course.getMajors());
         r.setRoomGroups(course.getRequiredRoomType());
         r.setTimeGroups(course.getTeachingMethod());
+
         if (course.getDepartment() != null) {
             var d = course.getDepartment();
             r.setDepartment(new DepartmentResponse(d.getId(), d.getName(), d.getCode()));
         }
+
         if (lecture != null) {
             r.setLectureId(lecture.getId());
             r.setInstructor(lecture.getInstructor());

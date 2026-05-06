@@ -25,23 +25,6 @@ Spring Boot 3 application that exposes REST endpoints and runs the genetic algor
 - CORS allows all origins (development)
 - Dev: `pnpm --filter @workspace/api-server run dev` → `mvn -q spring-boot:run`
 
-### REST endpoints
-
-**Setup & Data**
-- `GET/POST/PUT/DELETE /api/rooms`          — `{ building, roomNumber, roomType }`
-- `GET/POST/PUT/DELETE /api/teachers`       — `{ name, email?, departmentId? }`
-- `GET/POST/PUT/DELETE /api/departments`    — `{ name, code }`
-- `GET/POST/PUT/DELETE /api/time-slots`     — `{ startTime, endTime, days[], teachingMethod }`
-
-**Overview**
-- `GET/POST/DELETE /api/courses`            — merged form: creates Room/TimeSlot/Lecture if IDs not provided
-- `GET/POST/PUT/DELETE /api/lectures`
-- `GET/POST/DELETE /api/time-table`
-- `POST /api/time-table/generate`           — runs the GA; optional GAConfig body
-- `GET /api/conflicts`                      — room, teacher, student-group conflict detection
-- `GET /api/export/schedule`                — xlsx export of all scheduled lectures
-- `GET /api/export/schedule/{timetableId}`  — xlsx export of a specific timetable
-- `GET /api/healthz`
 
 ### Course form (POST /api/courses)
 
