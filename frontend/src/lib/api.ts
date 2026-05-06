@@ -11,6 +11,22 @@ export interface DepartmentInput { name: string; code: string; }
 export interface Teacher { id: number; name: string; email?: string; department?: Department; }
 export interface TeacherInput { name: string; email?: string; departmentId?: number; }
 
+export interface TimeSlot {
+  id: number;
+  startTime: string;
+  endTime: string;
+  days: DayOfWeek[];
+  teachingMethod: TeachingMethod;
+  durationMinutes: number;
+}
+export interface TimeSlotInput {
+  startTime: string;
+  endTime: string;
+  days: DayOfWeek[];
+  teachingMethod: TeachingMethod;
+  durationMinutes: number;
+}
+
 export interface Course {
   id: number;
   courseSymbol: string;
@@ -37,24 +53,11 @@ export interface CourseInput {
   instructor?: string;
   sectionNumber?: number;
   roomId?: number;
-  building?: string;
-  roomNumber?: string;
-  roomType?: RoomType;
   timeSlotId?: number;
-  startTime?: string;
-  endTime?: string;
-  days?: DayOfWeek[];
 }
 
 export interface Room { id: number; building: string; roomNumber: string; roomType: RoomType; }
 export interface RoomInput { building: string; roomNumber: string; roomType: RoomType; }
-
-export interface TimeSlot {
-  id: number; startTime: string; endTime: string; days: DayOfWeek[]; teachingMethod: TeachingMethod;
-}
-export interface TimeSlotInput {
-  startTime: string; endTime: string; days: DayOfWeek[]; teachingMethod: TeachingMethod;
-}
 
 export interface Lecture {
   id: number;
@@ -97,7 +100,14 @@ async function request<T>(method: string, path: string, body?: unknown): Promise
   });
   if (!res.ok) {
     const text = await res.text().catch(() => "");
-    throw new Error(`${method} ${path} failed (${res.status}): ${text || res.statusText}`);
+    let message = res.statusText;
+    try {
+      const json = JSON.parse(text);
+      message = json.message || json.error || text;
+    } catch {
+      message = text || res.statusText;
+    }
+    throw new Error(message);
   }
   if (res.status === 204) return undefined as T;
   const ct = res.headers.get("content-type") || "";
@@ -224,8 +234,10 @@ export function exportTimetableUrl(id: number) { return `${API_BASE}/export/sche
 export async function findOrCreateTimeSlot(input: TimeSlotInput): Promise<TimeSlot> {
   const all = await request<TimeSlot[]>("GET", "/time-slots");
   const norm = (s: string) => s.length === 5 ? `${s}:00` : s;
-  const want = { start: norm(input.startTime), end: norm(input.endTime),
-    days: [...input.days].sort().join(","), method: input.teachingMethod };
+  const want = {
+    start: norm(input.startTime), end: norm(input.endTime),
+    days: [...input.days].sort().join(","), method: input.teachingMethod,
+  };
   const existing = all.find(t =>
     norm(t.startTime) === want.start && norm(t.endTime) === want.end &&
     [...t.days].sort().join(",") === want.days && t.teachingMethod === want.method);
@@ -248,4 +260,15 @@ export const ROOM_TYPES: RoomType[] = ["LECTURE", "LAB", "OTHER"];
 export const TEACHING_METHODS: TeachingMethod[] = ["BLENDED", "IN_PERSON", "ONLINE"];
 export const DAYS_OF_WEEK: DayOfWeek[] = [
   "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY",
+];
+
+export const DURATION_OPTIONS = [
+  { value: 50,  label: "50 min" },
+  { value: 60,  label: "60 min (1 hr)" },
+  { value: 75,  label: "75 min" },
+  { value: 90,  label: "90 min (1.5 hr)" },
+  { value: 100, label: "100 min" },
+  { value: 120, label: "120 min (2 hr)" },
+  { value: 150, label: "150 min (2.5 hr)" },
+  { value: 180, label: "180 min (3 hr)" },
 ];

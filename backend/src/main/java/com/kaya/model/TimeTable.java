@@ -24,7 +24,7 @@ public class TimeTable {
 
     private LocalDateTime generatedAt;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "timetable_id")
     private List<Lecture> lectures;
 

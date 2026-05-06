@@ -4,6 +4,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
 import { AppLayout } from "@/components/layout";
+import WelcomePage from "@/pages/welcome";
 import Dashboard from "@/pages/dashboard";
 import CoursesPage from "@/pages/courses";
 import RoomsPage from "@/pages/rooms";
@@ -11,6 +12,7 @@ import TeachersPage from "@/pages/teachers";
 import DepartmentsPage from "@/pages/departments";
 import TimeSlotsPage from "@/pages/time-slots";
 import SchedulePage from "@/pages/timetables";
+import TimetableViewPage from "@/pages/timetable-view";
 import ConflictsPage from "@/pages/conflicts";
 import NotFound from "@/pages/not-found";
 
@@ -25,13 +27,15 @@ function App() {
         <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
           <AppLayout>
             <Switch>
-              <Route path="/" component={Dashboard} />
+              <Route path="/" component={WelcomePage} />
+              <Route path="/dashboard" component={Dashboard} />
               <Route path="/courses" component={CoursesPage} />
               <Route path="/rooms" component={RoomsPage} />
               <Route path="/teachers" component={TeachersPage} />
               <Route path="/departments" component={DepartmentsPage} />
               <Route path="/time-slots" component={TimeSlotsPage} />
               <Route path="/schedule" component={SchedulePage} />
+              <Route path="/timetable/:id" component={TimetableViewPage} />
               <Route path="/timetable">{() => { window.location.replace(window.location.pathname.replace("/timetable", "/schedule")); return null; }}</Route>
               <Route path="/conflicts" component={ConflictsPage} />
               <Route component={NotFound} />

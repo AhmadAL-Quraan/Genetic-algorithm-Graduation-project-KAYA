@@ -1,44 +1,73 @@
 services:
+
   db:
     image: postgres:15
-    container_name: scheduler-db
+    container_name: kaya-db
     environment:
       POSTGRES_USER: kaya
-      POSTGRES_PASSWORD: kaya     
+      POSTGRES_PASSWORD: kaya
       POSTGRES_DB: kaya
     ports:
       - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U kaya -d kaya"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
 
   backend:
     image: maven:3.9-eclipse-temurin-17
-    container_name: scheduler-backend
+    container_name: kaya-backend
     working_dir: /app
     volumes:
       - ./backend:/app
-    command: ./mvnw spring-boot:run
+      - maven_cache:/root/.m2
+    command: sh -c "chmod +x mvnw && ./mvnw spring-boot:run"
     environment:
       PGHOST: db
       PGPORT: 5432
       PGDATABASE: kaya
-      PGUSER: kaya 
+      PGUSER: kaya
       PGPASSWORD: kaya
+      PORT: 8080
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     ports:
       - "8080:8080"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:8080/api/departments > /dev/null || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 20
+      start_period: 120s
 
   frontend:
     image: node:20
-    container_name: scheduler-frontend
+    container_name: kaya-frontend
     working_dir: /app
     volumes:
       - .:/app
-    command: sh -c "npm install -g pnpm && pnpm install && pnpm --filter @workspace/university-scheduler run dev -- --host 0.0.0.0"
+      - frontend_nm:/app/node_modules
+      - frontend_src_nm:/app/frontend/node_modules
+    command: >
+      sh -c "npm install -g pnpm &&
+             pnpm install &&
+             pnpm --filter @workspace/university-scheduler run dev -- --host 0.0.0.0"
     ports:
       - "5000:5000"
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
     environment:
       PORT: 5000
       BASE_PATH: /
-  
+      VITE_API_TARGET: http://backend:8080
+
+volumes:
+  postgres_data:
+  maven_cache:
+  frontend_nm:
+  frontend_src_nm:

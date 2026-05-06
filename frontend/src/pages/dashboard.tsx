@@ -4,12 +4,10 @@ import {
 } from "lucide-react";
 import {
   Courses, Rooms, TimeTables, Teachers, Departments, TimeSlots,
-  useConflicts, exportScheduleUrl,
+  useConflicts,
 } from "@/lib/api";
 import { Link } from "wouter";
 import { ExcelImportButton } from "@/components/excel-import-button";
-import { Button } from "@/components/ui/button";
-import { Download } from "lucide-react";
 
 export default function Dashboard() {
   const courses     = Courses.useList();
@@ -21,9 +19,9 @@ export default function Dashboard() {
   const conflicts   = useConflicts();
 
   const setupStats = [
-    { label: "Rooms",       icon: DoorOpen,   count: rooms.data?.length,       href: "/rooms"       },
-    { label: "Doctors",     icon: Users,       count: teachers.data?.length,    href: "/teachers"    },
-    { label: "Departments", icon: Building2,   count: departments.data?.length, href: "/departments" },
+    { label: "Room",       icon: DoorOpen,   count: rooms.data?.length,       href: "/rooms"       },
+    { label: "Instructor", icon: Users,       count: teachers.data?.length,    href: "/teachers"    },
+    { label: "Department", icon: Building2,   count: departments.data?.length, href: "/departments" },
     { label: "Time Slots",  icon: Clock,       count: timeSlots.data?.length,   href: "/time-slots"  },
   ];
 
@@ -45,11 +43,6 @@ export default function Dashboard() {
         </div>
         <div className="flex items-center gap-2">
           <ExcelImportButton />
-          <a href={exportScheduleUrl()} download>
-            <Button variant="outline" size="sm">
-              <Download className="h-4 w-4 mr-2" /> Export
-            </Button>
-          </a>
         </div>
       </div>
 
@@ -96,19 +89,6 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <Card>
-        <CardHeader><CardTitle>Getting started</CardTitle></CardHeader>
-        <CardContent className="space-y-2 text-sm text-muted-foreground">
-          <p>0. Click <strong>Import from Excel</strong> above to bulk-import an existing schedule.</p>
-          <p>1. Add <Link href="/rooms" className="underline">Rooms</Link>,{" "}
-            <Link href="/teachers" className="underline">Doctors</Link>,{" "}
-            <Link href="/departments" className="underline">Departments</Link>, and{" "}
-            <Link href="/time-slots" className="underline">Time Slots</Link> as your setup data.</p>
-          <p>2. Create <Link href="/courses" className="underline">Courses</Link> — link each to a doctor, room, and time slot via dropdown.</p>
-          <p>3. Run the genetic algorithm on the <Link href="/schedule" className="underline">Schedule</Link> page for an optimized timetable.</p>
-          <p>4. Check the <Link href="/conflicts" className="underline">Conflicts</Link> page to review any detected overlaps.</p>
-        </CardContent>
-      </Card>
     </div>
   );
 }

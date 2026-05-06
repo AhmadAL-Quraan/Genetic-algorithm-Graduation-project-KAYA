@@ -67,4 +67,5 @@
 /app/src/main/java/com/kaya/controller/ConflictController.java
 /app/src/main/java/com/kaya/repository/TimeTableRepository.java
 /app/src/main/java/com/kaya/controller/CourseController.java
+/app/src/main/java/com/kaya/model/enums/SlotType.java
 /app/src/main/java/com/kaya/mapper/RoomMapper.java

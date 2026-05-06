@@ -18,4 +18,5 @@ public class TimeSlotResponse {
     private LocalTime endTime;
     private Set<DayOfWeek> days;
     private TeachingMethod teachingMethod;
+    private Integer durationMinutes;
 }

@@ -17,6 +17,7 @@ com/kaya/algorithm/GeneticOperators.class
 com/kaya/model/Teacher.class
 com/kaya/service/TeacherService.class
 com/kaya/dto/request/LectureRequest.class
+com/kaya/model/enums/SlotType.class
 com/kaya/service/TimeSlotService.class
 com/kaya/model/Room.class
 com/kaya/repository/CourseRepository.class

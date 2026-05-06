@@ -45,8 +45,8 @@ export default function TeachersPage() {
     <div className="space-y-6">
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div>
-          <h1 className="text-2xl font-semibold">Doctors</h1>
-          <p className="text-muted-foreground text-sm">Doctors and instructors available for course assignment.</p>
+          <h1 className="text-2xl font-semibold">Instructor</h1>
+          <p className="text-muted-foreground text-sm">Instructors available for course assignment.</p>
         </div>
         <AlertDialog>
           <AlertDialogTrigger asChild>
@@ -56,9 +56,9 @@ export default function TeachersPage() {
           </AlertDialogTrigger>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>Delete all doctors?</AlertDialogTitle>
+              <AlertDialogTitle>Delete all instructors?</AlertDialogTitle>
               <AlertDialogDescription>
-                This will permanently delete all {list.data?.length ?? 0} doctors and remove them from any lectures. This action cannot be undone.
+                This will permanently delete all {list.data?.length ?? 0} instructors and remove them from any lectures. This action cannot be undone.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
@@ -66,7 +66,7 @@ export default function TeachersPage() {
               <AlertDialogAction
                 className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                 onClick={() => deleteAll.mutate(undefined, {
-                  onSuccess: () => toast({ title: "All doctors deleted" }),
+                  onSuccess: () => toast({ title: "All instructors deleted" }),
                   onError: (err: any) => toast({ title: "Failed", description: err.message, variant: "destructive" }),
                 })}>
                 Delete all
@@ -78,7 +78,7 @@ export default function TeachersPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-base flex items-center gap-2"><Plus className="h-4 w-4" /> Add doctor</CardTitle>
+          <CardTitle className="text-base flex items-center gap-2"><Plus className="h-4 w-4" /> Add Instructor</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={submit} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
@@ -115,13 +115,13 @@ export default function TeachersPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">All doctors ({list.data?.length ?? 0})</CardTitle>
+          <CardTitle className="text-base">All Instructor ({list.data?.length ?? 0})</CardTitle>
         </CardHeader>
         <CardContent>
           {list.isLoading ? (
             <div className="text-sm text-muted-foreground">Loading…</div>
           ) : !list.data?.length ? (
-            <div className="text-sm text-muted-foreground">No doctors yet.</div>
+            <div className="text-sm text-muted-foreground">No instructors yet.</div>
           ) : (
             <Table>
               <TableHeader>

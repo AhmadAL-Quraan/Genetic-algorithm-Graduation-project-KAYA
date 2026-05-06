@@ -38,8 +38,8 @@ export default function DepartmentsPage() {
     <div className="space-y-6">
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div>
-          <h1 className="text-2xl font-semibold">Departments</h1>
-          <p className="text-muted-foreground text-sm">Academic departments used to group courses and doctors.</p>
+          <h1 className="text-2xl font-semibold">Department</h1>
+          <p className="text-muted-foreground text-sm">Academic departments used to group courses and instructors.</p>
         </div>
         <AlertDialog>
           <AlertDialogTrigger asChild>
@@ -51,7 +51,7 @@ export default function DepartmentsPage() {
             <AlertDialogHeader>
               <AlertDialogTitle>Delete all departments?</AlertDialogTitle>
               <AlertDialogDescription>
-                This will permanently delete all {list.data?.length ?? 0} departments and remove their links from doctors and courses. This action cannot be undone.
+                This will permanently delete all {list.data?.length ?? 0} departments and remove their links from instructors and courses. This action cannot be undone.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>

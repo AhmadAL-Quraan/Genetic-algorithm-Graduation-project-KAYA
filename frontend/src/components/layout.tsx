@@ -1,7 +1,7 @@
 import { Link, useLocation } from "wouter";
 import {
   LayoutDashboard, BookOpen, DoorOpen, Calendar,
-  Users, Building2, Clock, AlertTriangle, Menu,
+  Users, Building2, Clock, AlertTriangle, Menu, Home,
 } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
@@ -10,14 +10,15 @@ import { cn } from "@/lib/utils";
 import { useConflicts } from "@/lib/api";
 
 const SETUP_NAV = [
-  { href: "/rooms",       label: "Rooms",       icon: DoorOpen   },
-  { href: "/teachers",    label: "Doctors",     icon: Users      },
-  { href: "/departments", label: "Departments", icon: Building2  },
-  { href: "/time-slots",  label: "Timeslots",   icon: Clock      },
+  { href: "/rooms",       label: "Room",       icon: DoorOpen   },
+  { href: "/teachers",    label: "Instructor", icon: Users      },
+  { href: "/departments", label: "Department", icon: Building2  },
+  { href: "/time-slots",  label: "Timeslot",   icon: Clock      },
 ];
 
 const OVERVIEW_NAV = [
-  { href: "/",            label: "Dashboard",   icon: LayoutDashboard },
+  { href: "/",            label: "Welcome",     icon: Home            },
+  { href: "/dashboard",   label: "Dashboard",   icon: LayoutDashboard },
   { href: "/courses",     label: "Courses",     icon: BookOpen        },
   { href: "/schedule",    label: "Schedule",    icon: Calendar        },
   { href: "/conflicts",   label: "Conflicts",   icon: AlertTriangle   },
