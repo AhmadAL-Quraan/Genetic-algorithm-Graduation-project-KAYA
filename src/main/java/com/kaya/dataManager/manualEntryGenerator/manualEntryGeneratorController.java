@@ -1,5 +1,6 @@
 package com.kaya.dataManager.manualEntryGenerator;
 
+import com.kaya.dto.response.TimeTableResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,8 +13,7 @@ public class manualEntryGeneratorController {
     private final manualEntryGeneratorService manualEntryGeneratorService;
 
     @PostMapping
-    public ResponseEntity<Void> create() {
-        manualEntryGeneratorService.create();
-        return ResponseEntity.ok().build();
+    public ResponseEntity<TimeTableResponse> create() {
+        return ResponseEntity.ok(manualEntryGeneratorService.create());
     }
 }

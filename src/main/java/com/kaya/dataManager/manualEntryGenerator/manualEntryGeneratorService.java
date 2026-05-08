@@ -9,6 +9,7 @@ import com.kaya.dto.mapper.LectureMapper;
 import com.kaya.dto.mapper.RoomMapper;
 import com.kaya.dto.mapper.TimeSlotMapper;
 import com.kaya.dto.mapper.TimeTableMapper;
+import com.kaya.dto.response.TimeTableResponse;
 import com.kaya.model.Lecture;
 import com.kaya.model.Room;
 import com.kaya.model.TimeSlot;
@@ -33,15 +34,15 @@ public class manualEntryGeneratorService {
     private final TimeSlotService timeSlotService;
     private final TimeTableService timeTableService;
 
-    public void create() {
-        makeRequest(getLectures(), getRooms(), getTimeSlots());
+    public TimeTableResponse create() {
+        return makeRequest(getLectures(), getRooms(), getTimeSlots());
     }
 
-    private void makeRequest(List<Lecture> lectures, List<Room> rooms, List<TimeSlot> timeSlots) {
+    private TimeTableResponse makeRequest(List<Lecture> lectures, List<Room> rooms, List<TimeSlot> timeSlots) {
         TimeTable table = StartPoint.runFromDatabase(lectures, rooms, timeSlots);
         SectionGenerator.generate(table);
-        timeTableService.create(TimeTableMapper.mapToRequest(table));
         System.out.println(table);
+        return timeTableService.create(TimeTableMapper.mapToRequest(table));
     }
 
     private List<Room> getRooms() {
