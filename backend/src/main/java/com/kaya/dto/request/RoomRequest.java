@@ -13,5 +13,5 @@ import lombok.NoArgsConstructor;
 public class RoomRequest {
     @NotBlank private String building;
     @NotBlank private String roomNumber;
-    @NotNull  private RoomType roomType;
+    @NotNull private RoomType roomType;
 }

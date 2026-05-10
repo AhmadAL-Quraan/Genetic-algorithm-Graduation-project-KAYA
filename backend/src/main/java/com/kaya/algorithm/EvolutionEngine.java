@@ -1,6 +1,6 @@
 package com.kaya.algorithm;
 
-import com.kaya.dto.response.GenerationProgress;
+import com.kaya.model.FitnessReport;
 import com.kaya.model.Lecture;
 import com.kaya.model.Room;
 import com.kaya.model.TimeSlot;
@@ -25,10 +25,17 @@ public class EvolutionEngine {
                                                      Map<TeachingMethod, HashSet<TimeSlot>> timePools,
                                                      Map<RoomType, HashSet<Room>> roomPools) {
         ArrayList<TimeTable> population = new ArrayList<>();
+
         for (int i = 0; i < config.populationSize; i++) {
             ArrayList<Lecture> individualClasses = new ArrayList<>();
             for (Lecture c : lectures) {
-                individualClasses.add(new Lecture(c.getId(), c.getCourse(), null, null, c.getTeacher(), c.getSectionNumber(), c.getInstructor()));
+                Lecture copy = new Lecture();
+                copy.setId(c.getId());
+                copy.setCourse(c.getCourse());
+                copy.setSectionNumber(c.getSectionNumber());
+                copy.setTeacher(c.getTeacher());
+                copy.setInstructor(c.getInstructor());
+                individualClasses.add(copy);
             }
             TimeTable tt = new TimeTable(individualClasses);
             TimeTableInitializer.initializeRandomly(tt, timePools, roomPools);
@@ -39,93 +46,87 @@ public class EvolutionEngine {
 
     public ArrayList<TimeTable> evolveGenerations(ArrayList<TimeTable> population,
                                                   Map<TeachingMethod, HashSet<TimeSlot>> timePools,
-                                                  Map<RoomType, HashSet<Room>> roomPools) {
-        return evolveGenerations(population, timePools, roomPools, null, () -> false);
-    }
-
-    public ArrayList<TimeTable> evolveGenerations(ArrayList<TimeTable> population,
-                                                  Map<TeachingMethod, HashSet<TimeSlot>> timePools,
                                                   Map<RoomType, HashSet<Room>> roomPools,
-                                                  Consumer<GenerationProgress> progressCallback) {
-        return evolveGenerations(population, timePools, roomPools, progressCallback, () -> false);
-    }
-
-    public ArrayList<TimeTable> evolveGenerations(ArrayList<TimeTable> population,
-                                                  Map<TeachingMethod, HashSet<TimeSlot>> timePools,
-                                                  Map<RoomType, HashSet<Room>> roomPools,
-                                                  Consumer<GenerationProgress> progressCallback,
-                                                  BooleanSupplier cancelCheck) {
+                                                  BooleanSupplier cancelCheck,
+                                                  Consumer<ProgressSnapshot> progressCallback) {
         int unevolvedGenerations = 0;
-        long bestFitnessSoFar = Long.MIN_VALUE;
 
         for (int gen = 1; gen <= config.maxGenerations; gen++) {
+
             if (cancelCheck != null && cancelCheck.getAsBoolean()) {
                 throw new RuntimeException("CANCELLED");
             }
-            population.sort((a, b) -> Long.compare(b.getFitness(), a.getFitness()));
+
+            population.sort((a, b) -> Long.compare(b.getReport().getTotalPenalty(), a.getReport().getTotalPenalty()));
+
             TimeTable best = population.get(0);
-            System.out.println("Generation " + gen + " | Best Fitness: " + best.getFitness()
-                    + " | MutationRate: " + String.format("%.2f", currentMutationRate));
+            int bestFitness = best.getReport().getTotalPenalty();
+            FitnessReport report = best.getReport();
+
+            System.out.println("Generation " + gen + " | Best Fitness: " + bestFitness
+                    + " | MutationRate: " + currentMutationRate);
 
             if (progressCallback != null) {
-                var report = best.getReport();
-                long room    = report != null ? report.getRoomConflicts()       : 0L;
-                long instr   = report != null ? report.getInstructorConflicts() : 0L;
-                long student = report != null ? report.getStudentConflicts()    : 0L;
-
-                if (best.getFitness() == 0) {
-                    progressCallback.accept(GenerationProgress.perfect(gen, config.maxGenerations));
-                } else {
-                    progressCallback.accept(GenerationProgress.evolving(
-                            gen, config.maxGenerations, best.getFitness(),
-                            room, instr, student, currentMutationRate));
-                }
+                progressCallback.accept(new ProgressSnapshot(
+                        gen,
+                        config.maxGenerations,
+                        bestFitness,
+                        report.getRoomConflicts() != null ? report.getRoomConflicts() : 0,
+                        report.getInstructorConflicts() != null ? report.getInstructorConflicts() : 0,
+                        report.getStudentConflicts() != null ? report.getStudentConflicts() : 0,
+                        currentMutationRate,
+                        bestFitness == 0
+                ));
             }
 
-            if (best.getFitness() == 0) {
-                System.out.println("--- Perfect Schedule Found at Generation " + gen + "! ---");
+            if (bestFitness == 0) {
+                System.out.println("--- Perfect Schedule Found! ---");
                 break;
             }
 
-            // Stagnation tracking
-            if (best.getFitness() > bestFitnessSoFar) {
-                bestFitnessSoFar = best.getFitness();
-                unevolvedGenerations = 0;
-                currentMutationRate = config.initialMutationRate;
-            } else {
-                unevolvedGenerations++;
-            }
-
-            // Adaptive mutation: boost every 20 stagnated generations, cap at 0.6
-            if (unevolvedGenerations > 0 && unevolvedGenerations % 20 == 0 && currentMutationRate < 0.6) {
-                currentMutationRate = Math.min(0.6, currentMutationRate + 0.10);
-                System.out.println("  [Adaptive] Mutation rate boosted to " + String.format("%.2f", currentMutationRate));
-            }
+            long currentBestFitness = population.get(0).getReport().getTotalPenalty();
+            long newGenBestFitness = currentBestFitness;
 
             ArrayList<TimeTable> nextGen = new ArrayList<>();
 
-            // Elitism: preserve best individuals
             for (int i = 0; i < config.elitismCount; i++) {
                 nextGen.add(population.get(i));
             }
 
-            // Fill rest via crossover + mutation
             while (nextGen.size() < config.populationSize) {
                 TimeTable p1 = Selection.tournamentSelection(population, config.tournamentSize);
                 TimeTable p2 = Selection.tournamentSelection(population, config.tournamentSize);
                 TimeTable child = GeneticOperators.crossover(p1, p2);
                 FitnessCalculator.calculateFitness(child);
+
                 if (Math.random() < currentMutationRate) {
                     GeneticOperators.mutate(child, timePools, roomPools, config.mutationImpactRatio);
+                    FitnessCalculator.calculateFitness(child);
                 }
-                FitnessCalculator.calculateFitness(child);
+
+                if (child.getReport().getTotalPenalty() > newGenBestFitness) {
+                    newGenBestFitness = child.getReport().getTotalPenalty();
+                }
+
                 nextGen.add(child);
+            }
+
+            if (currentBestFitness >= newGenBestFitness) {
+                unevolvedGenerations++;
+            } else {
+                unevolvedGenerations = 0;
+                currentMutationRate = config.initialMutationRate;
+            }
+
+            if (unevolvedGenerations > 0 && unevolvedGenerations % 20 == 0 && currentMutationRate < 0.5) {
+                currentMutationRate += 0.10;
+                System.out.println("  [Adaptive] Mutation rate boosted to " + currentMutationRate);
             }
 
             population = nextGen;
         }
 
-        population.sort((a, b) -> Long.compare(b.getFitness(), a.getFitness()));
+        population.sort((a, b) -> Long.compare(b.getReport().getTotalPenalty(), a.getReport().getTotalPenalty()));
         return population;
     }
 }

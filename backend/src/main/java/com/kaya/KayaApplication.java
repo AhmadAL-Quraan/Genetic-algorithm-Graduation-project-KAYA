@@ -9,4 +9,5 @@ public class KayaApplication {
     public static void main(String[] args) {
         SpringApplication.run(KayaApplication.class, args);
     }
+
 }

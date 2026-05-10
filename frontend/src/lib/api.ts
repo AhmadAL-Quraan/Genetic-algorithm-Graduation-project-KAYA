@@ -35,10 +35,6 @@ export interface Course {
   roomGroups: RoomType;
   timeGroups: TeachingMethod;
   department?: Department;
-  lectureId?: number;
-  teacher?: Teacher;
-  instructor?: string;
-  sectionNumber?: number;
   room?: Room;
   timeSlot?: TimeSlot;
 }
@@ -49,9 +45,6 @@ export interface CourseInput {
   roomGroups: RoomType;
   timeGroups: TeachingMethod;
   departmentId?: number;
-  teacherId?: number;
-  instructor?: string;
-  sectionNumber?: number;
   roomId?: number;
   timeSlotId?: number;
 }
@@ -62,15 +55,16 @@ export interface RoomInput { building: string; roomNumber: string; roomType: Roo
 export interface Lecture {
   id: number;
   course: Course | null;
-  number: number;
-  instructor: string;
-  teacher?: Teacher;
+  teacher?: { id: number; name: string } | null;
+  instructor?: string | null;
   timeSlot: TimeSlot | null;
   room: Room | null;
 }
 export interface LectureInput {
-  courseId: number; instructor: string; number?: number;
-  timeSlotId?: number | null; roomId?: number | null;
+  courseId: number;
+  teacherId?: number | null;
+  timeSlotId?: number | null;
+  roomId?: number | null;
 }
 
 export interface ConflictItem {
@@ -208,6 +202,17 @@ export function useDeleteAllTimeSlots() {
   });
 }
 
+export function useDeleteAllLectures() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: () => request<void>("DELETE", "/lectures"),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["lectures"] });
+      qc.invalidateQueries({ queryKey: ["conflicts"] });
+    },
+  });
+}
+
 export function useConflicts() {
   return useQuery<ConflictItem[]>({
     queryKey: ["conflicts"],
@@ -249,7 +254,8 @@ export async function updateLectureAssignment(
   lecture: Lecture, patch: { timeSlotId?: number | null; roomId?: number | null }
 ): Promise<Lecture> {
   const input: LectureInput = {
-    courseId: lecture.course?.id ?? 0, instructor: lecture.instructor, number: lecture.number,
+    courseId: lecture.course?.id ?? 0,
+    teacherId: lecture.teacher?.id ?? null,
     timeSlotId: patch.timeSlotId !== undefined ? patch.timeSlotId : lecture.timeSlot?.id ?? null,
     roomId:    patch.roomId    !== undefined ? patch.roomId    : lecture.room?.id ?? null,
   };

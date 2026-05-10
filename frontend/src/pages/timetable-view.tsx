@@ -58,14 +58,19 @@ export default function TimetableViewPage() {
             <div className="flex flex-wrap gap-2">
               <Badge variant={timetable.fitnessReport.roomConflicts > 0 ? "destructive" : "outline"}>
                 Room: {timetable.fitnessReport.roomConflicts}
+                {timetable.fitnessReport.roomConflicts > 0 && ` (−${timetable.fitnessReport.roomConflicts * 10})`}
               </Badge>
               <Badge variant={timetable.fitnessReport.instructorConflicts > 0 ? "destructive" : "outline"}>
                 Instructor: {timetable.fitnessReport.instructorConflicts}
+                {timetable.fitnessReport.instructorConflicts > 0 && ` (−${timetable.fitnessReport.instructorConflicts * 10})`}
               </Badge>
               <Badge variant={timetable.fitnessReport.studentConflicts > 0 ? "destructive" : "outline"}>
                 Student: {timetable.fitnessReport.studentConflicts}
+                {timetable.fitnessReport.studentConflicts > 0 && ` (−${timetable.fitnessReport.studentConflicts * 20})`}
               </Badge>
-              <Badge>Penalty: {timetable.fitnessReport.totalPenalty}</Badge>
+              <Badge variant={timetable.fitnessReport.totalPenalty === 0 ? "outline" : "default"}>
+                Penalty: {timetable.fitnessReport.totalPenalty}
+              </Badge>
             </div>
           )}
           <a href={exportTimetableUrl(timetable.id)} download>

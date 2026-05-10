@@ -5,6 +5,7 @@ import {
   Sparkles, DoorOpen, Users, Building2, Clock,
   BookOpen, Calendar, AlertTriangle, ArrowRight,
 } from "lucide-react";
+import yarmoukLogo from "/yarmouk-logo.png";
 
 const STEPS = [
   {
@@ -115,7 +116,7 @@ export default function WelcomePage() {
 
         <div className="relative flex flex-col items-start gap-6 sm:flex-row sm:items-center">
           <img
-            src="/yarmouk-logo.png"
+            src={yarmoukLogo}
             alt="Yarmouk University"
             className="h-24 w-24 shrink-0 rounded-xl object-contain bg-white/10 p-2 shadow"
           />

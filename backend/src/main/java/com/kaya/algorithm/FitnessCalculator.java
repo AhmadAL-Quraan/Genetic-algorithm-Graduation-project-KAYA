@@ -1,23 +1,22 @@
 package com.kaya.algorithm;
 
-import com.kaya.algorithm.data.ExcelDataExtractor;
 import com.kaya.model.Lecture;
 import com.kaya.model.Room;
+import com.kaya.model.TimeSlot;
 import com.kaya.model.TimeTable;
 
+import java.time.DayOfWeek;
 import java.util.*;
 
 public class FitnessCalculator {
 
-    private static final int HARD_CONFLICT_PENALTY = 100;
-    private static final int SOFT_CONFLICT_PENALTY = 1;
+    public static Integer calculateFitness(TimeTable tt) {
 
-    public static Long calculateFitness(TimeTable tt) {
-        Long totalFitness = 0L;
-        tt.getReport().setTotalPenalty(0L);
-        tt.getReport().setStudentConflicts(0L);
-        tt.getReport().setInstructorConflicts(0L);
-        tt.getReport().setRoomConflicts(0L);
+        int totalFitness = 0;
+        tt.getReport().setTotalPenalty(0);
+        tt.getReport().setStudentConflicts(0);
+        tt.getReport().setInstructorConflicts(0);
+        tt.getReport().setRoomConflicts(0);
         tt.getReport().getConflictingLectures().clear();
 
         Map<Room, List<Lecture>> roomGroups = new HashMap<>();
@@ -25,40 +24,45 @@ public class FitnessCalculator {
         Map<String, List<Lecture>> deptYearGroups = new HashMap<>();
 
         for (Lecture c : tt.getLectures()) {
-            roomGroups.computeIfAbsent(c.getRoom(), k -> new ArrayList<>()).add(c);
-            instructorGroups.computeIfAbsent(c.getInstructor(), k -> new ArrayList<>()).add(c);
-
-            String deptYearKey = c.getCourse().getCourseSymbol() + "-" + c.getCourse().getCourseNumber().charAt(0);
-            deptYearGroups.computeIfAbsent(deptYearKey, k -> new ArrayList<>()).add(c);
+            if (c.getRoom() != null) {
+                roomGroups.computeIfAbsent(c.getRoom(), k -> new ArrayList<>()).add(c);
+            }
+            if (c.getInstructor() != null) {
+                instructorGroups.computeIfAbsent(c.getInstructor(), k -> new ArrayList<>()).add(c);
+            }
+            if (c.getCourse() != null && c.getCourse().getCourseNumber() != null
+                    && !c.getCourse().getCourseNumber().isEmpty()) {
+                String deptYearKey = c.getCourse().getCourseSymbol()
+                        + "-" + c.getCourse().getCourseNumber().charAt(0);
+                deptYearGroups.computeIfAbsent(deptYearKey, k -> new ArrayList<>()).add(c);
+            }
         }
 
-        // 1. Hard Conflicts (Room)
         for (List<Lecture> roomList : roomGroups.values()) {
-            totalFitness += checkInternalConflicts(tt, roomList, "Room Conflict", HARD_CONFLICT_PENALTY);
+            totalFitness += checkInternalConflicts(tt, roomList, "Room Conflict", 10);
         }
 
-        // 2. Hard Conflicts (Instructor)
         for (List<Lecture> instructorList : instructorGroups.values()) {
-            totalFitness += checkInternalConflicts(tt, instructorList, "Instructor Conflict", HARD_CONFLICT_PENALTY);
+            totalFitness += checkInternalConflicts(tt, instructorList, "Instructor Conflict", 10);
         }
 
-        // 3. Soft Conflicts (Same Year/Dept Students)
         for (List<Lecture> deptYearList : deptYearGroups.values()) {
-            totalFitness += checkInternalConflicts(tt, deptYearList, "Student Year Conflict", SOFT_CONFLICT_PENALTY);
+            totalFitness += checkInternalConflicts(tt, deptYearList, "Student Year Conflict", 20);
         }
 
-        tt.setFitness(totalFitness);
+        tt.getReport().setTotalPenalty(totalFitness);
         return totalFitness;
     }
 
-    private static int checkInternalConflicts(TimeTable tt, List<Lecture> group, String conflictType, int penalty_weight) {
+    private static int checkInternalConflicts(TimeTable tt, List<Lecture> group,
+                                               String conflictType, int penalty_weight) {
         int penalty = 0;
         for (int i = 0; i < group.size(); i++) {
             for (int j = i + 1; j < group.size(); j++) {
                 Lecture c1 = group.get(i);
                 Lecture c2 = group.get(j);
 
-                if (ExcelDataExtractor.conflictsWith(c1.getTimeSlot(), c2.getTimeSlot())) {
+                if (conflictsWith(c1.getTimeSlot(), c2.getTimeSlot())) {
                     tt.getReport().getConflictingLectures().add(c1);
                     tt.getReport().getConflictingLectures().add(c2);
                     penalty -= penalty_weight;
@@ -75,5 +79,19 @@ public class FitnessCalculator {
             }
         }
         return penalty;
+    }
+
+    public static boolean conflictsWith(TimeSlot ts1, TimeSlot ts2) {
+        if (ts1 == null || ts2 == null) return false;
+        boolean dayOverlap = false;
+        for (DayOfWeek day : ts1.getDays()) {
+            if (ts2.getDays().contains(day)) {
+                dayOverlap = true;
+                break;
+            }
+        }
+        if (!dayOverlap) return false;
+        return ts1.getStartTime().isBefore(ts2.getEndTime())
+                && ts2.getStartTime().isBefore(ts1.getEndTime());
     }
 }

@@ -1,11 +1,16 @@
 package com.kaya.model;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
-@Getter @Setter
-@AllArgsConstructor @NoArgsConstructor
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Department {
 
     @Id
@@ -14,7 +19,4 @@ public class Department {
 
     private String name;
     private String code;
-
-    @Override
-    public String toString() { return code + " - " + name; }
 }

@@ -19,7 +19,7 @@ run = "pnpm --filter @workspace/university-scheduler run dev"
 
 [services.env]
 PORT = "5000"
-BASE_PATH = "/"
+BASE_PATH = "/__dev-frontend"
 
 [services.production]
 build = ["pnpm", "--filter", "@workspace/university-scheduler", "run", "build"]

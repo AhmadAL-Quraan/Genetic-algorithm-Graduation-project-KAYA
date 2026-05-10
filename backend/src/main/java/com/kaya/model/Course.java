@@ -1,26 +1,25 @@
 package com.kaya.model;
 
 import com.kaya.model.enums.RoomType;
-import com.kaya.model.enums.SlotType;
 import com.kaya.model.enums.TeachingMethod;
 import jakarta.persistence.*;
-import lombok.*;
-import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
-@Getter @Setter
-@AllArgsConstructor @NoArgsConstructor
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Course {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String courseSymbol;
     private String courseNumber;
-
-    @ElementCollection(fetch = FetchType.EAGER)
-    private List<String> majors;
 
     @Enumerated(EnumType.STRING)
     private RoomType requiredRoomType;
@@ -28,30 +27,15 @@ public class Course {
     @Enumerated(EnumType.STRING)
     private TeachingMethod teachingMethod;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "department_id")
-    private Department department;
-
-    /** SPECIFIC → locked to exactly this slot. GENERAL → use slot as a time window. Null = no preference. */
-    @Enumerated(EnumType.STRING)
-    private SlotType preferredSlotType;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "preferred_time_slot_id")
-    private TimeSlot preferredTimeSlot;
-
-    /** Lecture session length in minutes — required when preferredSlotType = GENERAL. */
-    private Integer lectureDurationMinutes;
-
-    public Course(String courseSymbol, String courseNumber, List<String> majors,
-                  RoomType requiredRoomType, TeachingMethod teachingMethod) {
+    public Course(String courseSymbol, String courseNumber, RoomType requiredRoomType, TeachingMethod teachingMethod) {
         this.courseSymbol = courseSymbol;
         this.courseNumber = courseNumber;
-        this.majors = majors;
         this.requiredRoomType = requiredRoomType;
         this.teachingMethod = teachingMethod;
     }
 
     @Override
-    public String toString() { return courseSymbol + " " + courseNumber; }
+    public String toString() {
+        return courseSymbol + " " + courseNumber;
+    }
 }

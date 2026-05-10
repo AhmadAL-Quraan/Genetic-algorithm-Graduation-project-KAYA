@@ -1,76 +1,87 @@
 package com.kaya.service;
 
 import com.kaya.dto.request.TeacherRequest;
+import com.kaya.dto.response.DepartmentResponse;
 import com.kaya.dto.response.TeacherResponse;
-import com.kaya.model.Lecture;
+import com.kaya.model.Department;
 import com.kaya.model.Teacher;
-import com.kaya.repository.DepartmentRepository;
+import com.kaya.repository.CourseRepository;
 import com.kaya.repository.LectureRepository;
 import com.kaya.repository.TeacherRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class TeacherService {
 
-    private final TeacherRepository repo;
-    private final DepartmentRepository departmentRepository;
+    private final TeacherRepository teacherRepository;
     private final DepartmentService departmentService;
     private final LectureRepository lectureRepository;
+    private final CourseRepository courseRepository;
 
     public List<TeacherResponse> getAll() {
-        return repo.findAll().stream().map(this::toResponse).toList();
+        return teacherRepository.findAll()
+                .stream()
+                .map(this::mapToResponse)
+                .toList();
     }
 
     public TeacherResponse getById(Long id) {
-        return toResponse(repo.findById(id).orElseThrow(() -> new RuntimeException("Teacher not found")));
+        Teacher teacher = teacherRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Teacher not found"));
+        return mapToResponse(teacher);
     }
 
-    public TeacherResponse create(TeacherRequest req) {
-        Teacher t = new Teacher();
-        t.setName(req.getName());
-        t.setEmail(req.getEmail());
-        if (req.getDepartmentId() != null) {
-            t.setDepartment(departmentRepository.findById(req.getDepartmentId()).orElse(null));
-        }
-        return toResponse(repo.save(t));
+    public TeacherResponse create(TeacherRequest request) {
+        Teacher teacher = new Teacher();
+        return save(request, teacher);
     }
 
-    public TeacherResponse update(Long id, TeacherRequest req) {
-        Teacher t = repo.findById(id).orElseThrow(() -> new RuntimeException("Teacher not found"));
-        t.setName(req.getName());
-        t.setEmail(req.getEmail());
-        t.setDepartment(req.getDepartmentId() != null
-                ? departmentRepository.findById(req.getDepartmentId()).orElse(null) : null);
-        return toResponse(repo.save(t));
+    public TeacherResponse update(Long id, TeacherRequest request) {
+        Teacher teacher = teacherRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Teacher not found"));
+        return save(request, teacher);
     }
 
     @Transactional
     public void delete(Long id) {
-        if (!repo.existsById(id)) throw new RuntimeException("Teacher not found");
-        List<Lecture> lectures = lectureRepository.findAll().stream()
-                .filter(l -> l.getTeacher() != null && id.equals(l.getTeacher().getId()))
-                .toList();
-        lectures.forEach(l -> l.setTeacher(null));
-        lectureRepository.saveAll(lectures);
-        repo.deleteById(id);
+        if (!teacherRepository.existsById(id)) {
+            throw new RuntimeException("Teacher not found");
+        }
+        courseRepository.detachTeacher(id);
+        lectureRepository.detachTeacher(id);
+        teacherRepository.deleteById(id);
     }
 
     @Transactional
     public void deleteAll() {
-        lectureRepository.findAll().forEach(l -> l.setTeacher(null));
-        lectureRepository.saveAll(lectureRepository.findAll());
-        repo.deleteAll();
+        courseRepository.detachAllTeachers();
+        lectureRepository.detachAllTeachers();
+        teacherRepository.deleteAll();
     }
 
-    public TeacherResponse toResponse(Teacher t) {
-        if (t == null) return null;
-        return new TeacherResponse(
-                t.getId(), t.getName(), t.getEmail(),
-                t.getDepartment() != null ? departmentService.toResponse(t.getDepartment()) : null
-        );
+    private TeacherResponse save(TeacherRequest request, Teacher teacher) {
+        teacher.setName(request.getName());
+        teacher.setEmail(request.getEmail());
+        if (request.getDepartmentId() != null) {
+            Department dept = departmentService.getEntityById(request.getDepartmentId());
+            teacher.setDepartment(dept);
+        } else {
+            teacher.setDepartment(null);
+        }
+        return mapToResponse(teacherRepository.save(teacher));
+    }
+
+    private TeacherResponse mapToResponse(Teacher teacher) {
+        DepartmentResponse deptResp = null;
+        if (teacher.getDepartment() != null) {
+            Department d = teacher.getDepartment();
+            deptResp = new DepartmentResponse(d.getId(), d.getName(), d.getCode());
+        }
+        return new TeacherResponse(teacher.getId(), teacher.getName(), teacher.getEmail(), deptResp);
     }
 }

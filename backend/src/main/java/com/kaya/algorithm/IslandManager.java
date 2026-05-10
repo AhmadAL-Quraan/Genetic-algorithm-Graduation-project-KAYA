@@ -7,7 +7,6 @@ import java.util.Random;
 
 public class IslandManager {
 
-    // this function is not used currently but may be used in future for optimization.
     public static ArrayList<TimeTable> islandsMerge(ArrayList<ArrayList<TimeTable>> islands) {
         Random rand = new Random();
         ArrayList<TimeTable> finalPopulation = new ArrayList<>();
@@ -24,7 +23,7 @@ public class IslandManager {
                 number--;
             }
         }
-        while(finalPopulation.size() < islands.get(0).size())
+        while (finalPopulation.size() < islands.get(0).size())
             finalPopulation.add(islands.get(4).get(index++));
 
         return finalPopulation;

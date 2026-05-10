@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { TimeTables, Courses, Rooms, TimeSlots, type TimeTable, type GAConfig, exportTimetableUrl } from "@/lib/api";
+import { TimeTables, Courses, Rooms, TimeSlots, Lectures, type TimeTable, type GAConfig, exportTimetableUrl } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -31,9 +31,10 @@ function useReadinessChecks() {
   const courses   = Courses.useList();
   const rooms     = Rooms.useList();
   const timeSlots = TimeSlots.useList();
+  const lectures  = Lectures.useList();
 
   const checks = useMemo<ReadinessCheck[] | null>(() => {
-    if (!courses.data || !rooms.data || !timeSlots.data) return null;
+    if (!courses.data || !rooms.data || !timeSlots.data || !lectures.data) return null;
 
     const items: ReadinessCheck[] = [];
 
@@ -42,6 +43,13 @@ function useReadinessChecks() {
       ok: courses.data.length > 0,
       hint: "Go to Courses and add at least one course.",
       href: "/courses",
+    });
+
+    items.push({
+      label: "At least one lecture section defined",
+      ok: lectures.data.length > 0,
+      hint: "Go to Lectures and add sections for your courses. Each section is one row the algorithm will schedule.",
+      href: "/lectures",
     });
 
     const neededRoomTypes = [...new Set(courses.data.map(c => c.roomGroups))];
@@ -57,7 +65,7 @@ function useReadinessChecks() {
 
     const neededMethods = [...new Set(courses.data.map(c => c.timeGroups))];
     for (const method of neededMethods) {
-      const hasSlot = timeSlots.data.some(ts => ts.teachingMethod === method);
+      const hasSlot = timeSlots.data.some(ts => ts.teachingMethod === method && ts.durationMinutes != null);
       items.push({
         label: `Time window for "${METHOD_LABEL[method] ?? method}" defined`,
         ok: hasSlot,
@@ -67,42 +75,65 @@ function useReadinessChecks() {
     }
 
     return items;
-  }, [courses.data, rooms.data, timeSlots.data]);
+  }, [courses.data, rooms.data, timeSlots.data, lectures.data]);
 
-  const loading = courses.isLoading || rooms.isLoading || timeSlots.isLoading;
+  const loading = courses.isLoading || rooms.isLoading || timeSlots.isLoading || lectures.isLoading;
   const allOk   = checks != null && checks.every(c => c.ok);
   return { checks, allOk, loading };
 }
 
 function ReadinessPanel({ checks, loading }: { checks: ReadinessCheck[] | null; loading: boolean }) {
+  const [collapsed, setCollapsed] = useState(false);
+
   if (loading || !checks) return null;
+
   const failing = checks.filter(c => !c.ok);
-  if (failing.length === 0) return null;
+  const allOk   = failing.length === 0;
 
   return (
-    <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 space-y-3">
-      <p className="text-sm font-semibold text-amber-800">
-        Before you can generate, please complete the following:
-      </p>
-      <ul className="space-y-2">
-        {checks.map((c, i) => (
-          <li key={i} className="flex items-start gap-2.5 text-sm">
-            {c.ok
-              ? <CheckCircle2 className="h-4 w-4 text-green-500 mt-0.5 shrink-0" />
-              : <XCircle     className="h-4 w-4 text-red-500   mt-0.5 shrink-0" />}
-            <span className={c.ok ? "text-muted-foreground line-through" : "text-foreground"}>
-              {c.ok ? c.label : (
-                <>
-                  {c.hint}{" "}
-                  <Link href={c.href} className="font-medium text-amber-700 underline underline-offset-2 hover:text-amber-900">
-                    Go &rarr;
-                  </Link>
-                </>
-              )}
-            </span>
-          </li>
-        ))}
-      </ul>
+    <div className={`rounded-xl border p-4 space-y-3 ${
+      allOk
+        ? "border-green-200 bg-green-50"
+        : "border-amber-200 bg-amber-50"
+    }`}>
+      <button
+        type="button"
+        onClick={() => setCollapsed(v => !v)}
+        className="w-full flex items-center justify-between gap-2 text-left"
+      >
+        <p className={`text-sm font-semibold ${allOk ? "text-green-800" : "text-amber-800"}`}>
+          {allOk
+            ? "✓ All requirements met — ready to generate"
+            : `${failing.length} requirement${failing.length > 1 ? "s" : ""} missing before you can generate`}
+        </p>
+        {allOk && (
+          <span className={`text-xs ${collapsed ? "text-green-600" : "text-green-500"}`}>
+            {collapsed ? "show ▾" : "hide ▴"}
+          </span>
+        )}
+      </button>
+
+      {(!collapsed || !allOk) && (
+        <ul className="space-y-2">
+          {checks.map((c, i) => (
+            <li key={i} className="flex items-start gap-2.5 text-sm">
+              {c.ok
+                ? <CheckCircle2 className="h-4 w-4 text-green-500 mt-0.5 shrink-0" />
+                : <XCircle     className="h-4 w-4 text-red-500   mt-0.5 shrink-0" />}
+              <span className={c.ok ? "text-green-700" : "text-foreground"}>
+                {c.ok ? c.label : (
+                  <>
+                    {c.hint}{" "}
+                    <Link href={c.href} className="font-medium text-amber-700 underline underline-offset-2 hover:text-amber-900">
+                      Go &rarr;
+                    </Link>
+                  </>
+                )}
+              </span>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }
@@ -666,16 +697,21 @@ export default function TimetablesPage() {
             <CardTitle className="text-base">Timetable #{selectedDisplayNum}</CardTitle>
             {selected.fitnessReport && (
               <div className="flex flex-wrap gap-2 pt-1 text-xs">
-                <Badge variant="outline">
+                <Badge variant={selected.fitnessReport.roomConflicts > 0 ? "destructive" : "outline"}>
                   Room conflicts: {selected.fitnessReport.roomConflicts}
+                  {selected.fitnessReport.roomConflicts > 0 && ` (−${selected.fitnessReport.roomConflicts * 10})`}
                 </Badge>
-                <Badge variant="outline">
+                <Badge variant={selected.fitnessReport.instructorConflicts > 0 ? "destructive" : "outline"}>
                   Instructor conflicts: {selected.fitnessReport.instructorConflicts}
+                  {selected.fitnessReport.instructorConflicts > 0 && ` (−${selected.fitnessReport.instructorConflicts * 10})`}
                 </Badge>
-                <Badge variant="outline">
+                <Badge variant={selected.fitnessReport.studentConflicts > 0 ? "destructive" : "outline"}>
                   Student conflicts: {selected.fitnessReport.studentConflicts}
+                  {selected.fitnessReport.studentConflicts > 0 && ` (−${selected.fitnessReport.studentConflicts * 20})`}
                 </Badge>
-                <Badge>Total penalty: {selected.fitnessReport.totalPenalty}</Badge>
+                <Badge variant={selected.fitnessReport.totalPenalty === 0 ? "outline" : "default"}>
+                  Total penalty: {selected.fitnessReport.totalPenalty}
+                </Badge>
               </div>
             )}
           </CardHeader>

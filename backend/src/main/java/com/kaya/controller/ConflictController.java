@@ -2,9 +2,14 @@ package com.kaya.controller;
 
 import com.kaya.model.Lecture;
 import com.kaya.model.TimeSlot;
-import com.kaya.repository.LectureRepository;
+import com.kaya.model.TimeTable;
+import com.kaya.repository.TimeTableRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import java.time.DayOfWeek;
 import java.util.*;
 
@@ -13,82 +18,125 @@ import java.util.*;
 @RequiredArgsConstructor
 public class ConflictController {
 
-    private final LectureRepository lectureRepository;
+    private final TimeTableRepository timeTableRepository;
 
     @GetMapping
+    @Transactional(readOnly = true)
     public List<Map<String, Object>> getConflicts() {
-        List<Lecture> lectures = lectureRepository.findAll().stream()
-                .filter(l -> l.getTimeSlot() != null)
-                .toList();
+        List<TimeTable> all = timeTableRepository.findAll();
+        if (all.isEmpty()) return List.of();
 
-        List<Map<String, Object>> conflicts = new ArrayList<>();
+        TimeTable latest = all.stream()
+                .max(Comparator.comparingLong(t -> t.getId() != null ? t.getId() : 0L))
+                .orElse(null);
+        if (latest == null) return List.of();
+
+        List<Lecture> lectures = latest.getLectures();
+        if (lectures == null || lectures.isEmpty()) return List.of();
+
+        List<Map<String, Object>> results = new ArrayList<>();
 
         for (int i = 0; i < lectures.size(); i++) {
             for (int j = i + 1; j < lectures.size(); j++) {
                 Lecture a = lectures.get(i);
                 Lecture b = lectures.get(j);
 
-                if (!overlaps(a.getTimeSlot(), b.getTimeSlot())) continue;
+                if (!timeSlotsOverlap(a.getTimeSlot(), b.getTimeSlot())) continue;
 
-                String instrA = resolveInstructor(a);
-                String instrB = resolveInstructor(b);
-
-                // Room conflict
-                if (a.getRoom() != null && b.getRoom() != null
-                        && a.getRoom().getId().equals(b.getRoom().getId())) {
-                    conflicts.add(buildConflict("ROOM",
-                            "Room conflict: " + a.getRoom().getBuilding() + " " + a.getRoom().getRoomNumber()
-                                    + " is double-booked",
-                            a, b));
-                }
-
-                // Teacher/instructor conflict
-                if (instrA != null && instrB != null && !instrA.isBlank() && instrA.equalsIgnoreCase(instrB)) {
-                    conflicts.add(buildConflict("TEACHER",
-                            "Teacher conflict: " + instrA + " has two classes at the same time",
-                            a, b));
-                }
-
-                // Student group (same major, overlapping courses)
-                if (a.getCourse() != null && b.getCourse() != null) {
-                    Set<String> majorsA = new HashSet<>(a.getCourse().getMajors());
-                    Set<String> majorsB = new HashSet<>(b.getCourse().getMajors());
-                    majorsA.retainAll(majorsB);
-                    if (!majorsA.isEmpty()) {
-                        conflicts.add(buildConflict("STUDENT",
-                                "Student group conflict: majors " + majorsA + " have overlapping courses",
-                                a, b));
-                    }
+                List<String> types = detectTypes(a, b);
+                for (String type : types) {
+                    Map<String, Object> item = new LinkedHashMap<>();
+                    item.put("type", type);
+                    item.put("message", buildMessage(a, b, type));
+                    item.put("lectureAId", a.getId());
+                    item.put("lectureBId", b.getId());
+                    item.put("courseA", courseName(a));
+                    item.put("courseB", courseName(b));
+                    item.put("instructorA", instructorLabel(a));
+                    item.put("instructorB", instructorLabel(b));
+                    item.put("timeSlot", formatTimeSlot(a.getTimeSlot()));
+                    results.add(item);
                 }
             }
         }
-        return conflicts;
+        return results;
     }
 
-    private boolean overlaps(TimeSlot a, TimeSlot b) {
-        if (a == null || b == null) return false;
-        Set<DayOfWeek> sharedDays = new HashSet<>(a.getDays());
-        sharedDays.retainAll(b.getDays());
-        if (sharedDays.isEmpty()) return false;
-        return a.getStartTime().isBefore(b.getEndTime()) && b.getStartTime().isBefore(a.getEndTime());
+    private boolean timeSlotsOverlap(TimeSlot ts1, TimeSlot ts2) {
+        if (ts1 == null || ts2 == null) return false;
+        boolean dayOverlap = false;
+        for (DayOfWeek day : ts1.getDays()) {
+            if (ts2.getDays().contains(day)) { dayOverlap = true; break; }
+        }
+        if (!dayOverlap) return false;
+        return ts1.getStartTime().isBefore(ts2.getEndTime())
+                && ts2.getStartTime().isBefore(ts1.getEndTime());
     }
 
-    private String resolveInstructor(Lecture l) {
+    private List<String> detectTypes(Lecture a, Lecture b) {
+        List<String> types = new ArrayList<>();
+
+        // Room conflict
+        if (a.getRoom() != null && b.getRoom() != null
+                && Objects.equals(a.getRoom().getId(), b.getRoom().getId())) {
+            types.add("ROOM");
+        }
+
+        // Instructor conflict — check both string field and Teacher FK
+        boolean sameInstructorStr = a.getInstructor() != null && b.getInstructor() != null
+                && Objects.equals(a.getInstructor(), b.getInstructor());
+        boolean sameTeacherFK = a.getTeacher() != null && b.getTeacher() != null
+                && Objects.equals(a.getTeacher().getId(), b.getTeacher().getId());
+        if (sameInstructorStr || sameTeacherFK) {
+            types.add("TEACHER");
+        }
+
+        // Student-group conflict — same course symbol + same year (first digit of course number)
+        // mirrors the FitnessCalculator grouping: courseSymbol + "-" + courseNumber.charAt(0)
+        String groupA = studentGroup(a);
+        String groupB = studentGroup(b);
+        if (groupA != null && groupA.equals(groupB)) {
+            types.add("STUDENT");
+        }
+
+        return types;
+    }
+
+    /** Returns "CS-1" style key used by FitnessCalculator, or null if not determinable. */
+    private String studentGroup(Lecture l) {
+        if (l.getCourse() == null) return null;
+        String sym = l.getCourse().getCourseSymbol();
+        String num = l.getCourse().getCourseNumber();
+        if (sym == null || sym.isBlank() || num == null || num.isBlank()) return null;
+        return sym.trim() + "-" + num.charAt(0);
+    }
+
+    private String courseName(Lecture l) {
+        if (l.getCourse() == null) return "";
+        return l.getCourse().getCourseSymbol() + " " + l.getCourse().getCourseNumber();
+    }
+
+    private String instructorLabel(Lecture l) {
         if (l.getTeacher() != null) return l.getTeacher().getName();
         return l.getInstructor();
     }
 
-    private Map<String, Object> buildConflict(String type, String message, Lecture a, Lecture b) {
-        Map<String, Object> m = new LinkedHashMap<>();
-        m.put("type", type);
-        m.put("message", message);
-        m.put("lectureAId", a.getId());
-        m.put("lectureBId", b.getId());
-        m.put("courseA", a.getCourse() != null ? a.getCourse().getCourseSymbol() + " " + a.getCourse().getCourseNumber() : "—");
-        m.put("courseB", b.getCourse() != null ? b.getCourse().getCourseSymbol() + " " + b.getCourse().getCourseNumber() : "—");
-        m.put("instructorA", resolveInstructor(a));
-        m.put("instructorB", resolveInstructor(b));
-        m.put("timeSlot", a.getTimeSlot().getStartTime() + " – " + a.getTimeSlot().getEndTime());
-        return m;
+    private String buildMessage(Lecture a, Lecture b, String type) {
+        String courseA = courseName(a);
+        String courseB = courseName(b);
+        return switch (type) {
+            case "ROOM"    -> "Room conflict: " + courseA + " and " + courseB
+                    + " share room " + (a.getRoom() != null ? a.getRoom().getRoomNumber() : "?");
+            case "TEACHER" -> "Instructor conflict: " + instructorLabel(a)
+                    + " is teaching " + courseA + " and " + courseB + " simultaneously";
+            case "STUDENT" -> "Student conflict: " + courseA + " and " + courseB
+                    + " overlap for the same student group (" + studentGroup(a) + ")";
+            default        -> type + " conflict between " + courseA + " and " + courseB;
+        };
+    }
+
+    private String formatTimeSlot(TimeSlot ts) {
+        if (ts == null) return "";
+        return ts.getDays() + " " + ts.getStartTime() + "-" + ts.getEndTime();
     }
 }

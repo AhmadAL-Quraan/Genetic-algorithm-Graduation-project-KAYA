@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
@@ -17,7 +18,9 @@ public class LectureController {
     private final LectureService lectureService;
 
     @GetMapping
-    public List<LectureResponse> getAll() { return lectureService.getAll(); }
+    public List<LectureResponse> getAll() {
+        return lectureService.getAll();
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<LectureResponse> getById(@PathVariable Long id) {
@@ -37,6 +40,12 @@ public class LectureController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         lectureService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Void> deleteAll() {
+        lectureService.deleteAll();
         return ResponseEntity.noContent().build();
     }
 }

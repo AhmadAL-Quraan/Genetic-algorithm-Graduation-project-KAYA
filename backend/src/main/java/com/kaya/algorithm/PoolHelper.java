@@ -8,25 +8,20 @@ import com.kaya.model.enums.TeachingMethod;
 
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 public class PoolHelper {
 
-    /**
-     * Returns the valid sub-slots for a lecture based on its course's teaching method.
-     * The timePools already contain the generated sub-slots (built from time windows
-     * in TimeTableService), so this is a simple teaching-method lookup.
-     */
-    public static HashSet<TimeSlot> getValidTimeSlots(Lecture lecture,
-                                                       Map<TeachingMethod, HashSet<TimeSlot>> timePools) {
+    public static HashSet<TimeSlot> getValidTimeSlots(Lecture lecture, Map<TeachingMethod, HashSet<TimeSlot>> timePools) {
+        if (lecture.getCourse() == null || lecture.getCourse().getTeachingMethod() == null) return new HashSet<>();
         TeachingMethod method = lecture.getCourse().getTeachingMethod();
         HashSet<TimeSlot> pool = timePools.get(method);
-        return new HashSet<>(pool != null ? pool : Set.of());
+        return pool != null ? new HashSet<>(pool) : new HashSet<>();
     }
 
     public static HashSet<Room> getValidRooms(Lecture lecture, Map<RoomType, HashSet<Room>> roomPools) {
+        if (lecture.getCourse() == null || lecture.getCourse().getRequiredRoomType() == null) return new HashSet<>();
         RoomType type = lecture.getCourse().getRequiredRoomType();
         HashSet<Room> pool = roomPools.get(type);
-        return new HashSet<>(pool != null ? pool : Set.of());
+        return pool != null ? new HashSet<>(pool) : new HashSet<>();
     }
 }
