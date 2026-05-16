@@ -16,6 +16,13 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        columnNames = {"courseSymbol", "courseNumber"}
+                )
+        }
+)
 public class Course {
 
     @Id

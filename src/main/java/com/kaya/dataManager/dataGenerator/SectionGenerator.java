@@ -1,4 +1,4 @@
-package com.kaya.dataManager;
+package com.kaya.dataManager.dataGenerator;
 
 import com.kaya.model.Lecture;
 import com.kaya.model.TimeTable;

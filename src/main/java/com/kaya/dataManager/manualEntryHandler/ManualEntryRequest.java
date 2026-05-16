@@ -1,7 +1,5 @@
-package com.kaya.dto.request;
+package com.kaya.dataManager.manualEntryHandler;
 
-import com.kaya.model.Instructor;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,10 +8,11 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class LectureRequest {
+public class ManualEntryRequest {
+
+    // Course
     @NotNull private Long courseId;
-    private Integer number;
+
+    // Instructor
     @NotNull private Long instructorId;
-    private Long timeSlotId;
-    private Long roomId;
 }

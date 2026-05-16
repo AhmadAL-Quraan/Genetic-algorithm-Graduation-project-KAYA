@@ -15,6 +15,13 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        columnNames = {"building", "roomNumber"}
+                )
+        }
+)
 public class Room {
 
     @Id

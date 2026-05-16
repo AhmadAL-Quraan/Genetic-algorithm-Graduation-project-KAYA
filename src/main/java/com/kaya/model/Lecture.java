@@ -30,7 +30,10 @@ public class Lecture {
     private TimeSlot timeSlot;
 
     private Integer sectionNumber;
-    private String instructor;
+
+    @ManyToOne
+    @JoinColumn(name = "instructor_id")
+    private Instructor instructor;
 
     @Override
     public String toString() {

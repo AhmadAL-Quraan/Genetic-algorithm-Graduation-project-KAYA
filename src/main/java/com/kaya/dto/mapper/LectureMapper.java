@@ -10,7 +10,7 @@ public class LectureMapper {
                 lecture.getId(),
                 CourseMapper.mapToResponse(lecture.getCourse()),
                 lecture.getSectionNumber(),
-                lecture.getInstructor(),
+                InstructorMapper.mapToResponse(lecture.getInstructor()),
                 lecture.getTimeSlot() != null
                         ? TimeSlotMapper.mapToResponse(lecture.getTimeSlot())
                         : null,
@@ -27,7 +27,7 @@ public class LectureMapper {
                 null,
                 null,
                 null,
-                response.getInstructor()
+                InstructorMapper.mapToEntity(response.getInstructor())
         );
     }
 

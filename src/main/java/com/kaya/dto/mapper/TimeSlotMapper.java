@@ -11,7 +11,8 @@ public class TimeSlotMapper {
                 timeSlot.getStartTime(),
                 timeSlot.getEndTime(),
                 timeSlot.getDays(),
-                timeSlot.getTeachingMethod()
+                timeSlot.getTeachingMethod(),
+                timeSlot.getDurationMinutes()
         );
     }
 
@@ -21,7 +22,8 @@ public class TimeSlotMapper {
                 response.getStartTime(),
                 response.getEndTime(),
                 response.getDays(),
-                response.getTeachingMethod()
+                response.getTeachingMethod(),
+                response.getDurationMinutes()
         );
     }
 }

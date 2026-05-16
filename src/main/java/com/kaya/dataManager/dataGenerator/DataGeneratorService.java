@@ -1,8 +1,8 @@
-package com.kaya.dataManager.manualEntryGenerator;
+package com.kaya.dataManager.dataGenerator;
 
+import com.kaya.algorithm.GAConfig;
 import com.kaya.algorithm.run.StartPoint;
-import com.kaya.dataManager.SectionGenerator;
-import com.kaya.dataManager.manualEntry.*;
+import com.kaya.dataManager.manualEntryHandler.*;
 import com.kaya.dto.request.LectureRequest;
 import com.kaya.dto.response.LectureResponse;
 import com.kaya.dto.mapper.LectureMapper;
@@ -26,7 +26,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class manualEntryGeneratorService {
+public class DataGeneratorService {
 
     private final ManualEntryRepository manualEntryRepository;
     private final LectureService lectureService;
@@ -39,7 +39,7 @@ public class manualEntryGeneratorService {
     }
 
     private TimeTableResponse makeRequest(List<Lecture> lectures, List<Room> rooms, List<TimeSlot> timeSlots) {
-        TimeTable table = StartPoint.runFromDatabase(lectures, rooms, timeSlots);
+        TimeTable table = StartPoint.runAlgorithm(lectures, rooms, timeSlots, new GAConfig(), false, null, null);
         SectionGenerator.generate(table);
         System.out.println(table);
         return timeTableService.create(TimeTableMapper.mapToRequest(table));
@@ -70,7 +70,7 @@ public class manualEntryGeneratorService {
 
             LectureRequest request = new LectureRequest();
             request.setCourseId(data.getCourseId());
-            request.setInstructor(data.getInstructor());
+            request.setInstructorId(data.getInstructorId());
             request.setNumber(null);
             request.setTimeSlotId(null);
             request.setRoomId(null);

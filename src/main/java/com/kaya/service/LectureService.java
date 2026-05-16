@@ -20,6 +20,7 @@ public class LectureService {
     private final CourseService courseService;
     private final RoomService roomService;
     private final TimeSlotService timeSlotService;
+    private final InstructorService instructorService;
 
     public List<LectureResponse> getAll() {
         return lectureRepository.findAll()
@@ -71,8 +72,10 @@ public class LectureService {
         if (request.getTimeSlotId() != null) {
             response.setTimeSlot(timeSlotService.getEntityById(request.getTimeSlotId()));
         }
+        if (request.getInstructorId() != null) {
+            response.setInstructor(instructorService.getEntityById(request.getInstructorId()));
+        }
         response.setSectionNumber(request.getNumber());
-        response.setInstructor(request.getInstructor());
 
         Lecture updated = lectureRepository.save(response);
         return LectureMapper.mapToResponse(updated);

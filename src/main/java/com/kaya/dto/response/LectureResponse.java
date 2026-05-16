@@ -11,7 +11,7 @@ public class LectureResponse {
     private Long id;
     private CourseResponse course;
     private Integer number;
-    private String instructor;
+    private InstructorResponse instructor;
     private TimeSlotResponse timeSlot;
     private RoomResponse room;
 }

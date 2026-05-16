@@ -1,6 +1,7 @@
-package com.kaya.dataManager.manualEntry;
+package com.kaya.dataManager.manualEntryHandler;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,5 +12,5 @@ import lombok.NoArgsConstructor;
 public class ManualEntryResponse {
 
     @NotBlank private Long courseId;
-    @NotBlank private String instructor;
+    @NotNull private Long instructorId;
 }

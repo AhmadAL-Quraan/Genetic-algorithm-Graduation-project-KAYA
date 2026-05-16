@@ -1,4 +1,4 @@
-package com.kaya.dataManager.manualEntry;
+package com.kaya.dataManager.manualEntryHandler;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

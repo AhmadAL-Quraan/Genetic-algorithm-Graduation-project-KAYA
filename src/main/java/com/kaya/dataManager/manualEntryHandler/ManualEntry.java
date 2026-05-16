@@ -1,4 +1,4 @@
-package com.kaya.dataManager.manualEntry;
+package com.kaya.dataManager.manualEntryHandler;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -16,5 +16,5 @@ public class ManualEntry {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long courseId;
-    private String instructor;
+    private Long instructorId;
 }

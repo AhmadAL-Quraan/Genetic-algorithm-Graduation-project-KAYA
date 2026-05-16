@@ -25,7 +25,6 @@ public class TimeSlot {
     private LocalTime startTime;
     private LocalTime endTime;
 
-    // [تعديل جوهري]: استخدام الـ Enum الجاهز بتاع الجافا لأيام الأسبوع!
     @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
     private Set<DayOfWeek> days;
@@ -33,7 +32,8 @@ public class TimeSlot {
     @Enumerated(EnumType.STRING)
     private TeachingMethod teachingMethod;
 
-    // ضفتلك الـ equals والـ hashCode عشان الخوارزمية تعرف تقارن الأوقات ببعضها بدقة
+    private Integer durationMinutes;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

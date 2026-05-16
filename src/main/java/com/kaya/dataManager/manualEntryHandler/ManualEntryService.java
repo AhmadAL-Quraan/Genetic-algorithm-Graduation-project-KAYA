@@ -1,6 +1,5 @@
-package com.kaya.dataManager.manualEntry;
+package com.kaya.dataManager.manualEntryHandler;
 
-import com.kaya.model.Course;
 import com.kaya.repository.CourseRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -66,20 +65,9 @@ public class ManualEntryService {
 
     private ManualEntryResponse saveDataManager(ManualEntryRequest request, ManualEntry response) {
 
-        // Create Course and save its Data
-        Course course = new Course(
-                request.getCourseSymbol(),
-                request.getCourseNumber(),
-                request.getRequiredRoomType(),
-                request.getTeachingMethod()
-        );
-
-        courseRepository.save(course);
-        Long courseId = course.getId();
-
         // Save Instructor and CourseId
-        response.setInstructor(request.getInstructor());
-        response.setCourseId(courseId);
+        response.setInstructorId(request.getInstructorId());
+        response.setCourseId(request.getCourseId());
 
         ManualEntry updated = manualEntryRepository.save(response);
         return ManualEntryMapper.mapToDTO(updated);

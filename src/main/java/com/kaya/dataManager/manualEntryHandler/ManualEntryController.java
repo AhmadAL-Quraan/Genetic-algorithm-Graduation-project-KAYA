@@ -1,4 +1,4 @@
-package com.kaya.dataManager.manualEntry;
+package com.kaya.dataManager.manualEntryHandler;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
