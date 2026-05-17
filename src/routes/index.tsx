@@ -10,6 +10,7 @@ import {
   Calendar,
   AlertTriangle,
   ArrowRight,
+  GraduationCap,
 } from "lucide-react";
 
 export const Route = createFileRoute("/")({ component: Welcome });
@@ -54,14 +55,9 @@ const QUICK_LINKS = [
   { href: "/instructors", label: "Instructors", icon: Users },
   { href: "/time-slots", label: "Time Slots", icon: Clock },
   { href: "/courses", label: "Courses", icon: BookOpen },
-  { href: "/lectures", label: "Lectures", icon: GraduationCapPlaceholder },
+  { href: "/lectures", label: "Lectures", icon: GraduationCap },
   { href: "/schedule", label: "Schedule", icon: Calendar },
 ];
-
-// (avoid an extra import — alias a known icon for the lectures link)
-function GraduationCapPlaceholder(props: React.SVGProps<SVGSVGElement>) {
-  return <BookOpen {...props} />;
-}
 
 const TEAM = ["Ahmad Al-Quraan", "Younis Majdalawi", "Ahmad Obaidat", "Kanan Lafi"];
 
