@@ -16,6 +16,7 @@ import { Route as LecturesRouteImport } from './routes/lectures'
 import { Route as InstructorsRouteImport } from './routes/instructors'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as CoursesRouteImport } from './routes/courses'
+import { Route as ConflictsRouteImport } from './routes/conflicts'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ScheduleIdRouteImport } from './routes/schedule.$id'
 
@@ -54,6 +55,11 @@ const CoursesRoute = CoursesRouteImport.update({
   path: '/courses',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ConflictsRoute = ConflictsRouteImport.update({
+  id: '/conflicts',
+  path: '/conflicts',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -67,6 +73,7 @@ const ScheduleIdRoute = ScheduleIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/conflicts': typeof ConflictsRoute
   '/courses': typeof CoursesRoute
   '/dashboard': typeof DashboardRoute
   '/instructors': typeof InstructorsRoute
@@ -78,6 +85,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/conflicts': typeof ConflictsRoute
   '/courses': typeof CoursesRoute
   '/dashboard': typeof DashboardRoute
   '/instructors': typeof InstructorsRoute
@@ -90,6 +98,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/conflicts': typeof ConflictsRoute
   '/courses': typeof CoursesRoute
   '/dashboard': typeof DashboardRoute
   '/instructors': typeof InstructorsRoute
@@ -103,6 +112,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/conflicts'
     | '/courses'
     | '/dashboard'
     | '/instructors'
@@ -114,6 +124,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/conflicts'
     | '/courses'
     | '/dashboard'
     | '/instructors'
@@ -125,6 +136,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/conflicts'
     | '/courses'
     | '/dashboard'
     | '/instructors'
@@ -137,6 +149,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ConflictsRoute: typeof ConflictsRoute
   CoursesRoute: typeof CoursesRoute
   DashboardRoute: typeof DashboardRoute
   InstructorsRoute: typeof InstructorsRoute
@@ -197,6 +210,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CoursesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/conflicts': {
+      id: '/conflicts'
+      path: '/conflicts'
+      fullPath: '/conflicts'
+      preLoaderRoute: typeof ConflictsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -228,6 +248,7 @@ const ScheduleRouteWithChildren = ScheduleRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ConflictsRoute: ConflictsRoute,
   CoursesRoute: CoursesRoute,
   DashboardRoute: DashboardRoute,
   InstructorsRoute: InstructorsRoute,
