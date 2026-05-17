@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TimeSlotsRouteImport } from './routes/time-slots'
 import { Route as RoomsRouteImport } from './routes/rooms'
+import { Route as LecturesRouteImport } from './routes/lectures'
 import { Route as InstructorsRouteImport } from './routes/instructors'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as CoursesRouteImport } from './routes/courses'
@@ -24,6 +25,11 @@ const TimeSlotsRoute = TimeSlotsRouteImport.update({
 const RoomsRoute = RoomsRouteImport.update({
   id: '/rooms',
   path: '/rooms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LecturesRoute = LecturesRouteImport.update({
+  id: '/lectures',
+  path: '/lectures',
   getParentRoute: () => rootRouteImport,
 } as any)
 const InstructorsRoute = InstructorsRouteImport.update({
@@ -52,6 +58,7 @@ export interface FileRoutesByFullPath {
   '/courses': typeof CoursesRoute
   '/dashboard': typeof DashboardRoute
   '/instructors': typeof InstructorsRoute
+  '/lectures': typeof LecturesRoute
   '/rooms': typeof RoomsRoute
   '/time-slots': typeof TimeSlotsRoute
 }
@@ -60,6 +67,7 @@ export interface FileRoutesByTo {
   '/courses': typeof CoursesRoute
   '/dashboard': typeof DashboardRoute
   '/instructors': typeof InstructorsRoute
+  '/lectures': typeof LecturesRoute
   '/rooms': typeof RoomsRoute
   '/time-slots': typeof TimeSlotsRoute
 }
@@ -69,6 +77,7 @@ export interface FileRoutesById {
   '/courses': typeof CoursesRoute
   '/dashboard': typeof DashboardRoute
   '/instructors': typeof InstructorsRoute
+  '/lectures': typeof LecturesRoute
   '/rooms': typeof RoomsRoute
   '/time-slots': typeof TimeSlotsRoute
 }
@@ -79,6 +88,7 @@ export interface FileRouteTypes {
     | '/courses'
     | '/dashboard'
     | '/instructors'
+    | '/lectures'
     | '/rooms'
     | '/time-slots'
   fileRoutesByTo: FileRoutesByTo
@@ -87,6 +97,7 @@ export interface FileRouteTypes {
     | '/courses'
     | '/dashboard'
     | '/instructors'
+    | '/lectures'
     | '/rooms'
     | '/time-slots'
   id:
@@ -95,6 +106,7 @@ export interface FileRouteTypes {
     | '/courses'
     | '/dashboard'
     | '/instructors'
+    | '/lectures'
     | '/rooms'
     | '/time-slots'
   fileRoutesById: FileRoutesById
@@ -104,6 +116,7 @@ export interface RootRouteChildren {
   CoursesRoute: typeof CoursesRoute
   DashboardRoute: typeof DashboardRoute
   InstructorsRoute: typeof InstructorsRoute
+  LecturesRoute: typeof LecturesRoute
   RoomsRoute: typeof RoomsRoute
   TimeSlotsRoute: typeof TimeSlotsRoute
 }
@@ -122,6 +135,13 @@ declare module '@tanstack/react-router' {
       path: '/rooms'
       fullPath: '/rooms'
       preLoaderRoute: typeof RoomsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lectures': {
+      id: '/lectures'
+      path: '/lectures'
+      fullPath: '/lectures'
+      preLoaderRoute: typeof LecturesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/instructors': {
@@ -160,6 +180,7 @@ const rootRouteChildren: RootRouteChildren = {
   CoursesRoute: CoursesRoute,
   DashboardRoute: DashboardRoute,
   InstructorsRoute: InstructorsRoute,
+  LecturesRoute: LecturesRoute,
   RoomsRoute: RoomsRoute,
   TimeSlotsRoute: TimeSlotsRoute,
 }
