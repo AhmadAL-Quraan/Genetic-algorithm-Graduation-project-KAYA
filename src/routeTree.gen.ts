@@ -9,11 +9,17 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TimeSlotsRouteImport } from './routes/time-slots'
 import { Route as RoomsRouteImport } from './routes/rooms'
 import { Route as InstructorsRouteImport } from './routes/instructors'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as IndexRouteImport } from './routes/index'
 
+const TimeSlotsRoute = TimeSlotsRouteImport.update({
+  id: '/time-slots',
+  path: '/time-slots',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RoomsRoute = RoomsRouteImport.update({
   id: '/rooms',
   path: '/rooms',
@@ -40,12 +46,14 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof DashboardRoute
   '/instructors': typeof InstructorsRoute
   '/rooms': typeof RoomsRoute
+  '/time-slots': typeof TimeSlotsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
   '/instructors': typeof InstructorsRoute
   '/rooms': typeof RoomsRoute
+  '/time-slots': typeof TimeSlotsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -53,13 +61,20 @@ export interface FileRoutesById {
   '/dashboard': typeof DashboardRoute
   '/instructors': typeof InstructorsRoute
   '/rooms': typeof RoomsRoute
+  '/time-slots': typeof TimeSlotsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/dashboard' | '/instructors' | '/rooms'
+  fullPaths: '/' | '/dashboard' | '/instructors' | '/rooms' | '/time-slots'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/dashboard' | '/instructors' | '/rooms'
-  id: '__root__' | '/' | '/dashboard' | '/instructors' | '/rooms'
+  to: '/' | '/dashboard' | '/instructors' | '/rooms' | '/time-slots'
+  id:
+    | '__root__'
+    | '/'
+    | '/dashboard'
+    | '/instructors'
+    | '/rooms'
+    | '/time-slots'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -67,10 +82,18 @@ export interface RootRouteChildren {
   DashboardRoute: typeof DashboardRoute
   InstructorsRoute: typeof InstructorsRoute
   RoomsRoute: typeof RoomsRoute
+  TimeSlotsRoute: typeof TimeSlotsRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/time-slots': {
+      id: '/time-slots'
+      path: '/time-slots'
+      fullPath: '/time-slots'
+      preLoaderRoute: typeof TimeSlotsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/rooms': {
       id: '/rooms'
       path: '/rooms'
@@ -107,6 +130,7 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardRoute: DashboardRoute,
   InstructorsRoute: InstructorsRoute,
   RoomsRoute: RoomsRoute,
+  TimeSlotsRoute: TimeSlotsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
