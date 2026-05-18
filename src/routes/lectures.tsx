@@ -3,8 +3,8 @@ import { useState } from "react";
 import {
   Courses,
   Instructors,
-  Lectures,
-  type LectureInput,
+  ManualEntries,
+  type ManualEntry,
 } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -16,7 +16,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -30,18 +29,17 @@ import { useToast } from "@/hooks/use-toast";
 
 export const Route = createFileRoute("/lectures")({ component: LecturesPage });
 
-const empty: LectureInput = { courseId: 0, instructorId: 0, number: 1 };
+const empty: ManualEntry = { courseId: 0, instructorId: 0 };
 
 function LecturesPage() {
   const { toast } = useToast();
   const courses = Courses.useList();
   const instructors = Instructors.useList();
-  const list = Lectures.useList();
-  const create = Lectures.useCreate();
-  const remove = Lectures.useDelete();
-  const removeAll = Lectures.useDeleteAll();
+  const list = ManualEntries.useList();
+  const create = ManualEntries.useCreate();
+  const removeAll = ManualEntries.useDeleteAll();
 
-  const [form, setForm] = useState<LectureInput>(empty);
+  const [form, setForm] = useState<ManualEntry>(empty);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -56,7 +54,7 @@ function LecturesPage() {
     try {
       await create.mutateAsync(form);
       setForm(empty);
-      toast({ title: "Lecture section added" });
+      toast({ title: "Manual entry added" });
     } catch (err) {
       toast({
         title: "Failed",
@@ -68,10 +66,10 @@ function LecturesPage() {
 
   const handleDeleteAll = async () => {
     if (!list.data?.length) return;
-    if (!confirm(`Delete all ${list.data.length} lecture section(s)?`)) return;
+    if (!confirm(`Delete all ${list.data.length} manual entries?`)) return;
     try {
       await removeAll.mutateAsync();
-      toast({ title: "All lecture sections deleted" });
+      toast({ title: "All manual entries deleted" });
     } catch (err) {
       toast({
         title: "Failed",
@@ -81,24 +79,29 @@ function LecturesPage() {
     }
   };
 
+  const findCourse = (id: number) =>
+    courses.data?.find((c) => c.id === id) ?? null;
+  const findInstructor = (id: number) =>
+    instructors.data?.find((i) => i.id === id) ?? null;
+
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-semibold">Lectures</h1>
         <p className="text-sm text-muted-foreground">
-          A lecture is one section of a course. Assign an instructor — the algorithm
-          assigns a room and time slot automatically.
+          Pair a course with an instructor. The algorithm assigns a room and
+          time slot automatically.
         </p>
       </div>
 
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
-            <Plus className="h-4 w-4" /> Add lecture section
+            <Plus className="h-4 w-4" /> Add manual entry
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <form onSubmit={submit} className="grid grid-cols-1 gap-3 sm:grid-cols-4">
+          <form onSubmit={submit} className="grid grid-cols-1 gap-3 sm:grid-cols-3">
             <div>
               <Label>Course</Label>
               <Select
@@ -149,25 +152,13 @@ function LecturesPage() {
               </Select>
             </div>
 
-            <div>
-              <Label>Section #</Label>
-              <Input
-                type="number"
-                min={1}
-                value={form.number ?? 1}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, number: Number(e.target.value) }))
-                }
-              />
-            </div>
-
             <div className="flex items-end">
               <Button
                 type="submit"
                 disabled={create.isPending}
                 className="w-full sm:w-auto"
               >
-                {create.isPending ? "Adding…" : "Add lecture"}
+                {create.isPending ? "Adding…" : "Add entry"}
               </Button>
             </div>
           </form>
@@ -177,7 +168,7 @@ function LecturesPage() {
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle className="text-base">
-            All lecture sections ({list.data?.length ?? 0})
+            All manual entries ({list.data?.length ?? 0})
           </CardTitle>
           {(list.data?.length ?? 0) > 0 && (
             <Button
@@ -196,52 +187,31 @@ function LecturesPage() {
             <div className="text-sm text-muted-foreground">Loading…</div>
           ) : !list.data?.length ? (
             <div className="text-sm text-muted-foreground">
-              No lecture sections yet.
+              No manual entries yet.
             </div>
           ) : (
             <Table>
               <TableHeader>
                 <TableRow>
                   <TableHead>Course</TableHead>
-                  <TableHead>Sec</TableHead>
                   <TableHead>Instructor</TableHead>
-                  <TableHead>Room</TableHead>
-                  <TableHead>Time slot</TableHead>
-                  <TableHead />
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {list.data.map((l) => (
-                  <TableRow key={l.id}>
-                    <TableCell className="font-medium">
-                      {l.course
-                        ? `${l.course.courseSymbol} ${l.course.courseNumber}`
-                        : "—"}
-                    </TableCell>
-                    <TableCell>{l.number ?? "—"}</TableCell>
-                    <TableCell>{l.instructor?.instructorName ?? "—"}</TableCell>
-                    <TableCell>
-                      {l.room
-                        ? `${l.room.building} ${l.room.roomNumber}`
-                        : "—"}
-                    </TableCell>
-                    <TableCell className="text-xs">
-                      {l.timeSlot
-                        ? `${l.timeSlot.days?.map((d) => d.slice(0, 3)).join(",")} ${l.timeSlot.startTime?.slice(0, 5)}–${l.timeSlot.endTime?.slice(0, 5)}`
-                        : "—"}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        disabled={remove.isPending}
-                        onClick={() => remove.mutate(l.id)}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
+                {list.data.map((m, idx) => {
+                  const c = findCourse(m.courseId);
+                  const i = findInstructor(m.instructorId);
+                  return (
+                    <TableRow key={`${m.courseId}-${m.instructorId}-${idx}`}>
+                      <TableCell className="font-medium">
+                        {c ? `${c.courseSymbol} ${c.courseNumber}` : `#${m.courseId}`}
+                      </TableCell>
+                      <TableCell>
+                        {i ? i.instructorName : `#${m.instructorId}`}
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
               </TableBody>
             </Table>
           )}
