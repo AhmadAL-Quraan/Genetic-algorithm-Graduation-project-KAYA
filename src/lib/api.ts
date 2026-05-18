@@ -9,9 +9,11 @@ import {
 /* Base config                                                        */
 /* ------------------------------------------------------------------ */
 
+// In development the Vite dev-server proxies /api → http://localhost:8080
+// (see vite.config.ts). Set VITE_API_URL in .env.production for deployed builds.
 export const API_BASE: string =
   (import.meta.env.VITE_API_URL as string | undefined)?.replace(/\/$/, "") ??
-  "http://localhost:8080";
+  "/api";
 
 async function http<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(`${API_BASE}${path}`, {
@@ -255,8 +257,8 @@ export const Instructors = makeResource<Instructor, InstructorInput>(
 );
 export const Courses = makeResource<Course, CourseInput>("courses", "/courses");
 export const Lectures = makeResource<Lecture, LectureInput>(
-  "lectures",
-  "/lectures",
+  "manual-entry",
+  "/manual-entry",
 );
 export const TimeSlotsResource = makeResource<TimeSlot, TimeSlotInput>(
   "time-slots",
