@@ -1,4 +1,0 @@
-# ── Development ─────────────────────────────────────────────────────────────
-# Routes all API calls through the Vite dev-server proxy → Spring Boot backend.
-# The proxy strips the /api prefix before forwarding to http://localhost:8080.
-VITE_API_URL=/api

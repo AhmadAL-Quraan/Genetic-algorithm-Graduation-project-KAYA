@@ -5,101 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ad8daef5-eb06-4d1b-a3c3-0e405d9a00b6" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/kaya/KayaApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitattributes" beforeDir="false" afterPath="$PROJECT_DIR$/backend/.gitattributes" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/backend/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.mvn/wrapper/maven-wrapper.properties" beforeDir="false" afterPath="$PROJECT_DIR$/backend/.mvn/wrapper/maven-wrapper.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mvnw" beforeDir="false" afterPath="$PROJECT_DIR$/backend/mvnw" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mvnw.cmd" beforeDir="false" afterPath="$PROJECT_DIR$/backend/mvnw.cmd" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/KayaApplication.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/algorithm/EvolutionEngine.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/algorithm/EvolutionEngineIsland.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/algorithm/FitnessCalculator.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/algorithm/GAConfig.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/algorithm/GeneticOperators.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/algorithm/Island.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/algorithm/IslandManager.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/algorithm/PoolHelper.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/algorithm/ProgressSnapshot.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/algorithm/Selection.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/algorithm/TimeTableInitializer.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/algorithm/run/StartPoint.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/controller/ConflictController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/controller/CourseController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/controller/FitnessReportController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/controller/InstructorController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/controller/LectureController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/controller/RoomController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/controller/TimeSlotController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/controller/TimeTableController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/dataManager/dataGenerator/DataGeneratorController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/dataManager/dataGenerator/DataGeneratorService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/dataManager/dataGenerator/SectionGenerator.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/dataManager/excelHandler/exportHandler/DayPatternHelper.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/dataManager/excelHandler/exportHandler/ExportBuilder.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/dataManager/excelHandler/exportHandler/ExportController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/dataManager/excelHandler/exportHandler/ExportService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/dataManager/excelHandler/importHandler/ImportController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/dataManager/excelHandler/importHandler/ImportHelper.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/dataManager/excelHandler/importHandler/ImportService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/dataManager/excelHandler/importHandler/ImportSummary.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/dataManager/manualEntryHandler/ManualEntry.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/dataManager/manualEntryHandler/ManualEntryController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/dataManager/manualEntryHandler/ManualEntryMapper.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/dataManager/manualEntryHandler/ManualEntryRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/dataManager/manualEntryHandler/ManualEntryRequest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/dataManager/manualEntryHandler/ManualEntryResponse.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/dataManager/manualEntryHandler/ManualEntryService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/dto/mapper/CourseMapper.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/dto/mapper/FitnessReportMapper.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/dto/mapper/InstructorMapper.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/dto/mapper/LectureMapper.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/dto/mapper/RoomMapper.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/dto/mapper/TimeSlotMapper.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/dto/mapper/TimeTableMapper.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/dto/request/CourseRequest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/dto/request/FitnessReportRequest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/dto/request/InstructorRequest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/dto/request/LectureRequest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/dto/request/RoomRequest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/dto/request/TimeSlotRequest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/dto/request/TimeTableRequest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/dto/response/ConflictResponse.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/dto/response/CourseResponse.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/dto/response/FitnessReportResponse.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/dto/response/InstructorResponse.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/dto/response/LectureResponse.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/dto/response/RoomResponse.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/dto/response/TimeSlotResponse.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/dto/response/TimeTableResponse.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/model/Course.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/model/FitnessReport.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/model/Instructor.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/model/Lecture.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/model/Room.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/model/TimeSlot.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/model/TimeTable.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/model/enums/RoomType.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/model/enums/TeachingMethod.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/repository/CourseRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/repository/FitnessReportRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/repository/InstructorRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/repository/LectureRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/repository/RoomRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/repository/TimeSlotRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/repository/TimeTableRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/service/ConflictService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/service/CourseService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/service/FitnessReportService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/service/InstructorService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/service/LectureService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/service/RoomService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/service/TimeSlotService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kaya/service/TimeTableService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/2526_first_term_sched.xlsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/kaya/KayaApplicationTests.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.prettierignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.prettierrc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bun.lock" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bunfig.toml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/components.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/env" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/env.production" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/eslint.config.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tsconfig.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vite.config.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/wrangler.jsonc" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -116,6 +33,7 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="ROOT_SYNC" value="DONT_SYNC" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
   &quot;lastFilter&quot;: {
@@ -137,32 +55,32 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RequestMappingsPanelOrder0": "0",
-    "RequestMappingsPanelOrder1": "1",
-    "RequestMappingsPanelWidth0": "75",
-    "RequestMappingsPanelWidth1": "75",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "Spring Boot.KayaApplication.executor": "Run",
-    "git-widget-placeholder": "Ahmad-Obeidat",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "/home/a3baidat/Desktop/Genetic-algorithm-Graduation-project-KAYA-Ahmad-Obeidat (Copy 3)",
-    "node.js.detected.package.eslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "nodejs_package_manager_path": "bun",
-    "prettierjs.PrettierConfiguration.Package": "/home/a3baidat/Desktop/Genetic-algorithm-Graduation-project-KAYA-Ahmad-Obeidat (Copy 2)/frontend/node_modules/prettier",
-    "project.structure.last.edited": "SDKs",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.2",
-    "ts.external.directory.path": "/home/a3baidat/Desktop/Genetic-algorithm-Graduation-project-KAYA-Ahmad-Obeidat (Copy)/node_modules/typescript/lib",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
+    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
+    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
+    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;Spring Boot.KayaApplication.executor&quot;: &quot;Run&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;Ahmad-Obeidat&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/a3baidat/Desktop/Genetic-algorithm-Graduation-project-KAYA-Ahmad-Obeidat (Copy 3)&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;bun&quot;,
+    &quot;prettierjs.PrettierConfiguration.Package&quot;: &quot;/home/a3baidat/Desktop/Genetic-algorithm-Graduation-project-KAYA-Ahmad-Obeidat (Copy 2)/frontend/node_modules/prettier&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;SDKs&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;/home/a3baidat/Desktop/Genetic-algorithm-Graduation-project-KAYA-Ahmad-Obeidat (Copy)/node_modules/typescript/lib&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/frontend-template-kit/src/lib" />
@@ -203,7 +121,7 @@
       <workItem from="1779066238712" duration="2011000" />
       <workItem from="1779068292635" duration="457000" />
       <workItem from="1779070409797" duration="477000" />
-      <workItem from="1779070898800" duration="803000" />
+      <workItem from="1779070898800" duration="1228000" />
     </task>
     <servers />
   </component>
