@@ -147,14 +147,14 @@ function SchedulePage() {
                       </Badge>
                     </TableCell>
                     <TableCell className="text-right">
-                      <Link
-                        to="/schedule/$id"
-                        params={{ id: String(t.id) }}
-                      >
-                        <Button variant="ghost" size="icon">
+                      <Button variant="ghost" size="icon" asChild>
+                        <Link
+                          to="/schedule/$id"
+                          params={{ id: String(t.id) }}
+                        >
                           <Eye className="h-4 w-4" />
-                        </Button>
-                      </Link>
+                        </Link>
+                      </Button>
                       <a href={exportTimetableUrl(t.id)} download>
                         <Button variant="ghost" size="icon">
                           <Download className="h-4 w-4" />
