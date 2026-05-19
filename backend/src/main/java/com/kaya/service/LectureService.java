@@ -65,8 +65,8 @@ public class LectureService {
         if (request.getCourseId() != null) {
             lecture.setCourse(courseService.getEntityById(request.getCourseId()));
         }
-        if (request.getTeacherId() != null) {
-            lecture.setInstructor(teacherRepository.findById(request.getTeacherId()).orElse(null));
+        if (request.getInstructorId() != null) {
+            lecture.setInstructor(teacherRepository.findById(request.getInstructorId()).orElse(null));
         } else {
             lecture.setInstructor(null);
         }
