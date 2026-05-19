@@ -1,7 +1,6 @@
 import { useState } from "react";
-import { Courses, Lectures, type LectureInput } from "@/lib/api";
+import { Courses, Teachers, Lectures, useDeleteAllLectures, type LectureInput } from "@/lib/api";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -9,22 +8,37 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Trash2, Plus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
+const empty: LectureInput = { courseId: 0, teacherId: null };
+
 export default function LecturesPage() {
   const { toast } = useToast();
-  const courses = Courses.useList();
-  const list = Lectures.useList();
-  const create = Lectures.useCreate();
-  const remove = Lectures.useDelete();
+  const courses  = Courses.useList();
+  const teachers = Teachers.useList();
+  const list     = Lectures.useList();
+  const create   = Lectures.useCreate();
+  const remove   = Lectures.useDelete();
+  const removeAll = useDeleteAllLectures();
 
-  const [form, setForm] = useState<LectureInput>({ courseId: 0, instructor: "", number: 1 });
+  const [form, setForm] = useState<LectureInput>(empty);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.courseId) { toast({ title: "Pick a course", variant: "destructive" }); return; }
     try {
       await create.mutateAsync(form);
-      setForm({ courseId: 0, instructor: "", number: 1 });
-      toast({ title: "Lecture added" });
+      setForm(empty);
+      toast({ title: "Lecture section added" });
+    } catch (err: any) {
+      toast({ title: "Failed", description: err.message, variant: "destructive" });
+    }
+  };
+
+  const handleDeleteAll = async () => {
+    if (!list.data?.length) return;
+    if (!confirm(`Delete all ${list.data.length} lecture section(s)? This cannot be undone.`)) return;
+    try {
+      await removeAll.mutateAsync();
+      toast({ title: "All lecture sections deleted" });
     } catch (err: any) {
       toast({ title: "Failed", description: err.message, variant: "destructive" });
     }
@@ -34,20 +48,29 @@ export default function LecturesPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-semibold">Lectures</h1>
-        <p className="text-muted-foreground text-sm">A lecture is one section of a course taught by an instructor. The genetic algorithm assigns rooms and time slots.</p>
+        <p className="text-muted-foreground text-sm">
+          A lecture is one section of a course. Assign an instructor — the genetic algorithm
+          assigns room and time slot automatically.
+        </p>
       </div>
 
       <Card>
-        <CardHeader><CardTitle className="text-base flex items-center gap-2"><Plus className="h-4 w-4" /> Add lecture</CardTitle></CardHeader>
+        <CardHeader>
+          <CardTitle className="text-base flex items-center gap-2">
+            <Plus className="h-4 w-4" /> Add lecture section
+          </CardTitle>
+        </CardHeader>
         <CardContent>
-          <form onSubmit={submit} className="grid grid-cols-1 sm:grid-cols-4 gap-3">
-            <div className="sm:col-span-2">
+          <form onSubmit={submit} className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div>
               <Label>Course</Label>
               <Select
                 value={form.courseId ? String(form.courseId) : ""}
-                onValueChange={v => setForm({ ...form, courseId: Number(v) })}
+                onValueChange={v => setForm(f => ({ ...f, courseId: Number(v) }))}
               >
-                <SelectTrigger><SelectValue placeholder={courses.data?.length ? "Select course" : "Add a course first"} /></SelectTrigger>
+                <SelectTrigger>
+                  <SelectValue placeholder={courses.data?.length ? "Select course" : "Add a course first"} />
+                </SelectTrigger>
                 <SelectContent>
                   {courses.data?.map(c => (
                     <SelectItem key={c.id} value={String(c.id)}>
@@ -57,46 +80,93 @@ export default function LecturesPage() {
                 </SelectContent>
               </Select>
             </div>
-            <div>
-              <Label>Section #</Label>
-              <Input type="number" min={1} value={form.number ?? 1} onChange={e => setForm({ ...form, number: Number(e.target.value) })} />
-            </div>
+
             <div>
               <Label>Instructor</Label>
-              <Input value={form.instructor} onChange={e => setForm({ ...form, instructor: e.target.value })} required />
+              <Select
+                value={form.teacherId ? String(form.teacherId) : "none"}
+                onValueChange={v => setForm(f => ({ ...f, teacherId: v !== "none" ? Number(v) : null }))}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select instructor…" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">— None —</SelectItem>
+                  {(teachers.data ?? []).map(t => (
+                    <SelectItem key={t.id} value={String(t.id)}>
+                      {t.name}{t.department ? ` (${t.department.code})` : ""}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
-            <div className="sm:col-span-4">
-              <Button type="submit" disabled={create.isPending}>Add lecture</Button>
+
+            <div className="flex items-end">
+              <Button type="submit" disabled={create.isPending} className="w-full sm:w-auto">
+                {create.isPending ? "Adding…" : "Add lecture"}
+              </Button>
             </div>
           </form>
         </CardContent>
       </Card>
 
       <Card>
-        <CardHeader><CardTitle className="text-base">All lectures ({list.data?.length ?? 0})</CardTitle></CardHeader>
+        <CardHeader className="flex flex-row items-center justify-between">
+          <CardTitle className="text-base">All lecture sections ({list.data?.length ?? 0})</CardTitle>
+          {(list.data?.length ?? 0) > 0 && (
+            <Button
+              variant="destructive"
+              size="sm"
+              onClick={handleDeleteAll}
+              disabled={removeAll.isPending}
+            >
+              <Trash2 className="h-4 w-4 mr-1" />
+              {removeAll.isPending ? "Deleting…" : "Delete all"}
+            </Button>
+          )}
+        </CardHeader>
         <CardContent>
-          {list.isLoading ? <div className="text-sm text-muted-foreground">Loading…</div> :
-           !list.data?.length ? <div className="text-sm text-muted-foreground">No lectures yet.</div> :
+          {list.isLoading ? (
+            <div className="text-sm text-muted-foreground">Loading…</div>
+          ) : !list.data?.length ? (
+            <div className="text-sm text-muted-foreground">No lecture sections yet.</div>
+          ) : (
             <Table>
-              <TableHeader><TableRow>
-                <TableHead>Course</TableHead><TableHead>Section</TableHead>
-                <TableHead>Instructor</TableHead><TableHead /></TableRow></TableHeader>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Course</TableHead>
+                  <TableHead>Instructor</TableHead>
+                  <TableHead />
+                </TableRow>
+              </TableHeader>
               <TableBody>
                 {list.data.map(l => (
                   <TableRow key={l.id}>
                     <TableCell className="font-medium">
                       {l.course ? `${l.course.courseSymbol} ${l.course.courseNumber}` : "—"}
                     </TableCell>
-                    <TableCell>{l.number}</TableCell>
-                    <TableCell>{l.instructor}</TableCell>
+                    <TableCell>
+                      {l.teacher
+                        ? <span>{l.teacher.name}</span>
+                        : l.instructor
+                        ? <span className="text-muted-foreground">{l.instructor}</span>
+                        : <span className="text-muted-foreground text-xs">—</span>}
+                    </TableCell>
                     <TableCell className="text-right">
-                      <Button variant="ghost" size="icon" onClick={() => remove.mutate(l.id)}><Trash2 className="h-4 w-4" /></Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        disabled={remove.isPending}
+                        onClick={() => remove.mutate(l.id)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
-          }
+          )}
         </CardContent>
       </Card>
     </div>

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import {
-  Courses, Teachers, useDeleteAllCourses,
+  Courses, useDeleteAllCourses,
   ROOM_TYPES, TEACHING_METHODS,
   type Course, type CourseInput, type RoomType, type TeachingMethod,
   exportScheduleUrl,
@@ -22,7 +22,7 @@ import {
 const empty: CourseInput = {
   courseSymbol: "", courseNumber: "",
   roomGroups: "LECTURE", timeGroups: "IN_PERSON",
-  teacherId: undefined, sectionNumber: 1,
+  teacherId: undefined,
   majors: [],
 };
 
@@ -35,7 +35,6 @@ const METHOD_COLORS: Record<string, string> = {
 export default function CoursesPage() {
   const { toast } = useToast();
   const list      = Courses.useList();
-  const teachers  = Teachers.useList();
   const create    = Courses.useCreate();
   const remove    = Courses.useDelete();
   const deleteAll = useDeleteAllCourses();
@@ -159,34 +158,6 @@ export default function CoursesPage() {
                 </div>
               </div>
 
-              {/* Instructor & Section */}
-              <div className="border-t pt-4">
-                <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">Instructor &amp; Section</p>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div>
-                    <Label>Instructor</Label>
-                    <Select
-                      value={form.teacherId?.toString() ?? "none"}
-                      onValueChange={v => set({ teacherId: v !== "none" ? Number(v) : undefined })}>
-                      <SelectTrigger><SelectValue placeholder="Select instructor…" /></SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="none">— None —</SelectItem>
-                        {(teachers.data ?? []).map(t => (
-                          <SelectItem key={t.id} value={t.id.toString()}>
-                            {t.name}{t.department ? ` (${t.department.code})` : ""}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div>
-                    <Label>Section Number</Label>
-                    <Input type="number" min={1} value={form.sectionNumber ?? 1}
-                      onChange={e => set({ sectionNumber: parseInt(e.target.value) || 1 })} />
-                  </div>
-                </div>
-              </div>
-
               <div className="pt-1">
                 <Button type="submit" disabled={create.isPending}>
                   {create.isPending ? "Saving…" : "Add Course"}
@@ -214,8 +185,6 @@ export default function CoursesPage() {
                     <TableHead>Course</TableHead>
                     <TableHead>Room Type</TableHead>
                     <TableHead>Teaching Method</TableHead>
-                    <TableHead>Doctor</TableHead>
-                    <TableHead>Section</TableHead>
                     <TableHead className="w-10" />
                   </TableRow>
                 </TableHeader>
@@ -232,16 +201,6 @@ export default function CoursesPage() {
                         <Badge className={`text-xs ${METHOD_COLORS[c.timeGroups]}`}>
                           {c.timeGroups}
                         </Badge>
-                      </TableCell>
-                      <TableCell>
-                        {c.teacher
-                          ? <span className="text-sm">{c.teacher.name}</span>
-                          : c.instructor
-                          ? <span className="text-sm text-muted-foreground">{c.instructor}</span>
-                          : <span className="text-muted-foreground text-xs">—</span>}
-                      </TableCell>
-                      <TableCell>
-                        <span className="text-sm">{c.sectionNumber ?? 1}</span>
                       </TableCell>
                       <TableCell>
                         <Button size="icon" variant="ghost"

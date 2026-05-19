@@ -1,29 +1,31 @@
 package com.kaya.model;
 
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.HashSet;
 import java.util.Set;
 
+@Entity
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class FitnessReport {
-    private Long roomConflicts;
-    private Long instructorConflicts;
-    private Long studentConflicts;
-    private Long totalPenalty;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private Integer roomConflicts;
+    private Integer instructorConflicts;
+    private Integer studentConflicts;
+    private Integer totalPenalty;
 
     // برمجنا على الـ Interface (Set) بدل الـ Implementation (HashSet)
-    private Set<Lecture> conflictingLectures;
-
-    public FitnessReport() {
-        this.roomConflicts = 0L;
-        this.instructorConflicts = 0L;
-        this.studentConflicts = 0L;
-        this.totalPenalty = 0L;
-        this.conflictingLectures = new HashSet<>();
-    }
+    @OneToMany
+    private Set<Lecture> conflictingLectures = new HashSet<>();
 
     @Override
     public String toString() {

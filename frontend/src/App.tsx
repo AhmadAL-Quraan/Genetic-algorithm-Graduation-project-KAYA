@@ -13,6 +13,7 @@ import DepartmentsPage from "@/pages/departments";
 import TimeSlotsPage from "@/pages/time-slots";
 import SchedulePage from "@/pages/timetables";
 import TimetableViewPage from "@/pages/timetable-view";
+import LecturesPage from "@/pages/lectures";
 import ConflictsPage from "@/pages/conflicts";
 import NotFound from "@/pages/not-found";
 
@@ -34,6 +35,7 @@ function App() {
               <Route path="/teachers" component={TeachersPage} />
               <Route path="/departments" component={DepartmentsPage} />
               <Route path="/time-slots" component={TimeSlotsPage} />
+              <Route path="/lectures" component={LecturesPage} />
               <Route path="/schedule" component={SchedulePage} />
               <Route path="/timetable/:id" component={TimetableViewPage} />
               <Route path="/timetable">{() => { window.location.replace(window.location.pathname.replace("/timetable", "/schedule")); return null; }}</Route>

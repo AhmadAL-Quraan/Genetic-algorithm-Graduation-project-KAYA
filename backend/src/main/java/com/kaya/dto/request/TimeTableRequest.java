@@ -1,7 +1,7 @@
 package com.kaya.dto.request;
 
+import com.kaya.model.Lecture;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,6 +11,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TimeTableRequest {
-    @NotNull private Long reportId;
-    @NotEmpty private List<Long> lectureIds;
+    private FitnessReportRequest fitnessReport;
+    @NotEmpty private List<Lecture> lectures;
 }
