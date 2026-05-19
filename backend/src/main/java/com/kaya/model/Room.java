@@ -8,20 +8,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Objects;
-import java.util.Set;
 
 @Entity
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(
-        uniqueConstraints = {
-                @UniqueConstraint(
-                        columnNames = {"building", "roomNumber"}
-                )
-        }
-)
 public class Room {
 
     @Id

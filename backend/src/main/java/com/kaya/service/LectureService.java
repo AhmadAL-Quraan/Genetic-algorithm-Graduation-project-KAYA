@@ -4,26 +4,26 @@ import com.kaya.dto.request.LectureRequest;
 import com.kaya.dto.response.LectureResponse;
 import com.kaya.dto.mapper.LectureMapper;
 import com.kaya.model.Lecture;
+import com.kaya.repository.InstructorRepository;
 import com.kaya.repository.LectureRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class LectureService {
 
-    // Direct access
     private final LectureRepository lectureRepository;
-
-    // Access by service
     private final CourseService courseService;
     private final RoomService roomService;
     private final TimeSlotService timeSlotService;
-    private final InstructorService instructorService;
+    private final InstructorRepository teacherRepository;
 
     public List<LectureResponse> getAll() {
-        return lectureRepository.findAll()
+        return lectureRepository.findByTimetableIdIsNull()
                 .stream()
                 .map(LectureMapper::mapToResponse)
                 .toList();
@@ -32,52 +32,51 @@ public class LectureService {
     public LectureResponse getById(Long id) {
         Lecture lecture = lectureRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Lecture not found"));
-
         return LectureMapper.mapToResponse(lecture);
     }
 
     public LectureResponse create(LectureRequest request) {
-        Lecture response = new Lecture();
-        return saveLecture(request, response);
+        Lecture lecture = new Lecture();
+        return saveLecture(request, lecture);
     }
 
     public LectureResponse update(Long id, LectureRequest request) {
-        Lecture response = lectureRepository.findById(id)
+        Lecture lecture = lectureRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Lecture not found"));
-
-        return saveLecture(request, response);
+        return saveLecture(request, lecture);
     }
 
+    @Transactional
     public void delete(Long id) {
         if (!lectureRepository.existsById(id)) {
             throw new RuntimeException("Lecture not found");
         }
+        lectureRepository.clearConflictingLectureRef(id);
         lectureRepository.deleteById(id);
     }
 
+    @Transactional
     public void deleteAll() {
-        lectureRepository.deleteAll();
+        lectureRepository.clearAllConflictingLectureRefs();
+        lectureRepository.deleteAllTemplateLectures();
     }
 
-    // --- Helper methods --- //
-
-    private LectureResponse saveLecture(LectureRequest request, Lecture response) {
-
+    private LectureResponse saveLecture(LectureRequest request, Lecture lecture) {
         if (request.getCourseId() != null) {
-            response.setCourse(courseService.getEntityById(request.getCourseId()));
+            lecture.setCourse(courseService.getEntityById(request.getCourseId()));
+        }
+        if (request.getTeacherId() != null) {
+            lecture.setInstructor(teacherRepository.findById(request.getTeacherId()).orElse(null));
+        } else {
+            lecture.setInstructor(null);
         }
         if (request.getRoomId() != null) {
-            response.setRoom(roomService.getEntityById(request.getRoomId()));
+            lecture.setRoom(roomService.getEntityById(request.getRoomId()));
         }
         if (request.getTimeSlotId() != null) {
-            response.setTimeSlot(timeSlotService.getEntityById(request.getTimeSlotId()));
+            lecture.setTimeSlot(timeSlotService.getEntityById(request.getTimeSlotId()));
         }
-        if (request.getInstructorId() != null) {
-            response.setInstructor(instructorService.getEntityById(request.getInstructorId()));
-        }
-        response.setSectionNumber(request.getNumber());
-
-        Lecture updated = lectureRepository.save(response);
+        Lecture updated = lectureRepository.save(lecture);
         return LectureMapper.mapToResponse(updated);
     }
 }

@@ -23,13 +23,11 @@ public class FitnessReport {
     private Integer studentConflicts;
     private Integer totalPenalty;
 
-    // برمجنا على الـ Interface (Set) بدل الـ Implementation (HashSet)
-    @OneToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     private Set<Lecture> conflictingLectures = new HashSet<>();
 
     @Override
     public String toString() {
-        // ظبطنا الأرقام هنا عشان تطابق أوزان العقوبات اللي عملناها في الـ FitnessCalculator
         return "--- FITNESS REPORT ---\n" +
                 "Room Conflicts:       " + roomConflicts + " (Penalty: " + (roomConflicts * -1000) + ")\n" +
                 "Instructor Conflicts: " + instructorConflicts + " (Penalty: " + (instructorConflicts * -1000) + ")\n" +

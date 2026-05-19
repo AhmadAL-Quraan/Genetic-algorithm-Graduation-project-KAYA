@@ -1,9 +1,7 @@
 package com.kaya.dto.mapper;
 
 import com.kaya.dto.response.CourseResponse;
-import com.kaya.dto.response.LectureResponse;
 import com.kaya.model.Course;
-import com.kaya.model.Lecture;
 
 public class CourseMapper {
 
@@ -18,12 +16,12 @@ public class CourseMapper {
     }
 
     public static Course mapToEntity(CourseResponse response) {
-        return new Course(
-                response.getId(),
-                response.getCourseSymbol(),
-                response.getCourseNumber(),
-                response.getRoomGroups(),
-                response.getTimeGroups()
-        );
+        Course c = new Course();
+        c.setId(response.getId());
+        c.setCourseSymbol(response.getCourseSymbol());
+        c.setCourseNumber(response.getCourseNumber());
+        c.setRequiredRoomType(response.getRoomGroups());
+        c.setTeachingMethod(response.getTimeGroups());
+        return c;
     }
 }

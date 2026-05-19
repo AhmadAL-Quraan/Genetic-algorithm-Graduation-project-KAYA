@@ -40,7 +40,7 @@ public interface LectureRepository extends JpaRepository<Lecture, Long> {
     void detachAllRooms();
 
     @Modifying(clearAutomatically = true, flushAutomatically = true)
-    @Query("DELETE FROM Lecture l WHERE l.id IS NULL AND l.course IS NULL")
+    @Query("DELETE FROM Lecture l WHERE l.timetableId IS NULL AND l.course IS NULL")
     void deleteOrphanedTemplateLectures();
 
     @Modifying(clearAutomatically = true, flushAutomatically = true)

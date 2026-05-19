@@ -55,7 +55,7 @@ public class EvolutionEngine {
             // This prevents memory overlap (pass-by-reference issues) where mutating
             // a lecture in one schedule accidentally mutates it in another.
             for (Lecture c : lectures) {
-                individualClasses.add(new Lecture(c.getId(), c.getCourse(), null, null, c.getSectionNumber(), c.getInstructor()));
+                individualClasses.add(new Lecture(c.getId(), c.getCourse(), null, null,c.getInstructor() ,c.getSectionNumber(),null));
             }
             TimeTable timeTable = new TimeTable(individualClasses);
 
@@ -137,7 +137,7 @@ public class EvolutionEngine {
             long newGenerationBestFitness = currentBestFitness;
 
             // 2. ELITISM: Carry over the absolute best schedules to the next generation unchanged.
-            int actualElites = Math.max(1, (int) (config.populationSize * config.elitismRatio));
+            int actualElites = Math.min(Math.max(1, config.elitismCount), population.size());
             for (int i = 0; i < actualElites; i++) {
                 nextGen.add(population.get(i));
             }

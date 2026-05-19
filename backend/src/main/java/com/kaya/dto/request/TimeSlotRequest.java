@@ -19,5 +19,5 @@ public class TimeSlotRequest {
     @NotNull private LocalTime endTime;
     @NotEmpty private Set<DayOfWeek> days;
     @NotNull private TeachingMethod teachingMethod;
-    @NotNull private Integer durationMinutes;
+    private Integer durationMinutes;
 }

@@ -105,7 +105,7 @@ public class IslandManager {
             ArrayList<Lecture> copiedLectures = new ArrayList<>();
 
             for (Lecture l : original.getLectures()) {
-                copiedLectures.add(new Lecture(l.getId(), l.getCourse(), l.getRoom(), l.getTimeSlot(), l.getSectionNumber(), l.getInstructor()));
+                copiedLectures.add(new Lecture(l.getId(), l.getCourse(), l.getRoom(), l.getTimeSlot(),  l.getInstructor(),l.getSectionNumber(),null));
             }
 
             TimeTable copy = new TimeTable(copiedLectures);

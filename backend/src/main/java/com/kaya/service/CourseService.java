@@ -5,8 +5,11 @@ import com.kaya.dto.response.CourseResponse;
 import com.kaya.dto.mapper.CourseMapper;
 import com.kaya.model.Course;
 import com.kaya.repository.CourseRepository;
+import com.kaya.repository.LectureRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 
 @Service
@@ -14,6 +17,7 @@ import java.util.List;
 public class CourseService {
 
     private final CourseRepository courseRepository;
+    private final LectureRepository lectureRepository;
 
     public List<CourseResponse> getAll() {
         return courseRepository.findAll()
@@ -25,7 +29,6 @@ public class CourseService {
     public CourseResponse getById(Long id) {
         Course course = courseRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Course not found"));
-
         return CourseMapper.mapToResponse(course);
     }
 
@@ -35,38 +38,39 @@ public class CourseService {
     }
 
     public CourseResponse create(CourseRequest request) {
-        Course response = new Course();
-        return saveCourse(request, response);
+        Course course = new Course();
+        return saveCourse(request, course);
     }
 
     public CourseResponse update(Long id, CourseRequest request) {
-        Course response = courseRepository.findById(id)
+        Course course = courseRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Course not found"));
-
-        return saveCourse(request, response);
+        return saveCourse(request, course);
     }
 
+    @Transactional
     public void delete(Long id) {
         if (!courseRepository.existsById(id)) {
             throw new RuntimeException("Course not found");
         }
+        lectureRepository.detachCourse(id);
         courseRepository.deleteById(id);
+        lectureRepository.deleteOrphanedTemplateLectures();
     }
 
+    @Transactional
     public void deleteAll() {
+        lectureRepository.detachAllCourses();
         courseRepository.deleteAll();
+        lectureRepository.deleteOrphanedTemplateLectures();
     }
 
-    // --- Helper methods --- //
-
-    private CourseResponse saveCourse(CourseRequest request, Course response) {
-
-        response.setCourseSymbol(request.getCourseSymbol());
-        response.setCourseNumber(request.getCourseNumber());
-        response.setTeachingMethod(request.getTimeGroups());
-        response.setRequiredRoomType(request.getRoomGroups());
-
-        Course updated = courseRepository.save(response);
+    private CourseResponse saveCourse(CourseRequest request, Course course) {
+        course.setCourseSymbol(request.getCourseSymbol());
+        course.setCourseNumber(request.getCourseNumber());
+        course.setTeachingMethod(request.getTimeGroups());
+        course.setRequiredRoomType(request.getRoomGroups());
+        Course updated = courseRepository.save(course);
         return CourseMapper.mapToResponse(updated);
     }
 }

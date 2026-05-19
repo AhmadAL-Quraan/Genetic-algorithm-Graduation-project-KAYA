@@ -11,6 +11,8 @@ import java.util.List;
 @AllArgsConstructor
 public class TimeTableResponse {
     private Long id;
+    private Integer fitness;
+    private String generatedAt;
     private FitnessReportResponse fitnessReport;
     private List<LectureResponse> lectures;
 }

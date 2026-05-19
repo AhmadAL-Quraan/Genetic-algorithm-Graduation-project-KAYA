@@ -44,8 +44,9 @@ public class GeneticOperators {
                     source.getCourse(),
                     source.getRoom(),
                     source.getTimeSlot(),
-                    source.getSectionNumber(),
-                    source.getInstructor()
+                    source.getInstructor(),
+                    source.getSectionNumber()
+                    ,null
             ));
         }
         return new TimeTable(childLectures);

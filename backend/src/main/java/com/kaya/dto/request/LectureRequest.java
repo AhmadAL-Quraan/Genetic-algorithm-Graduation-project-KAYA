@@ -1,7 +1,5 @@
 package com.kaya.dto.request;
 
-import com.kaya.model.Instructor;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,8 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class LectureRequest {
     @NotNull private Long courseId;
-    private Integer number;
-    @NotNull private Long instructorId;
+    private Long teacherId;
     private Long timeSlotId;
     private Long roomId;
 }

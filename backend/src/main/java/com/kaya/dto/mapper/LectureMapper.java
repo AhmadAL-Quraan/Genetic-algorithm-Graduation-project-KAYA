@@ -1,34 +1,50 @@
 package com.kaya.dto.mapper;
 
 import com.kaya.dto.response.LectureResponse;
+import com.kaya.model.Instructor;
 import com.kaya.model.Lecture;
 
 public class LectureMapper {
 
+    public static Lecture mapToEntity(LectureResponse response) {
+        Lecture l = new Lecture();
+        l.setId(response.getId());
+        if (response.getCourse() != null) {
+            l.setCourse(CourseMapper.mapToEntity(response.getCourse()));
+        }
+        if (response.getTimeSlot() != null) {
+            com.kaya.model.TimeSlot ts = new com.kaya.model.TimeSlot();
+            ts.setId(response.getTimeSlot().getId());
+            l.setTimeSlot(ts);
+        }
+        if (response.getRoom() != null) {
+            com.kaya.model.Room r = new com.kaya.model.Room();
+            r.setId(response.getRoom().getId());
+            l.setRoom(r);
+        }
+        if (response.getTeacher() != null) {
+            Instructor instructor = new Instructor();
+            instructor.setId(response.getTeacher().getId());
+            instructor.setInstructorName(response.getTeacher().getName());
+            l.setInstructor(instructor);
+        }
+        return l;
+    }
+
     public static LectureResponse mapToResponse(Lecture lecture) {
+        LectureResponse.TeacherInfo teacherInfo = null;
+        if (lecture.getInstructor() != null) {
+            teacherInfo = new LectureResponse.TeacherInfo(
+                    lecture.getInstructor().getId(),
+                    lecture.getInstructor().getInstructorName()
+            );
+        }
         return new LectureResponse(
                 lecture.getId(),
-                CourseMapper.mapToResponse(lecture.getCourse()),
-                lecture.getSectionNumber(),
-                InstructorMapper.mapToResponse(lecture.getInstructor()),
-                lecture.getTimeSlot() != null
-                        ? TimeSlotMapper.mapToResponse(lecture.getTimeSlot())
-                        : null,
-                lecture.getRoom() != null
-                        ? RoomMapper.mapToResponse(lecture.getRoom())
-                        : null
+                lecture.getCourse() != null ? CourseMapper.mapToResponse(lecture.getCourse()) : null,
+                teacherInfo,
+                lecture.getTimeSlot() != null ? TimeSlotMapper.mapToResponse(lecture.getTimeSlot()) : null,
+                lecture.getRoom() != null ? RoomMapper.mapToResponse(lecture.getRoom()) : null
         );
     }
-
-    public static Lecture mapToEntity(LectureResponse response) {
-        return new Lecture(
-                response.getId(),
-                CourseMapper.mapToEntity(response.getCourse()),
-                null,
-                null,
-                null,
-                InstructorMapper.mapToEntity(response.getInstructor())
-        );
-    }
-
 }

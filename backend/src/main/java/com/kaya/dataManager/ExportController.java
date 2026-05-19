@@ -12,10 +12,7 @@ import org.dhatim.fastexcel.Worksheet;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.ByteArrayOutputStream;
 import java.time.DayOfWeek;
@@ -170,8 +167,14 @@ public class ExportController {
                 ws.value(row, 1, lec.getSectionNumber() != null ? lec.getSectionNumber() : 0);
 
                 // Col 2: Instructor / Teacher
-                ws.value(row, 2, lec.getInstructor().getInstructorName() != null ? lec.getInstructor().getInstructorName() : "");
+                String instructorName = "";
 
+                if (lec.getInstructor() != null &&
+                        lec.getInstructor().getInstructorName() != null) {
+                    instructorName = lec.getInstructor().getInstructorName();
+                }
+
+                ws.value(row, 2, instructorName);
                 // Col 3: Room (number only)
                 ws.value(row, 3, lec.getRoom() != null ? lec.getRoom().getRoomNumber() : "");
 
@@ -225,8 +228,12 @@ public class ExportController {
                     ws2.value(r + 1, 1, lec.getCourse().getCourseSymbol() != null ? lec.getCourse().getCourseSymbol() : "");
                     ws2.value(r + 1, 2, lec.getCourse().getCourseNumber() != null ? lec.getCourse().getCourseNumber() : "");
                     ws2.value(r + 1, 3, lec.getSectionNumber() != null ? String.valueOf(lec.getSectionNumber()) : "");
-                    ws2.value(r + 1, 4, lec.getInstructor().getInstructorName() != null ? lec.getInstructor().getInstructorName() : "");
-                }
+                    ws2.value(r + 1, 4,
+                            lec.getInstructor() != null &&
+                                    lec.getInstructor().getInstructorName() != null
+                                    ? lec.getInstructor().getInstructorName()
+                                    : ""
+                    );                }
             }
         }
 

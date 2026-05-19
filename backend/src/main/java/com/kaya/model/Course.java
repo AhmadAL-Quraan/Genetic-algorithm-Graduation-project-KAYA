@@ -3,26 +3,16 @@ package com.kaya.model;
 import com.kaya.model.enums.RoomType;
 import com.kaya.model.enums.TeachingMethod;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.List;
 
 @Entity
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-//@Table(
-//        uniqueConstraints = {
-//                @UniqueConstraint(
-//                        columnNames = {"courseSymbol", "courseNumber"}
-//                )
-//        }
-//)
 public class Course {
 
     @Id
@@ -31,11 +21,9 @@ public class Course {
     private String courseSymbol;
     private String courseNumber;
 
-    // [تعديل]: بدل Set، خلينا الكورس يطلب نوع قاعة واحد (معمل أو قاعة عادية)
     @Enumerated(EnumType.STRING)
     private RoomType requiredRoomType;
 
-    // [تعديل]: بدل Set، خلينا الكورس يتبع طريقة تدريس واحدة (مدمج، وجاهي، الخ)
     @Enumerated(EnumType.STRING)
     private TeachingMethod teachingMethod;
 

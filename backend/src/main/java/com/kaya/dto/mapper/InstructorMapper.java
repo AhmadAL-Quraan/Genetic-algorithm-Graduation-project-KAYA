@@ -13,9 +13,9 @@ public class InstructorMapper {
     }
 
     public static Instructor mapToEntity(InstructorResponse response) {
-        return new Instructor(
-                response.getId(),
-                response.getInstructorName()
-        );
+        Instructor instructor = new Instructor();
+        instructor.setId(response.getId());
+        instructor.setInstructorName(response.getName());
+        return instructor;
     }
 }

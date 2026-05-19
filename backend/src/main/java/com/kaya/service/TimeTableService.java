@@ -3,7 +3,6 @@ package com.kaya.service;
 import com.kaya.algorithm.GAConfig;
 import com.kaya.algorithm.ProgressSnapshot;
 import com.kaya.algorithm.run.StartPoint;
-import com.kaya.dataManager.manualEntryHandler.ManualEntryRepository;
 import com.kaya.dto.mapper.FitnessReportMapper;
 import com.kaya.dto.mapper.TimeTableMapper;
 import com.kaya.dto.request.TimeTableRequest;
@@ -14,17 +13,13 @@ import com.kaya.model.Lecture;
 import com.kaya.model.Room;
 import com.kaya.model.TimeSlot;
 import com.kaya.model.TimeTable;
-import com.kaya.dataManager.manualEntryHandler.ManualEntry;
-import com.kaya.dataManager.manualEntryHandler.ManualEntryRepository;
-import com.kaya.repository.FitnessReportRepository;
-import com.kaya.repository.LectureRepository;
-import com.kaya.repository.RoomRepository;
-import com.kaya.repository.TimeSlotRepository;
-import com.kaya.repository.TimeTableRepository;
+import com.kaya.dataManager.manualEntry.ManualEntry;
+import com.kaya.dataManager.manualEntry.ManualEntryRepository;
+import com.kaya.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.kaya.dataManager.dataGenerator.SectionGenerator;
+import com.kaya.dataManager.SectionGenerator;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.*;
@@ -44,6 +39,7 @@ public class TimeTableService {
     private final RoomService roomService;
     private final TimeSlotService timeSlotService;
     private final ManualEntryRepository manualEntryRepository;
+    private final InstructorRepository instructorRepository;
 
     private volatile boolean cancelRequested = false;
     private volatile ProgressResponse currentProgress = null;
@@ -104,7 +100,7 @@ public class TimeTableService {
             if (configMap.containsKey("populationSize"))
                 config.populationSize = toInt(configMap.get("populationSize"), config.populationSize);
             if (configMap.containsKey("elitismCount"))
-                config.elitismRatio = toDouble(configMap.get("elitismCount"), config.elitismRatio);
+                config.elitismCount = toInt(configMap.get("elitismCount"), config.elitismCount);
             if (configMap.containsKey("tournamentSize"))
                 config.tournamentSize = toInt(configMap.get("tournamentSize"), config.tournamentSize);
             if (configMap.containsKey("initialMutationRate"))
@@ -145,7 +141,7 @@ public class TimeTableService {
         if (lectures.isEmpty()) {
             currentProgress = null;
             throw new IllegalStateException(
-                    "No lecture sections found. Add lecture sections on the Lectures page (or manual entries) before generating.");
+                "No lecture sections found. Add lecture sections on the Lectures page (or manual entries) before generating.");
         }
 
         List<Room> rooms = roomRepository.findAll();
@@ -165,8 +161,8 @@ public class TimeTableService {
         if (!missing.isEmpty()) {
             currentProgress = null;
             throw new IllegalStateException(
-                    "No schedulable time slots for teaching method(s): " + missing +
-                            ". Check that your time window is at least as wide as the lecture duration.");
+                "No schedulable time slots for teaching method(s): " + missing +
+                ". Check that your time window is at least as wide as the lecture duration.");
         }
 
         final int maxGen = config.maxGenerations;
@@ -197,7 +193,7 @@ public class TimeTableService {
     }
 
     @Transactional
-    private TimeTable persistGeneratedTimeTable(TimeTable best) {
+    public TimeTable persistGeneratedTimeTable(TimeTable best) {
         // Build a fresh FitnessReport (no conflicting lecture references to avoid join-table conflicts)
         FitnessReport freshReport = new FitnessReport();
         freshReport.setRoomConflicts(best.getReport().getRoomConflicts());
@@ -220,7 +216,11 @@ public class TimeTableService {
             if (l.getTimeSlot() != null && l.getTimeSlot().getId() != null) {
                 fresh.setTimeSlot(timeSlotService.getEntityById(l.getTimeSlot().getId()));
             }
-            fresh.setInstructor(l.getInstructor());
+            if (l.getInstructor() != null && l.getInstructor().getId() != null) {
+                fresh.setInstructor(
+                        instructorRepository.findById(l.getInstructor().getId()).orElse(null)
+                );
+            }
             freshLectures.add(fresh);
         }
 
@@ -278,7 +278,7 @@ public class TimeTableService {
      * uses slots that match the course's teaching method, and windows are the parent.
      */
     @Transactional
-    private List<TimeSlot> expandAndPersistWindows(List<TimeSlot> allSlots) {
+    public List<TimeSlot> expandAndPersistWindows(List<TimeSlot> allSlots) {
         // Separate windows (have durationMinutes) from already-individual slots
         List<TimeSlot> windows     = allSlots.stream().filter(s -> s.getDurationMinutes() != null).collect(Collectors.toList());
         List<TimeSlot> individuals = allSlots.stream().filter(s -> s.getDurationMinutes() == null).collect(Collectors.toList());

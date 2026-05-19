@@ -42,7 +42,10 @@ public class FitnessCalculator {
 
         for (Lecture c : tt.getLectures()) {
             roomGroups.computeIfAbsent(c.getRoom(), k -> new ArrayList<>()).add(c);
-            instructorGroups.computeIfAbsent(c.getInstructor().getInstructorName(), k -> new ArrayList<>()).add(c);
+            String instructorKey = (c.getInstructor() != null && c.getInstructor().getInstructorName() != null)
+                    ? c.getInstructor().getInstructorName()
+                    : "__unassigned_" + c.getId();
+            instructorGroups.computeIfAbsent(instructorKey, k -> new ArrayList<>()).add(c);
 
             // Create a unique key (e.g., "CS-1") to group students by department and year
             String deptYearKey = c.getCourse().getCourseSymbol() + "-" + c.getCourse().getCourseNumber().charAt(0);
