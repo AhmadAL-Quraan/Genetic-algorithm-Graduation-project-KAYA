@@ -1,102 +1,79 @@
-# Workspace
+# KAYA — University Course Timetable System for Yarmouk University
 
-## Overview
+## Run & Operate
 
-KAYA — a university timetable scheduler powered by a Java/Spring Boot genetic-algorithm backend with a React + Vite frontend. pnpm workspace monorepo.
+| Command | Purpose |
+|---|---|
+| `pnpm --filter @workspace/api-server run dev` | Start Spring Boot backend (port 8080) |
+| `pnpm --filter @workspace/university-scheduler run dev` | Start React frontend (port 5000+) |
+| `cd backend && mvn compile` | Compile backend only |
+| `cd backend && mvn spring-boot:run` | Run backend directly |
+
+**Required env vars**: `PGHOST`, `PGPORT`, `PGDATABASE`, `PGUSER`, `PGPASSWORD`, `PORT`, `BASE_PATH`
 
 ## Stack
 
-- **Monorepo tool**: pnpm workspaces
-- **Backend**: Java 17/19, Spring Boot 3.2.5, Spring Data JPA, Hibernate, PostgreSQL, Maven
-- **Genetic algorithm**: KAYA engine (uniform crossover, adaptive mutation, elitism, tournament selection)
+- **Backend**: Java 17, Spring Boot 3.2.5, Spring Data JPA, Hibernate, PostgreSQL, Maven
+- **Genetic algorithm**: KAYA engine — uniform crossover, adaptive mutation, elitism, tournament selection
 - **Frontend**: React 19, Vite, TypeScript, TanStack Query, wouter, shadcn/ui, Tailwind
-- **Database**: PostgreSQL (accessed via JDBC)
-- Dev Environment: Docker
+- **Database**: PostgreSQL (JDBC via env vars)
+- **Monorepo**: pnpm workspaces
 
+## Where things live
 
-
-## Backend (`@workspace/api-server`)
-
-Spring Boot 3 application that exposes REST endpoints and runs the genetic algorithm.
-
-- Java entrypoint: `com.kaya.KayaApplication`
-- Reads `PORT` (default 8080) and uses `PGHOST`/`PGPORT`/`PGDATABASE`/`PGUSER`/`PGPASSWORD`
-- Hibernate `ddl-auto=update` auto-creates/upgrades tables
-- CORS allows all origins (development)
-- Dev: `pnpm --filter @workspace/api-server run dev` → `mvn -q spring-boot:run`
-
-
-### Course form (POST /api/courses)
-
-Supports two modes:
-1. **ID-based**: provide `teacherId`, `roomId`, `timeSlotId` → resolves from existing setup entities
-2. **String-based** (legacy): provide `instructor`, `building`+`roomNumber`, `startTime`+`endTime`+`days[]` → auto-creates missing Room/TimeSlot
-
-## Frontend (`@workspace/university-scheduler`)
-
-React + Vite SPA. All API calls proxy to `/api/...`.
-
-### Navigation
-
-**SETUP & DATA**
-- `/rooms` — manage lecture halls, labs, other spaces
-- `/teachers` — manage doctors/instructors (linked to departments)
-- `/departments` — manage academic departments
-- `/time-slots` — manage weekly time slots
-
-**OVERVIEW**
-- `/` — Dashboard: stats for all entities, conflict badge, export button
-- `/courses` — Courses: use dropdowns for teacher, room, timeslot, department
-- `/schedule` — Timetables: GA config + generate + calendar/list view
-- `/conflicts` — Conflict browser: room, teacher, student-group conflicts with detail cards
-
-### Key frontend files
-
-- `src/lib/api.ts` — all types, makeResource(), Departments, Teachers, Courses, Rooms, TimeSlots, Lectures, TimeTables, useConflicts(), exportScheduleUrl()
-- `src/components/layout.tsx` — sidebar with SETUP & DATA / OVERVIEW sections, live conflict badge
-- `src/App.tsx` — all routes
-
-
-
-# Run the project
-
-### 1. Requirements 
-
-* `pnpm-lock.yaml`
-* `package-lock.json`)
-
-- Docker
-- Docker Compose
-
-### 2. Clone the repo
-
-```bash
-git clone https://github.com/your-username/university-scheduler.git
-cd university-scheduler
+```
+backend/src/main/java/com/kaya/
+├── KayaApplication.java
+├── algorithm/          # GA: EvolutionEngine, GeneticOperators, FitnessCalculator,
+│                       #     GAConfig, Selection, PoolHelper, TimeTableInitializer,
+│                       #     Island, IslandManager, EvolutionEngineIsland
+│                       #     run/StartPoint.java  ← entry to GA run
+├── config/             # CorsConfig, JacksonConfig
+├── controller/         # Course, Instructor, Room, TimeSlot, Lecture, TimeTable,
+│                       #   FitnessReport, Teacher, Department, Conflict
+├── dataManager/        # SectionGenerator, ManualEntry*, manualEntryGenerator*
+├── dto/                # request/, response/, mapper/
+├── model/              # Course, Instructor, Room, TimeSlot, Lecture, TimeTable,
+│                       #   FitnessReport, Teacher, Department + enums/
+├── repository/         # 10 JPA repos
+└── service/            # one service per entity
+backend/src/main/resources/application.properties   ← DB + port config
+frontend/src/lib/api.ts                             ← all API types + hooks
+frontend/src/pages/                                 ← one file per page
 ```
 
-### 3. Run everything
+## Architecture decisions
 
-```bash
-docker compose up --build
-```
+- **Friends' code as base**: All core algorithm and entity classes match the team's shared code from `LATESET/` (extracted from JAR). Added `GAConfig.elitismRatio`, `stagnationToleranceRatio`, `mutationImpactRatio` defaults that were missing.
+- **Two instructor models**: `Instructor` entity (friends' code, at `/api/instructors`) and `Teacher` entity (at `/api/teachers`) which is what the frontend uses — supports `name`, `email`, and `Department` FK.
+- **Department**: Not in friends' code; added as standalone entity with CRUD at `/api/departments`.
+- **Generate endpoint**: `POST /api/time-table/generate` accepts optional `GAConfig` map, runs algorithm synchronously, saves result, returns `TimeTableResponse`. Cancel via `POST /api/time-table/cancel`.
+- **Conflicts**: `GET /api/conflicts` reads the latest saved timetable's FitnessReport and returns pairwise `ConflictItem` objects for the frontend conflict browser.
+- **Section numbers**: assigned after GA run by `SectionGenerator.generate()` which sorts lectures by course then numbers sections sequentially.
 
-### 4. Open in browser
+## Product
 
-* Frontend: http://localhost:5000
-* Backend: http://localhost:8080
+- Set up Rooms, Teachers, Departments, Time Slots in the Setup & Data section
+- Add Courses (linked to rooms, time slots, instructors via ManualEntry or direct)
+- Run `POST /api/time-table/generate` to trigger the genetic algorithm
+- View the generated timetable calendar and export to Excel
+- Browse detected conflicts by type (room, instructor, student year group)
 
+## User preferences
 
----
+- Backend must use friends' code from the JAR (`LATESET/`) as the foundation
+- Frontend behavior must remain identical to the original working system
 
-##  Notes
+## Gotchas
 
-* First run may take time (dependencies download)
-* Make sure ports 5000, 8080, 5432 are free
-## How to use
+- `StartPoint.runFromDatabase` now takes `cancelCheck` and `progressCallback` params (both nullable)
+- `manualEntryGeneratorService` calls `StartPoint.runFromDatabase(lectures, rooms, timeSlots, null, null)`
+- `FitnessReport.conflictingLectures` is a `Set<Lecture>` mapped via `@OneToMany` — not a join table entity
+- Spring Boot 3.2.5 requires `spring-boot-starter-web` (not `webmvc`); friends' pom.xml had 4.0.5 which was corrected
+- Hibernate `ddl-auto=update` handles schema evolution automatically
 
-1. Set up **Rooms**, **Teachers**, **Departments**, and **Time Slots** (Setup & Data section).
-2. Create **Courses** — choose teacher, room, and time slot from dropdowns.
-3. Run the genetic algorithm on the **Schedule** page for an optimized timetable.
-4. Check **Conflicts** to review any room/teacher/student-group overlaps.
-5. Export to Excel from Courses page or Dashboard.
+## Pointers
+
+- Friends' original source: `/tmp/jar_extract/LATESET/src/` (extracted from attached JAR)
+- API types: `frontend/src/lib/api.ts`
+- GA entry point: `backend/src/main/java/com/kaya/algorithm/run/StartPoint.java`

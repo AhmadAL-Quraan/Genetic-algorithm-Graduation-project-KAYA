@@ -5,6 +5,8 @@ const PROXY_PORT = Number(process.env.PORT ?? 3000);
 const FRONTEND_PORT = 5000;
 const BACKEND_PORT = 8080;
 
+const DEV_PREFIX = "/__dev-frontend";
+
 const proxy = httpProxy.createProxyServer({});
 
 proxy.on("error", (err, _req, res) => {
@@ -15,10 +17,18 @@ proxy.on("error", (err, _req, res) => {
 });
 
 const server = http.createServer((req, res) => {
-  const url = req.url ?? "/";
+  const raw = req.url ?? "/";
+
+  // Strip the frontend base-path prefix so /api and /ws are always recognised
+  const url = raw.startsWith(DEV_PREFIX)
+    ? raw.slice(DEV_PREFIX.length) || "/"
+    : raw;
+
   if (url.startsWith("/api") || url.startsWith("/ws")) {
+    req.url = url; // rewrite before forwarding
     proxy.web(req, res, { target: `http://localhost:${BACKEND_PORT}` });
   } else {
+    req.url = raw; // keep original path for Vite
     proxy.web(req, res, { target: `http://localhost:${FRONTEND_PORT}` });
   }
 });

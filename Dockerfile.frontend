@@ -1,0 +1,40 @@
+# ── Stage 1: Build ────────────────────────────────────────────────────────────
+FROM node:20 AS build
+WORKDIR /workspace
+
+RUN npm install -g pnpm
+
+# Copy workspace root config files
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml tsconfig.base.json tsconfig.json ./
+
+# Copy every package.json in the workspace so pnpm can resolve the graph
+# (layer-cached; only re-runs if a package.json changes)
+COPY frontend/package.json                  ./frontend/
+COPY lib/api-client-react/package.json      ./lib/api-client-react/
+COPY lib/api-spec/package.json              ./lib/api-spec/
+COPY lib/api-zod/package.json               ./lib/api-zod/
+COPY lib/db/package.json                    ./lib/db/
+COPY scripts/package.json                   ./scripts/
+COPY artifacts/mockup-sandbox/package.json  ./artifacts/mockup-sandbox/
+
+# Install all workspace deps
+RUN pnpm install --frozen-lockfile
+
+# Copy source for packages the frontend depends on
+COPY lib ./lib
+COPY frontend ./frontend
+
+# Build — BASE_PATH=/ so assets resolve from root in production
+ENV BASE_PATH=/
+ENV PORT=80
+ENV NODE_ENV=production
+
+RUN pnpm --filter @workspace/university-scheduler run build
+
+# ── Stage 2: Serve with Nginx ─────────────────────────────────────────────────
+FROM nginx:alpine
+
+COPY --from=build /workspace/frontend/dist/public /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+EXPOSE 80

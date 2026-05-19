@@ -1,8 +1,9 @@
 import { Link, useLocation } from "wouter";
 import {
   LayoutDashboard, BookOpen, DoorOpen, Calendar,
-  Users, Building2, Clock, AlertTriangle, Menu, Home,
+  Users, Building2, Clock, AlertTriangle, Menu, Home, GraduationCap,
 } from "lucide-react";
+import yarmoukLogo from "/yarmouk-logo.png";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
@@ -14,12 +15,13 @@ const SETUP_NAV = [
   { href: "/teachers",    label: "Instructor", icon: Users      },
   { href: "/departments", label: "Department", icon: Building2  },
   { href: "/time-slots",  label: "Timeslot",   icon: Clock      },
+  { href: "/courses",     label: "Courses",    icon: BookOpen   },
 ];
 
 const OVERVIEW_NAV = [
   { href: "/",            label: "Welcome",     icon: Home            },
   { href: "/dashboard",   label: "Dashboard",   icon: LayoutDashboard },
-  { href: "/courses",     label: "Courses",     icon: BookOpen        },
+  { href: "/lectures",    label: "Lectures",    icon: GraduationCap   },
   { href: "/schedule",    label: "Schedule",    icon: Calendar        },
   { href: "/conflicts",   label: "Conflicts",   icon: AlertTriangle   },
 ];
@@ -98,7 +100,7 @@ function SidebarLogo() {
   return (
     <div className="flex h-[80px] items-center gap-3 border-b border-sidebar-border px-3 bg-black/10">
       <img
-        src="/yarmouk-logo.png"
+        src={yarmoukLogo}
         alt="Yarmouk University"
         className="h-14 w-14 object-contain rounded-sm flex-shrink-0"
       />
@@ -126,7 +128,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         <header className="md:hidden flex h-14 items-center justify-between border-b bg-sidebar px-4">
           <div className="flex items-center gap-2">
             <img
-              src="/yarmouk-logo.png"
+              src={yarmoukLogo}
               alt="Yarmouk University"
               className="h-8 w-8 object-contain rounded-sm"
             />

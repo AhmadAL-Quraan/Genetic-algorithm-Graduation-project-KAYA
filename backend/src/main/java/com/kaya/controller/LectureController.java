@@ -2,6 +2,7 @@ package com.kaya.controller;
 
 import com.kaya.dto.request.LectureRequest;
 import com.kaya.dto.response.LectureResponse;
+import com.kaya.model.Lecture;
 import com.kaya.service.LectureService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +18,9 @@ public class LectureController {
     private final LectureService lectureService;
 
     @GetMapping
-    public List<LectureResponse> getAll() { return lectureService.getAll(); }
+    public List<LectureResponse> getAll() {
+        return lectureService.getAll();
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<LectureResponse> getById(@PathVariable Long id) {
@@ -25,7 +28,7 @@ public class LectureController {
     }
 
     @PostMapping
-    public ResponseEntity<LectureResponse> create(@Valid @RequestBody LectureRequest request) {
+    public ResponseEntity<LectureResponse> create(@Valid  @RequestBody LectureRequest request) {
         return ResponseEntity.ok(lectureService.create(request));
     }
 
@@ -37,6 +40,12 @@ public class LectureController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         lectureService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Void> deleteAll() {
+        lectureService.deleteAll();
         return ResponseEntity.noContent().build();
     }
 }

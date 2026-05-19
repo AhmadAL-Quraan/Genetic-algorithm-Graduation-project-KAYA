@@ -45,6 +45,39 @@ function MethodSection({ method, label, color, bg, slots }: {
       toast({ title: "Pick at least one day", variant: "destructive" });
       return;
     }
+    // Validate window is wide enough to fit at least one slot
+    const [sh, sm] = form.startTime.split(":").map(Number);
+    const [eh, em] = form.endTime.split(":").map(Number);
+    const newStart = sh * 60 + sm;
+    const newEnd   = eh * 60 + em;
+    const windowMin = newEnd - newStart;
+    if (windowMin < form.durationMinutes) {
+      toast({
+        title: "Window too small",
+        description: `The window is only ${windowMin} min wide but the duration is ${form.durationMinutes} min. Make the window at least ${form.durationMinutes} min wide.`,
+        variant: "destructive",
+      });
+      return;
+    }
+    // Check for time overlap with existing windows on the same days
+    const conflict = slots.find(existing => {
+      const sharedDays = existing.days.filter(d => form.days.includes(d));
+      if (sharedDays.length === 0) return false;
+      const [exSh, exSm] = (existing.startTime ?? "").split(":").map(Number);
+      const [exEh, exEm] = (existing.endTime   ?? "").split(":").map(Number);
+      const exStart = exSh * 60 + exSm;
+      const exEnd   = exEh * 60 + exEm;
+      return newStart < exEnd && exStart < newEnd;
+    });
+    if (conflict) {
+      const sharedDays = conflict.days.filter(d => form.days.includes(d)).map(d => d.slice(0, 3)).join(", ");
+      toast({
+        title: "Time overlap",
+        description: `This window overlaps with the existing ${conflict.startTime?.slice(0, 5)}–${conflict.endTime?.slice(0, 5)} window on: ${sharedDays}. Remove the conflicting window first or choose different days/times.`,
+        variant: "destructive",
+      });
+      return;
+    }
     try {
       await create.mutateAsync(form);
       setForm(makeEmpty(method));
@@ -132,7 +165,10 @@ function MethodSection({ method, label, color, bg, slots }: {
                     </TableCell>
                     <TableCell className="text-right">
                       <Button variant="ghost" size="icon" className="h-7 w-7"
-                        onClick={() => remove.mutate(t.id)} disabled={remove.isPending}>
+                        onClick={() => remove.mutate(t.id, {
+                          onSuccess: () => toast({ title: "Window deleted" }),
+                          onError:   (err: any) => toast({ title: "Failed to delete", description: err.message, variant: "destructive" }),
+                        })} disabled={remove.isPending}>
                         <Trash2 className="h-3.5 w-3.5" />
                       </Button>
                     </TableCell>
