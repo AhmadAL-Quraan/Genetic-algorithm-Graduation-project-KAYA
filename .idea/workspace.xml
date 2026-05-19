@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="7a0ba9ac-e85e-4752-b579-114b353f27f2" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/Genetic-algorithm-Graduation-project-KAYA.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Dockerfile.backend" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Dockerfile.frontend" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/KAYA_Project_Report.docx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/attached_assets/Algorithm explanation.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/kaya/config/JacksonConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/kaya/dataManager/ExportController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/kaya/dataManager/ImportController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/kaya/dto/response/ProgressResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/target/classes/com/kaya/algorithm/Island.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/target/classes/com/kaya/controller/FitnessReportController.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/target/classes/com/kaya/dataManager/ImportController$ImportSummary.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/target/classes/com/kaya/dataManager/ImportController.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/target/classes/com/kaya/dto/mapper/LectureMapper.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/target/classes/com/kaya/dto/request/FitnessReportRequest.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/target/classes/com/kaya/dto/response/FitnessReportResponse.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/target/classes/com/kaya/dto/response/InstructorResponse.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/target/classes/com/kaya/dto/response/LectureResponse$TeacherInfo.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/target/classes/com/kaya/model/Instructor.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/target/classes/com/kaya/repository/FitnessReportRepository.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/target/classes/com/kaya/repository/InstructorRepository.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/target/classes/com/kaya/service/FitnessReportService.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/nginx.conf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/attached_assets/Genetic-algorithm-Graduation-project-KAYA_1776946153400.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/attached_assets/Latest_1778071090169.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/attached_assets/Pasted--1-Build-Your-Own-Database-A-small-database-teaches-sto_1773444520433.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/attached_assets/Pasted--Local-http-localhost-5000-kaya-frontend-Network-http-1_1778089952458.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/attached_assets/Pasted--kaya-frontend-Local-http-localhost-5000-kaya-frontend-_1778089938553.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/attached_assets/Report_Template_(1)(1)_1777122593260.docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/attached_assets/content_1777111214348.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/attached_assets/docker-compose_1778071141720.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/attached_assets/image_1776957726582.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/attached_assets/image_1776957782286.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/attached_assets/image_1776957926693.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/attached_assets/image_1776957990760.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/attached_assets/image_1776959059550.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/attached_assets/image_1776959287603.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/attached_assets/image_1776959561182.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/attached_assets/image_1776960032714.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/attached_assets/image_1776960149647.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/attached_assets/image_1776961093815.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/attached_assets/image_1776961130764.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/attached_assets/image_1776961257183.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/attached_assets/image_1776961295079.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/attached_assets/image_1776961490968.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/attached_assets/image_1776968257747.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/attached_assets/image_1776970087769.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/attached_assets/image_1776970716435.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/attached_assets/image_1776970835319.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/attached_assets/image_1777110808206.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/attached_assets/image_1777111029719.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/attached_assets/image_1777111203025.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/attached_assets/image_1777111423025.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/attached_assets/image_1778071117725.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/attached_assets/image_1778072850649.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/attached_assets/image_1778073934336.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/attached_assets/image_1778074409198.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/attached_assets/image_1778074751905.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/attached_assets/image_1778075420838.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/attached_assets/image_1778079408180.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/attached_assets/image_1778079483580.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/attached_assets/image_1778079783395.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/attached_assets/image_1778082923287.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/attached_assets/image_1778083051261.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/attached_assets/image_1778083759208.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/attached_assets/image_1778084024882.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/attached_assets/image_1778084312984.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/attached_assets/image_1778084449617.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/attached_assets/image_1778084727474.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/attached_assets/image_1778085472837.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/.replit-artifact/artifact.toml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/mvnw" beforeDir="false" afterPath="$PROJECT_DIR$/backend/mvnw" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/KayaApplication.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/algorithm/EvolutionEngine.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/algorithm/FitnessCalculator.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/algorithm/GAConfig.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/algorithm/GeneticOperators.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/algorithm/IslandManager.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/algorithm/PoolHelper.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/algorithm/Selection.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/algorithm/TimeTableInitializer.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/algorithm/data/ExcelDataExtractor.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/algorithm/data/ExcelParser.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/algorithm/run/SchedulerApp.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/config/CorsConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/kaya/config/CorsConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/controller/ConflictController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/controller/CourseController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/controller/DepartmentController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/controller/ExportController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/controller/HealthController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/controller/ImportController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/controller/LectureController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/controller/RoomController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/controller/TeacherController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/controller/TimeSlotController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/controller/TimeTableController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/dto/request/CourseRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/dto/request/DepartmentRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/dto/request/LectureRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/dto/request/RoomRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/dto/request/TeacherRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/dto/request/TimeSlotRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/dto/request/TimeTableRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/dto/response/CourseResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/dto/response/DepartmentResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/dto/response/FitnessReportDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/dto/response/GenerationProgress.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/dto/response/LectureResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/dto/response/RoomResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/dto/response/TeacherResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/dto/response/TimeSlotResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/dto/response/TimeTableResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/mapper/CourseMapper.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/mapper/LectureMapper.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/mapper/RoomMapper.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/mapper/TimeSlotMapper.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/mapper/TimeTableMapper.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/model/Course.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/model/Department.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/model/FitnessReport.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/model/Lecture.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/model/Room.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/model/Teacher.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/model/TimeSlot.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/model/TimeTable.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/model/enums/RoomType.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/model/enums/SlotType.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/model/enums/TeachingMethod.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/repository/CourseRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/repository/DepartmentRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/repository/LectureRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/repository/RoomRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/repository/TeacherRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/repository/TimeSlotRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/repository/TimeTableRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/service/CourseService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/service/DepartmentService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/service/ImportService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/service/LectureService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/service/RoomService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/service/TeacherService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/service/TimeSlotService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/service/TimeTableService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/test/java/com/kaya/KayaApplicationTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/test/java/com/kaya/KayaApplicationTests.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/kaya/KayaApplication.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/kaya/algorithm/EvolutionEngine.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/kaya/algorithm/FitnessCalculator.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/kaya/algorithm/GAConfig.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/kaya/algorithm/GeneticOperators.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/kaya/algorithm/GeneticOperators.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/kaya/algorithm/IslandManager.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/kaya/algorithm/PoolHelper.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/kaya/algorithm/Selection.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/kaya/algorithm/TimeTableInitializer.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/kaya/algorithm/data/ExcelDataExtractor.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/kaya/algorithm/data/ExcelParser.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/kaya/algorithm/run/SchedulerApp.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/kaya/config/CorsConfig.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/kaya/controller/ConflictController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/kaya/controller/CourseController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/kaya/controller/DepartmentController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/kaya/controller/ExportController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/kaya/controller/HealthController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/kaya/controller/ImportController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/kaya/controller/LectureController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/kaya/controller/RoomController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/kaya/controller/TeacherController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/kaya/controller/TimeSlotController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/kaya/controller/TimeTableController.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/kaya/controller/TimeTableController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/kaya/dto/request/CourseRequest.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/kaya/dto/request/DepartmentRequest.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/kaya/dto/request/LectureRequest.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/kaya/dto/request/RoomRequest.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/kaya/dto/request/RoomRequest.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/kaya/dto/request/TeacherRequest.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/kaya/dto/request/TeacherRequest.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/kaya/dto/request/TimeSlotRequest.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/kaya/dto/request/TimeTableRequest.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/kaya/dto/response/CourseResponse.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/kaya/dto/response/CourseResponse.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/kaya/dto/response/DepartmentResponse.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/kaya/dto/response/DepartmentResponse.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/kaya/dto/response/FitnessReportDTO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/kaya/dto/response/GenerationProgress.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/kaya/dto/response/LectureResponse.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/kaya/dto/response/LectureResponse.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/kaya/dto/response/RoomResponse.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/kaya/dto/response/RoomResponse.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/kaya/dto/response/TeacherResponse.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/kaya/dto/response/TeacherResponse.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/kaya/dto/response/TimeSlotResponse.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/kaya/dto/response/TimeSlotResponse.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/kaya/dto/response/TimeTableResponse.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/kaya/mapper/CourseMapper.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/kaya/mapper/LectureMapper.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/kaya/mapper/RoomMapper.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/kaya/mapper/TimeSlotMapper.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/kaya/mapper/TimeTableMapper.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/kaya/model/Course.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/kaya/model/Course.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/kaya/model/Department.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/kaya/model/Department.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/kaya/model/FitnessReport.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/kaya/model/FitnessReport.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/kaya/model/Lecture.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/kaya/model/Lecture.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/kaya/model/Room.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/kaya/model/Room.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/kaya/model/Teacher.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/kaya/model/Teacher.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/kaya/model/TimeSlot.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/kaya/model/TimeSlot.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/kaya/model/TimeTable.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/kaya/model/TimeTable.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/kaya/model/enums/RoomType.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/kaya/model/enums/RoomType.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/kaya/model/enums/SlotType.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/kaya/model/enums/TeachingMethod.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/kaya/model/enums/TeachingMethod.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/kaya/repository/DepartmentRepository.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/kaya/repository/LectureRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/kaya/repository/LectureRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/kaya/repository/TeacherRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/kaya/repository/TeacherRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/kaya/repository/TimeTableRepository.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/kaya/service/CourseService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/kaya/service/DepartmentService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/kaya/service/ImportService$ImportSummary.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/kaya/service/ImportService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/kaya/service/LectureService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/kaya/service/RoomService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/kaya/service/TeacherService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/kaya/service/TimeSlotService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/kaya/service/TimeTableService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/createdFiles.lst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/inputFiles.lst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/test-classes/com/kaya/KayaApplicationTests.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/.replit-artifact/artifact.toml" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/.replit-artifact/artifact.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/App.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/App.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/layout.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/ui/badge.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/ui/badge.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/ui/button.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/ui/button.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/lib/api.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/lib/api.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/courses.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/courses.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/lectures.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/lectures.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/time-slots.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/time-slots.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/timetable-view.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/timetable-view.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/timetables.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/timetables.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/welcome.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/welcome.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/vite.config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/vite.config.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pnpm-lock.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pnpm-lock.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pnpm-workspace.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pnpm-workspace.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pyproject.toml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/src/proxy.ts" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/src/proxy.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/uv.lock" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="mavenHomeTypeForPersistence" value="WRAPPER" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="McpProjectServerCommands">
+    <commands />
+    <urls />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 1
+}</component>
+  <component name="ProjectId" id="3DrRuuVQdM5ZoEvASgryBphZmUa" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
+    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
+    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
+    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
+    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;Spring Boot.KayaApplication.executor&quot;: &quot;Run&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;AhmadAL-Quraan-patch-1&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/ahmadquraan/Documents/my_work/projects/grad_project_final_walla/Genetic-algorithm-Graduation-project-KAYA/backend/src/main/java/com/kaya&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;pnpm&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;/home/ahmadquraan/Documents/my_work/projects/grad_project_final_walla/Genetic-algorithm-Graduation-project-KAYA/node_modules/typescript/lib&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/backend/src/main/java/com/kaya" />
+      <recent name="$PROJECT_DIR$/backend/src/main/java" />
+      <recent name="$PROJECT_DIR$/backend/src/main/java/com/kaya/algorithm" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="com.kaya.dto.response" />
+      <recent name="com.kaya.dataManager" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="KayaApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="KAYA" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.kaya.KayaApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-30f59d01ecdd-26cb7f24e5b0-intellij.indexing.shared.core-IU-253.29346.138" />
+        <option value="bundled-js-predefined-d6986cc7102b-9b0f141eb926-JavaScript-IU-253.29346.138" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="7a0ba9ac-e85e-4752-b579-114b353f27f2" name="Changes" comment="" />
+      <created>1779038429737</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1779038429737</updated>
+      <workItem from="1779038431931" duration="11812000" />
+      <workItem from="1779112430569" duration="12562000" />
+      <workItem from="1779126911291" duration="914000" />
+      <workItem from="1779128053189" duration="11182000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>
