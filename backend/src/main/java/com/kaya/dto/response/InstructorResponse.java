@@ -9,5 +9,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class InstructorResponse {
     private Long id;
-    private String instructorName;
+    private String name;
 }

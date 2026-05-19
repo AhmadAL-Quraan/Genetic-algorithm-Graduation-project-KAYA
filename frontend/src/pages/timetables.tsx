@@ -516,7 +516,7 @@ export default function TimetablesPage() {
 
     try {
       // Fire the long-running POST (blocks until GA completes)
-      const res = await fetch(`${BASE}/api/manual-entry-generator`, {
+      const res = await fetch(`${BASE}/api/time-table/generate`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(cfg),
@@ -749,6 +749,7 @@ export default function TimetablesPage() {
                         <TableCell className="font-medium">
                           {l.course ? `${l.course.courseSymbol} ${l.course.courseNumber}` : "—"}
                         </TableCell>
+                        <TableCell>{l.number}</TableCell>
                         <TableCell>{l.instructor}</TableCell>
                         <TableCell>
                           {l.timeSlot?.days?.map(d => d.slice(0, 3)).join(", ") ?? "—"}

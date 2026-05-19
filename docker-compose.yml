@@ -5,33 +5,27 @@ services:
     image: postgres:15
     container_name: kaya-db
     restart: unless-stopped
-
     environment:
       POSTGRES_USER: kaya
       POSTGRES_PASSWORD: kaya
       POSTGRES_DB: kaya
-
     ports:
       - "5432:5432"
-
     volumes:
       - postgres_data:/var/lib/postgresql/data
-
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U kaya -d kaya"]
       interval: 5s
       timeout: 5s
       retries: 12
 
-  # ── Spring Boot Backend ──────────────────────────────────────────────────────
+  # ── Spring Boot API ──────────────────────────────────────────────────────────
   backend:
     build:
       context: ./backend
       dockerfile: ../Dockerfile.backend
-
     container_name: kaya-backend
     restart: unless-stopped
-
     environment:
       PGHOST: db
       PGPORT: 5432
@@ -39,33 +33,27 @@ services:
       PGUSER: kaya
       PGPASSWORD: kaya
       PORT: 8080
-
     ports:
       - "8080:8080"
-
     depends_on:
       db:
         condition: service_healthy
-
     healthcheck:
-      test: ["CMD-SHELL", "curl -sf http://localhost:8080/api/actuator/health > /dev/null || exit 1"]
+      test: ["CMD-SHELL", "curl -sf http://localhost:8080/api/departments > /dev/null || exit 1"]
       interval: 15s
       timeout: 10s
       retries: 20
       start_period: 90s
 
-  # ── React Frontend ───────────────────────────────────────────────────────────
+  # ── React Frontend (Nginx) ───────────────────────────────────────────────────
   frontend:
     build:
       context: .
       dockerfile: Dockerfile.frontend
-
     container_name: kaya-frontend
     restart: unless-stopped
-
     ports:
       - "5000:80"
-
     depends_on:
       backend:
         condition: service_healthy

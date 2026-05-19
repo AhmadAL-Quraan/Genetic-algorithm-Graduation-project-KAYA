@@ -4,9 +4,12 @@ import com.kaya.dto.request.RoomRequest;
 import com.kaya.dto.response.RoomResponse;
 import com.kaya.dto.mapper.RoomMapper;
 import com.kaya.model.Room;
+import com.kaya.repository.LectureRepository;
 import com.kaya.repository.RoomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +18,7 @@ import java.util.List;
 public class RoomService {
 
     private final RoomRepository roomRepository;
+    private final LectureRepository lectureRepository;
 
     public List<RoomResponse> getAll() {
         return roomRepository.findAll()
@@ -26,7 +30,6 @@ public class RoomService {
     public RoomResponse getById(Long id) {
         Room room = roomRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Room not found"));
-
         return RoomMapper.mapToResponse(room);
     }
 
@@ -42,7 +45,6 @@ public class RoomService {
 
     public List<RoomResponse> createBulk(List<RoomRequest> request) {
         List<RoomResponse> l = new ArrayList<>();
-
         for (RoomRequest roomRequest : request) {
             Room response = new Room();
             l.add(saveRoom(roomRequest, response));
@@ -53,29 +55,28 @@ public class RoomService {
     public RoomResponse update(Long id, RoomRequest request) {
         Room response = roomRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Room not found"));
-
         return saveRoom(request, response);
     }
 
+    @Transactional
     public void delete(Long id) {
         if (!roomRepository.existsById(id)) {
             throw new RuntimeException("Room not found");
         }
+        lectureRepository.detachRoom(id);
         roomRepository.deleteById(id);
     }
 
+    @Transactional
     public void deleteAll() {
+        lectureRepository.detachAllRooms();
         roomRepository.deleteAll();
     }
 
-    // --- Helper methods --- //
-
     private RoomResponse saveRoom(RoomRequest request, Room response) {
-
         response.setRoomNumber(request.getRoomNumber());
         response.setBuilding(request.getBuilding());
         response.setRoomType(request.getRoomType());
-
         Room updated = roomRepository.save(response);
         return RoomMapper.mapToResponse(updated);
     }

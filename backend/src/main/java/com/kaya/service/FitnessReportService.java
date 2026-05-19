@@ -1,8 +1,8 @@
 package com.kaya.service;
 
+import com.kaya.dto.mapper.FitnessReportMapper;
 import com.kaya.dto.request.FitnessReportRequest;
 import com.kaya.dto.response.FitnessReportResponse;
-import com.kaya.dto.mapper.FitnessReportMapper;
 import com.kaya.model.FitnessReport;
 import com.kaya.repository.FitnessReportRepository;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +26,6 @@ public class FitnessReportService {
     public FitnessReportResponse getById(Long id) {
         FitnessReport fitnessReport = fitnessReportRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("FitnessReport not found"));
-
         return FitnessReportMapper.mapToResponse(fitnessReport);
     }
 
@@ -43,7 +42,6 @@ public class FitnessReportService {
     public FitnessReportResponse update(Long id, FitnessReportRequest request) {
         FitnessReport response = fitnessReportRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("FitnessReport not found"));
-
         return saveFitnessReport(request, response);
     }
 
@@ -58,16 +56,12 @@ public class FitnessReportService {
         fitnessReportRepository.deleteAll();
     }
 
-    // --- Helper methods --- //
-
     private FitnessReportResponse saveFitnessReport(FitnessReportRequest request, FitnessReport response) {
-
         response.setInstructorConflicts(request.getInstructorConflicts());
         response.setRoomConflicts(request.getRoomConflicts());
         response.setStudentConflicts(request.getStudentConflicts());
         response.setTotalPenalty(request.getTotalPenalty());
         response.setConflictingLectures(request.getConflictingLectures());
-
         FitnessReport updated = fitnessReportRepository.save(response);
         return FitnessReportMapper.mapToResponse(updated);
     }

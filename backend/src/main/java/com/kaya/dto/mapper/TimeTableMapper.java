@@ -7,8 +7,17 @@ import com.kaya.model.TimeTable;
 public class TimeTableMapper {
 
     public static TimeTableResponse mapToResponse(TimeTable timeTable) {
+        Integer fitness = null;
+        if (timeTable.getReport() != null) {
+            fitness = timeTable.getReport().getTotalPenalty();
+        }
+        String generatedAt = timeTable.getGeneratedAt() != null
+                ? timeTable.getGeneratedAt().toString() : null;
+
         return new TimeTableResponse(
                 timeTable.getId(),
+                fitness,
+                generatedAt,
                 FitnessReportMapper.mapToResponse(timeTable.getReport()),
                 timeTable.getLectures()
                         .stream()
@@ -23,7 +32,8 @@ public class TimeTableMapper {
                 response.getLectures().stream()
                         .map(LectureMapper::mapToEntity)
                         .toList(),
-                FitnessReportMapper.mapToEntity(response.getFitnessReport())
+                FitnessReportMapper.mapToEntity(response.getFitnessReport()),
+                null
         );
     }
 

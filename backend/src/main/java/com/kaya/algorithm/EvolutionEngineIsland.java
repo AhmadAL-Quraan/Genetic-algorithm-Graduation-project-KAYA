@@ -35,7 +35,7 @@ public class EvolutionEngineIsland {
         for (int i = 0; i < size; i++) {
             ArrayList<Lecture> individualClasses = new ArrayList<>();
             for (Lecture c : lectures) {
-                individualClasses.add(new Lecture(c.getId(), c.getCourse(), null, null, c.getSectionNumber(), c.getInstructor()));
+                individualClasses.add(new Lecture(c.getId(), c.getCourse(), null, null, c.getInstructor(),c.getSectionNumber(),null));
             }
             TimeTable timeTable = new TimeTable(individualClasses);
             TimeTableInitializer.initializeRandomly(timeTable, timePools, roomPools);
@@ -55,7 +55,7 @@ public class EvolutionEngineIsland {
 
         ArrayList<TimeTable> population = island.getPopulation();
         int stagnationThreshold = Math.max(1, (int) (config.maxGenerations * config.stagnationToleranceRatio));
-        int actualElites = Math.max(1, (int) (population.size() * config.elitismRatio));
+        int actualElites = Math.max(1, (int) (population.size() * config.elitismCount));
 
         evolutionLoop:
         for (int gen = 1; gen <= epochsToRun; gen++) {

@@ -12,10 +12,7 @@ import org.dhatim.fastexcel.reader.Sheet;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.DayOfWeek;
@@ -29,10 +26,10 @@ import java.util.stream.Stream;
 public class ImportController {
 
     private final CourseRepository    courseRepository;
+    private final InstructorRepository   teacherRepository;
     private final RoomRepository      roomRepository;
     private final TimeSlotRepository  timeSlotRepository;
     private final LectureRepository   lectureRepository;
-    private final InstructorRepository instructorRepository;
 
     @PostMapping(value = "/excel", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Transactional
@@ -45,7 +42,7 @@ public class ImportController {
         Map<String, TimeSlot> slotMap    = new HashMap<>();
 
         courseRepository .findAll().forEach(c -> courseMap .put(courseKey(c.getCourseSymbol(), c.getCourseNumber()), c));
-        instructorRepository.findAll().forEach(t -> teacherMap.put(normalize(t.getInstructorName()), t));
+        teacherRepository.findAll().forEach(t -> teacherMap.put(normalize(t.getInstructorName()), t));
         roomRepository   .findAll().forEach(r -> roomMap   .put(roomKey(r.getBuilding(), r.getRoomNumber()), r));
         timeSlotRepository.findAll().forEach(ts -> {
             if (ts.getDays() != null && ts.getStartTime() != null) {
@@ -135,7 +132,7 @@ public class ImportController {
                             teacher = teacherMap.get(nk);
                             if (teacher == null) {
                                 teacher = new Instructor(null, instructorName);
-                                teacher = instructorRepository.save(teacher);
+                                teacher = teacherRepository.save(teacher);
                                 teacherMap.put(nk, teacher);
                                 teachersCreated++;
                             }
