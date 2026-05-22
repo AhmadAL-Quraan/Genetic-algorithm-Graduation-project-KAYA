@@ -59,8 +59,11 @@ public class EvolutionEngine {
             }
             TimeTable timeTable = new TimeTable(individualClasses);
 
+
             // Assign random but requirement-compliant times and rooms to each lecture
             TimeTableInitializer.initializeRandomly(timeTable, timePools, roomPools);
+            FitnessCalculator.calculateFitness(timeTable);
+
             population.add(timeTable);
         }
         return population;

@@ -1,8 +1,7 @@
 package com.kaya.service;
 
 import com.kaya.algorithm.GAConfig;
-import com.kaya.algorithm.ProgressSnapshot;
-import com.kaya.algorithm.run.StartPoint;
+import com.kaya.algorithm.ProgressSnapshot; import com.kaya.algorithm.run.StartPoint;
 import com.kaya.dto.mapper.FitnessReportMapper;
 import com.kaya.dto.mapper.TimeTableMapper;
 import com.kaya.dto.request.TimeTableRequest;
@@ -24,7 +23,7 @@ import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
-
+import com.kaya.algorithm.FitnessCalculator;
 @Service
 @RequiredArgsConstructor
 public class TimeTableService {
@@ -184,7 +183,7 @@ public class TimeTableService {
                 });
 
         currentProgress = new ProgressResponse("saving", 0, maxGen, 0, 0, 0, 0, 0.0);
-
+        FitnessCalculator.calculateFitness(best);
         SectionGenerator.generate(best);
         TimeTableResponse result = TimeTableMapper.mapToResponse(persistGeneratedTimeTable(best));
 

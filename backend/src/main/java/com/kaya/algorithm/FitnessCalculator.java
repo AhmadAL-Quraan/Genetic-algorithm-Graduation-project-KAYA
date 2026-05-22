@@ -36,19 +36,32 @@ public class FitnessCalculator {
         // Clear the old conflicting lectures to free up memory and prevent inaccurate mutation targeting
         tt.getReport().getConflictingLectures().clear();
 
-        Map<Room, List<Lecture>> roomGroups = new HashMap<>();
+        Map<String, List<Lecture>> roomGroups = new HashMap<>();
         Map<String, List<Lecture>> instructorGroups = new HashMap<>();
         Map<String, List<Lecture>> deptYearGroups = new HashMap<>();
 
         for (Lecture c : tt.getLectures()) {
-            roomGroups.computeIfAbsent(c.getRoom(), k -> new ArrayList<>()).add(c);
-            String instructorKey = (c.getInstructor() != null && c.getInstructor().getInstructorName() != null)
-                    ? c.getInstructor().getInstructorName()
-                    : "__unassigned_" + c.getId();
+
+            String roomKey =
+                    (c.getRoom() != null)
+                            ? c.getRoom().getBuilding() + "-" + c.getRoom().getRoomNumber()
+                            : "__no_room_" + c.getId();
+
+            roomGroups.computeIfAbsent(roomKey, k -> new ArrayList<>()).add(c);
+
+            String instructorKey =
+                    (c.getInstructor() != null &&
+                            c.getInstructor().getInstructorName() != null)
+                            ? c.getInstructor().getInstructorName().trim()
+                            : "__unassigned_" + c.getId();
+
             instructorGroups.computeIfAbsent(instructorKey, k -> new ArrayList<>()).add(c);
 
             // Create a unique key (e.g., "CS-1") to group students by department and year
-            String deptYearKey = c.getCourse().getCourseSymbol() + "-" + c.getCourse().getCourseNumber().charAt(0);
+            String deptYearKey =
+                    c.getCourse().getCourseSymbol() + "-" +
+                            c.getCourse().getCourseNumber().charAt(0);
+
             deptYearGroups.computeIfAbsent(deptYearKey, k -> new ArrayList<>()).add(c);
         }
 

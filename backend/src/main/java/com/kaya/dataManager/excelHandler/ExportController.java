@@ -179,7 +179,7 @@ public class ExportController {
                 ws.value(row, 3, lec.getRoom() != null ? lec.getRoom().getRoomNumber() : "");
 
                 // Col 4: Days — expand single-day GA slots back to their full group (STT / MW / MWS)
-                ws.value(row, 4, formatDaysFull(canonicalGroup(lec.getTimeSlot().getDays())));
+                ws.value(row, 4, formatDaysFull(lec.getTimeSlot().getDays()));
 
                 // Col 5: Start Time
                 ws.value(row, 5, lec.getTimeSlot().getStartTime().toString());
