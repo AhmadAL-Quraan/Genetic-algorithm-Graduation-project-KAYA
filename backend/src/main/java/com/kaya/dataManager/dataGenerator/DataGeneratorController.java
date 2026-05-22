@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class DataGeneratorController {
 
-    private final DataGeneratorService DataGeneratorService;
+    private final DataGeneratorService dataGeneratorService;
 
     @PostMapping
     public ResponseEntity<TimeTableResponse> create() {
-        return ResponseEntity.ok(DataGeneratorService.create());
+        return ResponseEntity.ok(dataGeneratorService.create());
     }
 }
