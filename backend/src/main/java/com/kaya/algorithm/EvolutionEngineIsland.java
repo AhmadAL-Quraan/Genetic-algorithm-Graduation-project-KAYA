@@ -10,6 +10,8 @@ import com.kaya.model.enums.TeachingMethod;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.function.BooleanSupplier;
+import java.util.function.Consumer;
 
 /**
  * The core Genetic Engine. Upgraded to support Epoch-based evolution
@@ -51,7 +53,11 @@ public class EvolutionEngineIsland {
      */
     public void evolveIslandEpoch(Island island, int epochsToRun,
                                   Map<TeachingMethod, HashSet<TimeSlot>> timePools,
-                                  Map<RoomType, HashSet<Room>> roomPools) {
+                                  Map<RoomType, HashSet<Room>> roomPools,
+                                  BooleanSupplier cancelCheck,
+                                  Consumer<ProgressSnapshot> progressCallback) {
+
+
 
         ArrayList<TimeTable> population = island.getPopulation();
         int stagnationThreshold = Math.max(1, (int) (config.maxGenerations * config.stagnationToleranceRatio));
@@ -60,8 +66,30 @@ public class EvolutionEngineIsland {
         evolutionLoop:
         for (int gen = 1; gen <= epochsToRun; gen++) {
 
+            // [NEW]: Graceful Termination - Halts the algorithm immediately if the frontend sends a cancel signal
+            if (cancelCheck != null && cancelCheck.getAsBoolean()) {
+                throw new RuntimeException("Evolution process manually cancelled by the user.");
+            }
+
             // 1. Evaluation & Sorting
             population.sort((a, b) -> Long.compare(b.getReport().getTotalPenalty(), a.getReport().getTotalPenalty()));
+
+            // [NEW]: Real-Time Telemetry - Broadcasts the current epoch's top statistics back to the UI
+            if (progressCallback != null) {
+                com.kaya.model.FitnessReport topReport = population.get(0).getReport();
+                long currentBestPenalty = population.get(0).getReport().getTotalPenalty();
+
+                progressCallback.accept(new ProgressSnapshot(
+                        gen,
+                        config.maxGenerations,
+                        (int) currentBestPenalty,
+                        topReport.getRoomConflicts() != null ? topReport.getRoomConflicts() : 0,
+                        topReport.getInstructorConflicts() != null ? topReport.getInstructorConflicts() : 0,
+                        topReport.getStudentConflicts() != null ? topReport.getStudentConflicts() : 0,
+                        island.getCurrentMutationRate(), // <--- تم التصحيح هنا (نسبة الطفرة للجزيرة)
+                        currentBestPenalty == 0
+                ));
+            }
 
             if (population.get(0).getReport().getTotalPenalty() == 0) {
                 island.setPerfectScheduleFound(true);
