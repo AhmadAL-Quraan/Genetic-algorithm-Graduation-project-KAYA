@@ -2,6 +2,7 @@ package com.kaya.algorithm.run;
 
 import com.kaya.algorithm.EvolutionEngine;
 import com.kaya.algorithm.GAConfig;
+import com.kaya.algorithm.IslandManager;
 import com.kaya.algorithm.ProgressSnapshot;
 import com.kaya.model.Lecture;
 import com.kaya.model.Room;
@@ -48,17 +49,44 @@ public class StartPoint {
             }
         }
 
-        EvolutionEngine engine = new EvolutionEngine(config);
 
         System.out.println("Initializing Population...");
-        ArrayList<TimeTable> initialPop = engine.initializePopulation(
-                new ArrayList<>(lectures), timePools, roomPools);
 
         System.out.println("Starting Evolution Process...");
-        ArrayList<TimeTable> finalPop = engine.evolveGenerations(
-                initialPop, timePools, roomPools, cancelCheck, progressCallback);
+        ArrayList<TimeTable> finalPop ;
+        ArrayList<TimeTable> initialPop;
+        TimeTable bestSchedule;
 
-        TimeTable bestSchedule = finalPop.get(0);
+        if (useIslandModel) {
+            System.out.println("Feature Toggle: ENABLED -> Routing to the Island Manager...");
+
+            // The IslandManager encapsulates the initialization, epoch loops, and parallel migrations.
+            IslandManager islandManager = new IslandManager(config);
+
+            // = engine.initializePopulation(
+              //      new ArrayList<>(lectures), timePools, roomPools);
+
+            // This single call triggers the Parallel Streams and returns the absolute global best schedule.
+            bestSchedule = islandManager.runEvolution(new ArrayList<>(lectures), timePools, roomPools, cancelCheck, progressCallback);
+
+        } else {
+            System.out.println("Feature Toggle: DISABLED -> Routing to the Legacy Evolution Engine...");
+
+            // Initialize the legacy engine with the injected Configuration
+            EvolutionEngine engine = new EvolutionEngine(config);
+
+            System.out.println("Initializing Generation 0 (Random Population)...");
+            // Assuming the legacy initializePopulation signature matches this setup
+            initialPop = engine.initializePopulation(new ArrayList<>(lectures), timePools, roomPools);
+
+            System.out.println("Starting the Standard Evolution Process...");
+            finalPop = engine.evolveGenerations(initialPop, timePools, roomPools, cancelCheck, progressCallback);
+
+            // The evolveGenerations method returns the population sorted by fitness.
+            // Therefore, the schedule at index 0 is the absolute best solution found.
+            bestSchedule = finalPop.get(0);
+        }
+        //bestSchedule = finalPop.get(0);
         System.out.println("=====================================");
         System.out.println("Best Fitness Report:");
         System.out.println(bestSchedule.getReport());

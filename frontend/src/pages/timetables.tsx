@@ -140,46 +140,74 @@ function ReadinessPanel({ checks, loading }: { checks: ReadinessCheck[] | null; 
 
 const PARAM_GUIDE = [
   {
-    name: "Generations", field: "maxGenerations" as keyof GAConfig, default: 200, step: 1,
-    description: "How many evolution cycles the algorithm runs.",
+    name: "Generations", field: "maxGenerations" as keyof GAConfig, default: 400, step: 1,
+    description: "Maximum number of evolutionary cycles. (الحد الأقصى لعدد الأجيال)",
     higher: { effect: "Better schedules, finds fewer conflicts", cost: "Slower — takes more time" },
     lower:  { effect: "Faster results", cost: "May miss a good solution" },
-    recommended: "100–500 for most datasets.",
+    recommended: "400",
   },
   {
-    name: "Population", field: "populationSize" as keyof GAConfig, default: 60, step: 1,
-    description: "Number of candidate timetables evaluated per generation.",
+    name: "Population", field: "populationSize" as keyof GAConfig, default: 100, step: 1,
+    description: "Number of candidate timetables evaluated per generation. (حجم الشعبة في الجيل الواحد)",
     higher: { effect: "More diverse solutions", cost: "Much slower per generation" },
     lower:  { effect: "Very fast", cost: "Low diversity — often converges early" },
-    recommended: "40–100.",
-  },
-  {
-    name: "Elitism", field: "elitismCount" as keyof GAConfig, default: 2, step: 1,
-    description: "Best timetables copied unchanged to next generation.",
-    higher: { effect: "Best solution always preserved", cost: "Reduces diversity" },
-    lower:  { effect: "More exploration", cost: "May lose good solutions" },
-    recommended: "1–3.",
+    recommended: "100",
   },
   {
     name: "Tournament", field: "tournamentSize" as keyof GAConfig, default: 5, step: 1,
-    description: "Candidates competing per selection round.",
+    description: "Subset size for the parent selection competition. (عدد الجداول المتنافسة في كل جولة تزاوج)",
     higher: { effect: "Strong selection pressure", cost: "Premature convergence risk" },
     lower:  { effect: "More diverse parents", cost: "Slower improvement" },
-    recommended: "3–7.",
+    recommended: "5",
+  },
+  {
+    name: "Elitism", field: "elitismCount" as keyof GAConfig, default: 10, step: 1,
+    description: "Number of top schedules passed unchanged to the next generation. (عدد أفضل جداول تنتقل للجيل القادم مباشرة)",
+    higher: { effect: "Best solution always preserved", cost: "Reduces diversity" },
+    lower:  { effect: "More exploration", cost: "May lose good solutions" },
+    recommended: "10",
   },
   {
     name: "Mutation Rate", field: "initialMutationRate" as keyof GAConfig, default: 0.15, step: 0.01,
-    description: "Probability that a lecture's room or time slot is randomly changed.",
+    description: "Base probability of a chromosome undergoing mutation. (احتمالية حدوث طفرة للجدول 15%)",
     higher: { effect: "More exploration", cost: "Too high → random walk" },
     lower:  { effect: "Stable improvement", cost: "Gets stuck in local minima" },
-    recommended: "0.05–0.25.",
+    recommended: "0.15",
   },
   {
-    name: "Mutation Impact", field: "mutationImpactRatio" as keyof GAConfig, default: 0.1, step: 0.01,
-    description: "Fraction of lectures affected when mutation is applied.",
+    name: "Mutation Impact", field: "mutationImpactRatio" as keyof GAConfig, default: 0.10, step: 0.01,
+    description: "Mutate 10% of conflicting courses when a mutation triggers. (نسبة التعديل عند حدوث طفرة)",
     higher: { effect: "Large structural changes", cost: "Can destroy good partial solutions" },
     lower:  { effect: "Fine-grained adjustments", cost: "Very slow on hard problems" },
-    recommended: "0.05–0.15.",
+    recommended: "0.10",
+  },
+  {
+    name: "Stagnation Tolerance", field: "stagnationToleranceRatio" as keyof GAConfig, default: 0.10, step: 0.01,
+    description: "Trigger adaptive mutation after stagnating for 10% of maxGenerations. (تحفيز الطفرة عند الركود)",
+    higher: { effect: "Wait longer before boosting mutation", cost: "Algorithm might get stuck" },
+    lower:  { effect: "Quickly boosts mutation", cost: "Might disrupt stable progress" },
+    recommended: "0.10",
+  },
+  {
+    name: "Islands Count", field: "numIslands" as keyof GAConfig, default: 4, step: 1,
+    description: "Divide schedules into islands for parallel processing. (عدد الجزر المعزولة لزيادة سرعة المعالجة)",
+    higher: { effect: "More isolation & parallelism", cost: "Fewer schedules per island" },
+    lower:  { effect: "Larger island populations", cost: "Less parallel processing speed" },
+    recommended: "4",
+  },
+  {
+    name: "Migration Interval", field: "migrationInterval" as keyof GAConfig, default: 20, step: 1,
+    description: "Exchange genetic material every 20 generations. (عدد الأجيال قبل الهجرة بين الجزر)",
+    higher: { effect: "More independent island evolution", cost: "Late sharing of good traits" },
+    lower:  { effect: "Frequent sharing of traits", cost: "Islands become too similar (low diversity)" },
+    recommended: "20",
+  },
+  {
+    name: "Migration Rate", field: "migrationRate" as keyof GAConfig, default: 2, step: 1,
+    description: "Transfer the top schedules during migration. (عدد الجداول المهاجرة بين الجزر)",
+    higher: { effect: "Faster spread of elite schedules", cost: "Can overwrite local island diversity" },
+    lower:  { effect: "Maintains high island diversity", cost: "Slow spread of good solutions" },
+    recommended: "2",
   },
 ];
 
@@ -454,9 +482,18 @@ export default function TimetablesPage() {
   const remove = TimeTables.useDelete();
   const { checks, allOk, loading: readinessLoading } = useReadinessChecks();
 
-  const [cfg, setCfg] = useState<GAConfig>({
-    maxGenerations: 200, populationSize: 60, elitismCount: 2, tournamentSize: 5,
-    initialMutationRate: 0.15, mutationImpactRatio: 0.1,
+  const [cfg, setCfg] = useState<GAConfig & { useIslandModel: boolean }>({
+    maxGenerations: 400,
+    populationSize: 100,
+    tournamentSize: 5,
+    elitismCount: 10,
+    initialMutationRate: 0.15,
+    mutationImpactRatio: 0.10,
+    stagnationToleranceRatio: 0.10,
+    numIslands: 4,
+    migrationInterval: 20,
+    migrationRate: 2,
+    useIslandModel: false,
   });
 
   const [selectedId, setSelectedId]         = useState<number | null>(null);
@@ -555,72 +592,93 @@ export default function TimetablesPage() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-start justify-between gap-4 flex-wrap">
-        <div>
-          <h1 className="text-2xl font-semibold">Schedule</h1>
-          <p className="text-muted-foreground text-sm">
-            Run the genetic algorithm to produce a conflict-minimized timetable.
-          </p>
+      <div className="space-y-6">
+        <div className="flex items-start justify-between gap-4 flex-wrap">
+          <div>
+            <h1 className="text-2xl font-semibold">Algorithm Setting</h1>
+            <p className="text-muted-foreground text-sm">
+              Run the genetic algorithm to produce a conflict-minimized timetable.
+            </p>
+          </div>
+          {selectedId != null && (
+              <a href={exportTimetableUrl(selectedId)} download>
+                <Button variant="outline" size="sm" className="gap-2">
+                  <Download className="h-4 w-4" /> Export Latest
+                </Button>
+              </a>
+          )}
         </div>
-        {selectedId != null && (
-          <a href={exportTimetableUrl(selectedId)} download>
-            <Button variant="outline" size="sm" className="gap-2">
-              <Download className="h-4 w-4" /> Export Latest
-            </Button>
-          </a>
-        )}
-      </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base flex items-center gap-2">
-            <Sparkles className="h-4 w-4" /> Generate
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-            {PARAM_GUIDE.map(p => (
-              <div key={p.field}>
-                <Label className="text-xs">{p.name}</Label>
-                <Input
-                  type="number"
-                  step={p.step}
-                  value={cfg[p.field] ?? p.default}
-                  onChange={e => setCfg({ ...cfg, [p.field]: +e.target.value })}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base flex items-center gap-2">
+              <Sparkles className="h-4 w-4" /> Algorithm Parameters
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+
+            {/* زر تفعيل معمارية الجزر */}
+            <div className="flex items-center gap-3 p-3 mb-4 rounded-lg border bg-muted/20">
+              <input
+                  type="checkbox"
+                  id="useIslandModel"
+                  checked={cfg.useIslandModel}
+                  onChange={(e) => setCfg({ ...cfg, useIslandModel: e.target.checked })}
                   disabled={generating}
-                />
+                  className="h-5 w-5 accent-primary cursor-pointer"
+              />
+              <div className="flex flex-col">
+                <Label htmlFor="useIslandModel" className="font-semibold text-base cursor-pointer">
+                  Enable Island Model Architecture
+                </Label>
+                <p className="text-xs text-muted-foreground">
+                  Uses Parallel Streams to evolve multiple isolated populations for faster and more diverse results.
+                </p>
               </div>
-            ))}
-          </div>
+            </div>
 
-          <ParamGuide />
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+              {PARAM_GUIDE.map(p => (
+                  <div key={p.field}>
+                    <Label className="text-xs">{p.name}</Label>
+                    <Input
+                        type="number"
+                        step={p.step}
+                        value={cfg[p.field] ?? p.default}
+                        onChange={e => setCfg({ ...cfg, [p.field]: +e.target.value })}
+                        disabled={generating}
+                        className="mt-1"
+                    />
+                  </div>
+              ))}
+            </div>
 
-          <ReadinessPanel checks={checks} loading={readinessLoading} />
+            <ParamGuide />
 
-          <div className="flex items-center gap-3">
-            <Button onClick={onGenerate} disabled={generating || !allOk} className="gap-2">
-              {generating
-                ? <><Loader2 className="h-4 w-4 animate-spin" />Running…</>
-                : <><Sparkles className="h-4 w-4" />Generate Timetable</>}
-            </Button>
-            {generating && (
-              <Button
-                variant="outline"
-                className="gap-2 border-red-300 text-red-600 hover:bg-red-50 hover:text-red-700"
-                onClick={async () => {
-                  // Tell backend to stop — this prevents it from saving the result
-                  try { await fetch(`${BASE}/api/time-table/cancel`, { method: "POST" }); } catch {}
-                  abortRef.current?.abort();
-                }}
-              >
-                <span className="h-2 w-2 rounded-full bg-red-500 inline-block" />
-                Cancel
+            <ReadinessPanel checks={checks} loading={readinessLoading} />
+
+            <div className="flex items-center gap-3">
+              <Button onClick={onGenerate} disabled={generating || !allOk} className="gap-2">
+                {generating
+                    ? <><Loader2 className="h-4 w-4 animate-spin" />Running…</>
+                    : <><Sparkles className="h-4 w-4" />Generate Timetable</>}
               </Button>
-            )}
-          </div>
-        </CardContent>
-      </Card>
+              {generating && (
+                  <Button
+                      variant="outline"
+                      className="gap-2 border-red-300 text-red-600 hover:bg-red-50 hover:text-red-700"
+                      onClick={async () => {
+                        try { await fetch(`${BASE}/api/time-table/cancel`, { method: "POST" }); } catch {}
+                        abortRef.current?.abort();
+                      }}
+                  >
+                    <span className="h-2 w-2 rounded-full bg-red-500 inline-block" />
+                    Cancel
+                  </Button>
+              )}
+            </div>
+          </CardContent>
+        </Card>
 
       {/* Inline live progress panel */}
       {progress && (

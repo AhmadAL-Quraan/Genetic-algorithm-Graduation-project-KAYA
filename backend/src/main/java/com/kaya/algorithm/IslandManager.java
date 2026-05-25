@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BooleanSupplier;
+import java.util.function.Consumer;
 
 /**
  * The Orchestrator of the Island Model Genetic Algorithm.
@@ -32,7 +34,10 @@ public class IslandManager {
      */
     public TimeTable runEvolution(ArrayList<Lecture> lectures,
                                   Map<TeachingMethod, HashSet<TimeSlot>> timePools,
-                                  Map<RoomType, HashSet<Room>> roomPools) {
+                                  Map<RoomType, HashSet<Room>> roomPools,
+                                  BooleanSupplier cancelCheck,
+                                  Consumer<ProgressSnapshot> progressCallback) {
+
 
         int islandPopSize = config.populationSize / config.numIslands;
         List<Island> islands = new ArrayList<>();
@@ -53,7 +58,7 @@ public class IslandManager {
 
             // 3. PARALLEL EVOLUTION: Evolve all islands simultaneously using CPU Cores!
             islands.parallelStream().forEach(island -> {
-                engine.evolveIslandEpoch(island, config.migrationInterval, timePools, roomPools);
+                engine.evolveIslandEpoch(island, config.migrationInterval, timePools, roomPools, cancelCheck, progressCallback);
             });
 
             // Early Stopping Check: Did any island find a flawless schedule?

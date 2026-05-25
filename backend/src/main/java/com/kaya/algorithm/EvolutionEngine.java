@@ -140,7 +140,7 @@ public class EvolutionEngine {
             long newGenerationBestFitness = currentBestFitness;
 
             // 2. ELITISM: Carry over the absolute best schedules to the next generation unchanged.
-            int actualElites = Math.min(Math.max(1, config.elitismCount), population.size());
+            int actualElites = Math.max(1, (int) (population.size() * config.elitismCount));
             for (int i = 0; i < actualElites; i++) {
                 nextGen.add(population.get(i));
             }
@@ -165,13 +165,15 @@ public class EvolutionEngine {
                     break evolutionLoop;
                 }
 
+                // 4. SMART MUTATION: Fitness-Proportionate Probability
                 // Monitor if this new child sets a new fitness record for the current generation
-                if (child.getReport().getTotalPenalty() > newGenerationBestFitness) {
-                    newGenerationBestFitness = child.getReport().getTotalPenalty();
+                double individualMutationChance = currentMutationRate;
+                if (child.getReport().getTotalPenalty() < newGenerationBestFitness) {
+                    individualMutationChance = Math.min(0.80, currentMutationRate * 2.0);
                 }
 
                 // 4. MUTATION: Inject random alterations to resolve existing conflicts.
-                if (Math.random() < currentMutationRate) {
+                if (Math.random() < individualMutationChance) {
                     GeneticOperators.mutate(child, timePools, roomPools, config.mutationImpactRatio);
 
                     // Recalculate fitness ONLY if a mutation actually occurred to save CPU cycles.
@@ -190,7 +192,6 @@ public class EvolutionEngine {
                         newGenerationBestFitness = child.getReport().getTotalPenalty();
                     }
                 }
-
                 nextGen.add(child);
             }
 
