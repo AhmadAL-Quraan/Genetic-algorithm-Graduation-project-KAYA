@@ -132,8 +132,8 @@ public class ExportController {
 
             // ── Row 10: Column headers ─────────────────────────────────────
             int headerRow = 10;
-            // Columns: Course | Section | Instructor/Teacher | Room | Days | Start Time | End Time | Teaching Method | Majors
-            String[] cols = {"Course", "Section", "Instructor / Teacher", "Room", "Days", "Start Time", "End Time", "Teaching Method", "Majors"};
+            // Columns: Course | Section | Instructor | Room | Days | Start Time | End Time | Teaching Method | Majors
+            String[] cols = {"Course", "Section", "Instructor", "Room", "Days", "Start Time", "End Time", "Teaching Method", "Majors"};
             for (int c = 0; c < cols.length; c++) {
                 ws.value(headerRow, c, cols[c]);
                 ws.style(headerRow, c)
@@ -166,7 +166,7 @@ public class ExportController {
                 // Col 1: Section
                 ws.value(row, 1, lec.getSectionNumber() != null ? lec.getSectionNumber() : 0);
 
-                // Col 2: Instructor / Teacher
+                // Col 2: Instructor
                 String instructorName = "";
 
                 if (lec.getInstructor() != null &&
@@ -206,7 +206,7 @@ public class ExportController {
             // ── Column widths ──────────────────────────────────────────────
             ws.width(0, 14);  // Course
             ws.width(1, 9);   // Section
-            ws.width(2, 28);  // Instructor / Teacher
+            ws.width(2, 28);  // Instructor
             ws.width(3, 8);   // Room
             ws.width(4, 36);  // Days
             ws.width(5, 12);  // Start Time

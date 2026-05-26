@@ -52,7 +52,7 @@ function useReadinessChecks() {
       href: "/lectures",
     });
 
-    const neededRoomTypes = [...new Set(courses.data.map(c => c.roomGroups))];
+    const neededRoomTypes = [...new Set(courses.data.flatMap(c => c.roomGroups))];
     for (const rt of neededRoomTypes) {
       const hasRoom = rooms.data.some(r => r.roomType === rt);
       items.push({
@@ -63,7 +63,7 @@ function useReadinessChecks() {
       });
     }
 
-    const neededMethods = [...new Set(courses.data.map(c => c.timeGroups))];
+    const neededMethods = [...new Set(courses.data.flatMap(c => c.timeGroups))];
     for (const method of neededMethods) {
       const hasSlot = timeSlots.data.some(ts => ts.teachingMethod === method && ts.durationMinutes != null);
       items.push({
@@ -91,50 +91,50 @@ function ReadinessPanel({ checks, loading }: { checks: ReadinessCheck[] | null; 
   const allOk   = failing.length === 0;
 
   return (
-    <div className={`rounded-xl border p-4 space-y-3 ${
-      allOk
-        ? "border-green-200 bg-green-50"
-        : "border-amber-200 bg-amber-50"
-    }`}>
-      <button
-        type="button"
-        onClick={() => setCollapsed(v => !v)}
-        className="w-full flex items-center justify-between gap-2 text-left"
-      >
-        <p className={`text-sm font-semibold ${allOk ? "text-green-800" : "text-amber-800"}`}>
-          {allOk
-            ? "✓ All requirements met — ready to generate"
-            : `${failing.length} requirement${failing.length > 1 ? "s" : ""} missing before you can generate`}
-        </p>
-        {allOk && (
-          <span className={`text-xs ${collapsed ? "text-green-600" : "text-green-500"}`}>
+      <div className={`rounded-xl border p-4 space-y-3 ${
+          allOk
+              ? "border-green-200 bg-green-50"
+              : "border-amber-200 bg-amber-50"
+      }`}>
+        <button
+            type="button"
+            onClick={() => setCollapsed(v => !v)}
+            className="w-full flex items-center justify-between gap-2 text-left"
+        >
+          <p className={`text-sm font-semibold ${allOk ? "text-green-800" : "text-amber-800"}`}>
+            {allOk
+                ? "✓ All requirements met — ready to generate"
+                : `${failing.length} requirement${failing.length > 1 ? "s" : ""} missing before you can generate`}
+          </p>
+          {allOk && (
+              <span className={`text-xs ${collapsed ? "text-green-600" : "text-green-500"}`}>
             {collapsed ? "show ▾" : "hide ▴"}
           </span>
-        )}
-      </button>
+          )}
+        </button>
 
-      {(!collapsed || !allOk) && (
-        <ul className="space-y-2">
-          {checks.map((c, i) => (
-            <li key={i} className="flex items-start gap-2.5 text-sm">
-              {c.ok
-                ? <CheckCircle2 className="h-4 w-4 text-green-500 mt-0.5 shrink-0" />
-                : <XCircle     className="h-4 w-4 text-red-500   mt-0.5 shrink-0" />}
-              <span className={c.ok ? "text-green-700" : "text-foreground"}>
+        {(!collapsed || !allOk) && (
+            <ul className="space-y-2">
+              {checks.map((c, i) => (
+                  <li key={i} className="flex items-start gap-2.5 text-sm">
+                    {c.ok
+                        ? <CheckCircle2 className="h-4 w-4 text-green-500 mt-0.5 shrink-0" />
+                        : <XCircle     className="h-4 w-4 text-red-500   mt-0.5 shrink-0" />}
+                    <span className={c.ok ? "text-green-700" : "text-foreground"}>
                 {c.ok ? c.label : (
-                  <>
-                    {c.hint}{" "}
-                    <Link href={c.href} className="font-medium text-amber-700 underline underline-offset-2 hover:text-amber-900">
-                      Go &rarr;
-                    </Link>
-                  </>
+                    <>
+                      {c.hint}{" "}
+                      <Link href={c.href} className="font-medium text-amber-700 underline underline-offset-2 hover:text-amber-900">
+                        Go &rarr;
+                      </Link>
+                    </>
                 )}
               </span>
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
+                  </li>
+              ))}
+            </ul>
+        )}
+      </div>
   );
 }
 
@@ -214,59 +214,59 @@ const PARAM_GUIDE = [
 function ParamGuide() {
   const [open, setOpen] = useState(false);
   return (
-    <div className="border rounded-lg overflow-hidden">
-      <button onClick={() => setOpen(v => !v)}
-        className="w-full flex items-center justify-between px-4 py-3 bg-muted/40 hover:bg-muted/70 transition-colors text-sm font-medium text-left">
+      <div className="border rounded-lg overflow-hidden">
+        <button onClick={() => setOpen(v => !v)}
+                className="w-full flex items-center justify-between px-4 py-3 bg-muted/40 hover:bg-muted/70 transition-colors text-sm font-medium text-left">
         <span className="flex items-center gap-2">
           <Info className="h-4 w-4 text-muted-foreground" />
           Parameter guide — what do these settings do?
         </span>
-        {open ? <ChevronUp className="h-4 w-4 text-muted-foreground" /> : <ChevronDown className="h-4 w-4 text-muted-foreground" />}
-      </button>
-      {open && (
-        <div className="p-4 space-y-4 border-t bg-background">
-          <p className="text-sm text-muted-foreground">
-            KAYA uses a <strong>genetic algorithm (GA)</strong> — it evolves a population of candidate timetables
-            over many generations. A lower <strong>fitness penalty = fewer conflicts</strong>.
-          </p>
-          <div className="space-y-3">
-            {PARAM_GUIDE.map(p => (
-              <div key={p.field} className="rounded-md border p-3 text-sm space-y-2">
-                <div className="flex items-start justify-between gap-2 flex-wrap">
-                  <span className="font-semibold">{p.name}</span>
-                  <Badge variant="outline" className="text-xs font-mono">default: {p.default}</Badge>
-                </div>
-                <p className="text-muted-foreground">{p.description}</p>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-                  <div className="flex items-start gap-2 rounded bg-green-50 dark:bg-green-950/30 p-2">
-                    <TrendingUp className="h-3.5 w-3.5 text-green-600 mt-0.5 shrink-0" />
-                    <div>
-                      <span className="font-medium text-green-700">Higher: </span>
-                      <span className="text-muted-foreground">{p.higher.effect}</span>
-                      <span className="text-red-500"> — but: </span>
-                      <span className="text-muted-foreground">{p.higher.cost}</span>
+          {open ? <ChevronUp className="h-4 w-4 text-muted-foreground" /> : <ChevronDown className="h-4 w-4 text-muted-foreground" />}
+        </button>
+        {open && (
+            <div className="p-4 space-y-4 border-t bg-background">
+              <p className="text-sm text-muted-foreground">
+                KAYA uses a <strong>genetic algorithm (GA)</strong> — it evolves a population of candidate timetables
+                over many generations. A lower <strong>fitness penalty = fewer conflicts</strong>.
+              </p>
+              <div className="space-y-3">
+                {PARAM_GUIDE.map(p => (
+                    <div key={p.field} className="rounded-md border p-3 text-sm space-y-2">
+                      <div className="flex items-start justify-between gap-2 flex-wrap">
+                        <span className="font-semibold">{p.name}</span>
+                        <Badge variant="outline" className="text-xs font-mono">default: {p.default}</Badge>
+                      </div>
+                      <p className="text-muted-foreground">{p.description}</p>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                        <div className="flex items-start gap-2 rounded bg-green-50 dark:bg-green-950/30 p-2">
+                          <TrendingUp className="h-3.5 w-3.5 text-green-600 mt-0.5 shrink-0" />
+                          <div>
+                            <span className="font-medium text-green-700">Higher: </span>
+                            <span className="text-muted-foreground">{p.higher.effect}</span>
+                            <span className="text-red-500"> — but: </span>
+                            <span className="text-muted-foreground">{p.higher.cost}</span>
+                          </div>
+                        </div>
+                        <div className="flex items-start gap-2 rounded bg-blue-50 dark:bg-blue-950/30 p-2">
+                          <TrendingDown className="h-3.5 w-3.5 text-blue-600 mt-0.5 shrink-0" />
+                          <div>
+                            <span className="font-medium text-blue-700">Lower: </span>
+                            <span className="text-muted-foreground">{p.lower.effect}</span>
+                            <span className="text-red-500"> — but: </span>
+                            <span className="text-muted-foreground">{p.lower.cost}</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-2 text-xs text-muted-foreground">
+                        <Minus className="h-3 w-3 mt-0.5 shrink-0" />
+                        <span><strong>Recommended:</strong> {p.recommended}</span>
+                      </div>
                     </div>
-                  </div>
-                  <div className="flex items-start gap-2 rounded bg-blue-50 dark:bg-blue-950/30 p-2">
-                    <TrendingDown className="h-3.5 w-3.5 text-blue-600 mt-0.5 shrink-0" />
-                    <div>
-                      <span className="font-medium text-blue-700">Lower: </span>
-                      <span className="text-muted-foreground">{p.lower.effect}</span>
-                      <span className="text-red-500"> — but: </span>
-                      <span className="text-muted-foreground">{p.lower.cost}</span>
-                    </div>
-                  </div>
-                </div>
-                <div className="flex items-start gap-2 text-xs text-muted-foreground">
-                  <Minus className="h-3 w-3 mt-0.5 shrink-0" />
-                  <span><strong>Recommended:</strong> {p.recommended}</span>
-                </div>
+                ))}
               </div>
-            ))}
-          </div>
-        </div>
-      )}
-    </div>
+            </div>
+        )}
+      </div>
   );
 }
 
@@ -283,9 +283,9 @@ interface ProgressState {
 
 function FitnessChart({ history }: { history: number[] }) {
   if (history.length < 2) return (
-    <div className="h-24 flex items-center justify-center text-xs text-muted-foreground">
-      Collecting data…
-    </div>
+      <div className="h-24 flex items-center justify-center text-xs text-muted-foreground">
+        Collecting data…
+      </div>
   );
 
   const W = 600, H = 100, pad = 8;
@@ -306,18 +306,18 @@ function FitnessChart({ history }: { history: number[] }) {
   const areaPath = `M ${pts[0]} ${pts.slice(1).map(p => `L ${p}`).join(" ")} L ${lx.toFixed(1)},${H - pad} L ${pad},${H - pad} Z`;
 
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-24" preserveAspectRatio="none">
-      <defs>
-        <linearGradient id="fitnessGrad" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#B8860B" stopOpacity="0.25" />
-          <stop offset="100%" stopColor="#B8860B" stopOpacity="0" />
-        </linearGradient>
-      </defs>
-      <path d={areaPath} fill="url(#fitnessGrad)" />
-      <polyline points={pts.join(" ")} fill="none" stroke="#B8860B"
-        strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
-      <circle cx={lx} cy={ly} r="5" fill="#B8860B" />
-    </svg>
+      <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-24" preserveAspectRatio="none">
+        <defs>
+          <linearGradient id="fitnessGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#B8860B" stopOpacity="0.25" />
+            <stop offset="100%" stopColor="#B8860B" stopOpacity="0" />
+          </linearGradient>
+        </defs>
+        <path d={areaPath} fill="url(#fitnessGrad)" />
+        <polyline points={pts.join(" ")} fill="none" stroke="#B8860B"
+                  strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
+        <circle cx={lx} cy={ly} r="5" fill="#B8860B" />
+      </svg>
   );
 }
 
@@ -332,146 +332,146 @@ function LiveProgressPanel({ progress, history, onDismiss }: {
   const isEvolving = progress.phase === "evolving";
 
   const pct = progress.maxGenerations > 0
-    ? Math.min(100, Math.round((progress.generation / progress.maxGenerations) * 100))
-    : 0;
+      ? Math.min(100, Math.round((progress.generation / progress.maxGenerations) * 100))
+      : 0;
 
   const phaseLabel =
-    isPerfect  ? "Perfect schedule found!" :
-    isSaving   ? "Saving timetable…"       :
-    isInit     ? "Initializing population…" :
-                 "Evolving chromosomes...";
+      isPerfect  ? "Perfect schedule found!" :
+          isSaving   ? "Saving timetable…"       :
+              isInit     ? "Initializing population…" :
+                  "Evolving chromosomes...";
 
   return (
-    <Card className="border shadow-sm">
-      <CardContent className="pt-5 pb-5 space-y-5">
+      <Card className="border shadow-sm">
+        <CardContent className="pt-5 pb-5 space-y-5">
 
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            {isPerfect ? (
-              <CheckCircle2 className="h-5 w-5 text-green-500" />
-            ) : isSaving ? (
-              <Loader2 className="h-5 w-5 text-primary animate-spin" />
-            ) : isInit ? (
-              <Loader2 className="h-5 w-5 text-primary animate-spin" />
-            ) : (
-              <Activity className="h-5 w-5 text-[#B8860B]" />
-            )}
-            <span className="text-lg font-semibold">{phaseLabel}</span>
+          {/* Header */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              {isPerfect ? (
+                  <CheckCircle2 className="h-5 w-5 text-green-500" />
+              ) : isSaving ? (
+                  <Loader2 className="h-5 w-5 text-primary animate-spin" />
+              ) : isInit ? (
+                  <Loader2 className="h-5 w-5 text-primary animate-spin" />
+              ) : (
+                  <Activity className="h-5 w-5 text-[#B8860B]" />
+              )}
+              <span className="text-lg font-semibold">{phaseLabel}</span>
+            </div>
+            <button
+                onClick={onDismiss}
+                className="rounded-md p-1 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+                aria-label="Dismiss"
+            >
+              <X className="h-4 w-4" />
+            </button>
           </div>
-          <button
-            onClick={onDismiss}
-            className="rounded-md p-1 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
-            aria-label="Dismiss"
-          >
-            <X className="h-4 w-4" />
-          </button>
-        </div>
 
-        {/* Initializing message */}
-        {isInit && (
-          <p className="text-sm text-muted-foreground">
-            Building the initial population of candidate timetables…
-          </p>
-        )}
+          {/* Initializing message */}
+          {isInit && (
+              <p className="text-sm text-muted-foreground">
+                Building the initial population of candidate timetables…
+              </p>
+          )}
 
-        {/* Saving message */}
-        {isSaving && (
-          <p className="text-sm text-muted-foreground">
-            GA finished. Persisting the best timetable to the database…
-          </p>
-        )}
+          {/* Saving message */}
+          {isSaving && (
+              <p className="text-sm text-muted-foreground">
+                GA finished. Persisting the best timetable to the database…
+              </p>
+          )}
 
-        {(isEvolving || isPerfect) && (
-          <>
-            {/* Generation + Fitness row */}
-            <div className="flex items-end justify-between">
-              <div>
-                <p className="text-xs text-muted-foreground mb-0.5">Generation</p>
-                <p className="text-3xl font-bold tabular-nums leading-none">
-                  {progress.generation}
-                  <span className="text-base font-normal text-muted-foreground"> / {progress.maxGenerations}</span>
-                </p>
-              </div>
-              <div className="text-right">
-                <p className="text-xs text-muted-foreground mb-0.5">Best fitness penalty</p>
-                <p className={`text-3xl font-bold tabular-nums leading-none ${
-                  isPerfect || progress.bestFitness === 0
-                    ? "text-green-500"
-                    : "text-orange-500"
-                }`}>
-                  {progress.bestFitness}
-                </p>
-              </div>
-            </div>
+          {(isEvolving || isPerfect) && (
+              <>
+                {/* Generation + Fitness row */}
+                <div className="flex items-end justify-between">
+                  <div>
+                    <p className="text-xs text-muted-foreground mb-0.5">Generation</p>
+                    <p className="text-3xl font-bold tabular-nums leading-none">
+                      {progress.generation}
+                      <span className="text-base font-normal text-muted-foreground"> / {progress.maxGenerations}</span>
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-xs text-muted-foreground mb-0.5">Best fitness penalty</p>
+                    <p className={`text-3xl font-bold tabular-nums leading-none ${
+                        isPerfect || progress.bestFitness === 0
+                            ? "text-green-500"
+                            : "text-orange-500"
+                    }`}>
+                      {progress.bestFitness}
+                    </p>
+                  </div>
+                </div>
 
-            {/* Progress bar */}
-            <div className="space-y-1.5">
-              <div className="flex justify-between text-xs text-muted-foreground">
-                <span>Progress</span>
-                <span>{isPerfect ? 100 : pct}%</span>
-              </div>
-              <div className="h-2.5 rounded-full bg-muted overflow-hidden">
-                <div
-                  className="h-full rounded-full transition-all duration-300"
-                  style={{
-                    width: `${isPerfect ? 100 : pct}%`,
-                    backgroundColor: isPerfect ? "#22c55e" : "#B8860B",
-                  }}
-                />
-              </div>
-            </div>
+                {/* Progress bar */}
+                <div className="space-y-1.5">
+                  <div className="flex justify-between text-xs text-muted-foreground">
+                    <span>Progress</span>
+                    <span>{isPerfect ? 100 : pct}%</span>
+                  </div>
+                  <div className="h-2.5 rounded-full bg-muted overflow-hidden">
+                    <div
+                        className="h-full rounded-full transition-all duration-300"
+                        style={{
+                          width: `${isPerfect ? 100 : pct}%`,
+                          backgroundColor: isPerfect ? "#22c55e" : "#B8860B",
+                        }}
+                    />
+                  </div>
+                </div>
 
-            {/* Conflict cards */}
-            <div className="grid grid-cols-3 gap-3">
-              <div className="rounded-xl border border-red-100 bg-red-50 p-4 text-center">
-                <p className="text-xs text-muted-foreground mb-1">Room</p>
-                <p className={`text-2xl font-bold tabular-nums ${progress.roomConflicts === 0 ? "text-green-500" : "text-red-500"}`}>
-                  {progress.roomConflicts}
-                </p>
-                <p className="text-xs text-muted-foreground mt-0.5">conflicts</p>
-              </div>
-              <div className="rounded-xl border border-amber-100 bg-amber-50 p-4 text-center">
-                <p className="text-xs text-muted-foreground mb-1">Instructor</p>
-                <p className={`text-2xl font-bold tabular-nums ${progress.instructorConflicts === 0 ? "text-green-500" : "text-amber-500"}`}>
-                  {progress.instructorConflicts}
-                </p>
-                <p className="text-xs text-muted-foreground mt-0.5">conflicts</p>
-              </div>
-              <div className="rounded-xl border border-blue-100 bg-blue-50 p-4 text-center">
-                <p className="text-xs text-muted-foreground mb-1">Student</p>
-                <p className={`text-2xl font-bold tabular-nums ${progress.studentConflicts === 0 ? "text-green-500" : "text-blue-500"}`}>
-                  {progress.studentConflicts}
-                </p>
-                <p className="text-xs text-muted-foreground mt-0.5">conflicts</p>
-              </div>
-            </div>
+                {/* Conflict cards */}
+                <div className="grid grid-cols-3 gap-3">
+                  <div className="rounded-xl border border-red-100 bg-red-50 p-4 text-center">
+                    <p className="text-xs text-muted-foreground mb-1">Room</p>
+                    <p className={`text-2xl font-bold tabular-nums ${progress.roomConflicts === 0 ? "text-green-500" : "text-red-500"}`}>
+                      {progress.roomConflicts}
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-0.5">conflicts</p>
+                  </div>
+                  <div className="rounded-xl border border-amber-100 bg-amber-50 p-4 text-center">
+                    <p className="text-xs text-muted-foreground mb-1">Instructor</p>
+                    <p className={`text-2xl font-bold tabular-nums ${progress.instructorConflicts === 0 ? "text-green-500" : "text-amber-500"}`}>
+                      {progress.instructorConflicts}
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-0.5">conflicts</p>
+                  </div>
+                  <div className="rounded-xl border border-blue-100 bg-blue-50 p-4 text-center">
+                    <p className="text-xs text-muted-foreground mb-1">Student</p>
+                    <p className={`text-2xl font-bold tabular-nums ${progress.studentConflicts === 0 ? "text-green-500" : "text-blue-500"}`}>
+                      {progress.studentConflicts}
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-0.5">conflicts</p>
+                  </div>
+                </div>
 
-            {/* Adaptive mutation banner */}
-            {progress.mutationRate > 0.16 && (
-              <div className="flex items-center gap-2 rounded-lg border border-purple-200 bg-purple-50 px-4 py-2.5 text-sm text-purple-700">
-                <Zap className="h-4 w-4 shrink-0 text-purple-500" />
-                Adaptive mutation active — rate boosted to {(progress.mutationRate * 100).toFixed(0)}% to escape local optima
-              </div>
-            )}
+                {/* Adaptive mutation banner */}
+                {progress.mutationRate > 0.16 && (
+                    <div className="flex items-center gap-2 rounded-lg border border-purple-200 bg-purple-50 px-4 py-2.5 text-sm text-purple-700">
+                      <Zap className="h-4 w-4 shrink-0 text-purple-500" />
+                      Adaptive mutation active — rate boosted to {(progress.mutationRate * 100).toFixed(0)}% to escape local optima
+                    </div>
+                )}
 
-            {/* Perfect banner */}
-            {isPerfect && (
-              <div className="flex items-center gap-2 rounded-lg border border-green-200 bg-green-50 px-4 py-2.5 text-sm text-green-700">
-                <CheckCircle2 className="h-4 w-4 shrink-0" />
-                Zero-conflict schedule achieved at generation {progress.generation}!
-              </div>
-            )}
+                {/* Perfect banner */}
+                {isPerfect && (
+                    <div className="flex items-center gap-2 rounded-lg border border-green-200 bg-green-50 px-4 py-2.5 text-sm text-green-700">
+                      <CheckCircle2 className="h-4 w-4 shrink-0" />
+                      Zero-conflict schedule achieved at generation {progress.generation}!
+                    </div>
+                )}
 
-            {/* Fitness chart */}
-            <div>
-              <p className="text-xs text-muted-foreground mb-2">Fitness over time</p>
-              <FitnessChart history={history} />
-            </div>
-          </>
-        )}
-      </CardContent>
-    </Card>
+                {/* Fitness chart */}
+                <div>
+                  <p className="text-xs text-muted-foreground mb-2">Fitness over time</p>
+                  <FitnessChart history={history} />
+                </div>
+              </>
+          )}
+        </CardContent>
+      </Card>
   );
 }
 
@@ -503,8 +503,8 @@ export default function TimetablesPage() {
   const abortRef = useRef<AbortController | null>(null);
 
   const sortedTimetables = list.data
-    ? [...list.data].sort((a, b) => (a.id ?? 0) - (b.id ?? 0))
-    : [];
+      ? [...list.data].sort((a, b) => (a.id ?? 0) - (b.id ?? 0))
+      : [];
 
   useEffect(() => {
     if (selectedId == null && list.data?.length) {
@@ -515,8 +515,8 @@ export default function TimetablesPage() {
 
   const selected: TimeTable | null = list.data?.find(t => t.id === selectedId) ?? null;
   const selectedDisplayNum = selected
-    ? sortedTimetables.findIndex(t => t.id === selected.id) + 1
-    : null;
+      ? sortedTimetables.findIndex(t => t.id === selected.id) + 1
+      : null;
 
   const onGenerate = async () => {
     // Stop any previous poll loop
@@ -680,155 +680,155 @@ export default function TimetablesPage() {
           </CardContent>
         </Card>
 
-      {/* Inline live progress panel */}
-      {progress && (
-        <LiveProgressPanel
-          progress={progress}
-          history={fitnessHistory}
-          onDismiss={() => setProgress(null)}
-        />
-      )}
+        {/* Inline live progress panel */}
+        {progress && (
+            <LiveProgressPanel
+                progress={progress}
+                history={fitnessHistory}
+                onDismiss={() => setProgress(null)}
+            />
+        )}
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base">
-            Saved timetables ({list.data?.length ?? 0})
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          {list.isLoading ? (
-            <div className="text-sm text-muted-foreground">Loading…</div>
-          ) : !list.data?.length ? (
-            <div className="text-sm text-muted-foreground">
-              No timetables yet — generate one above.
-            </div>
-          ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>ID</TableHead>
-                  <TableHead>Generated</TableHead>
-                  <TableHead>Lectures</TableHead>
-                  <TableHead>Fitness penalty</TableHead>
-                  <TableHead />
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {sortedTimetables.map((t, idx) => (
-                  <TableRow
-                    key={t.id}
-                    className={`cursor-pointer ${selectedId === t.id ? "bg-muted/60" : ""}`}
-                    onClick={() => setSelectedId(t.id)}>
-                    <TableCell>#{idx + 1}</TableCell>
-                    <TableCell>
-                      {t.generatedAt ? new Date(t.generatedAt).toLocaleString() : "—"}
-                    </TableCell>
-                    <TableCell>{t.lectures?.length ?? 0}</TableCell>
-                    <TableCell>
-                      <Badge variant={t.fitness === 0 ? "default" : "secondary"}>
-                        {t.fitness}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <Button variant="ghost" size="icon"
-                        onClick={e => {
-                          e.stopPropagation();
-                          remove.mutate(t.id);
-                          if (selectedId === t.id) setSelectedId(null);
-                          // Immediately clear the progress panel when any timetable is deleted
-                          setProgress(null);
-                        }}>
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          )}
-        </CardContent>
-      </Card>
-
-      {selected && (
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Timetable #{selectedDisplayNum}</CardTitle>
-            {selected.fitnessReport && (
-              <div className="flex flex-wrap gap-2 pt-1 text-xs">
-                <Badge variant={selected.fitnessReport.roomConflicts > 0 ? "destructive" : "outline"}>
-                  Room conflicts: {selected.fitnessReport.roomConflicts}
-                  {selected.fitnessReport.roomConflicts > 0 && ` (−${selected.fitnessReport.roomConflicts * 10})`}
-                </Badge>
-                <Badge variant={selected.fitnessReport.instructorConflicts > 0 ? "destructive" : "outline"}>
-                  Instructor conflicts: {selected.fitnessReport.instructorConflicts}
-                  {selected.fitnessReport.instructorConflicts > 0 && ` (−${selected.fitnessReport.instructorConflicts * 10})`}
-                </Badge>
-                <Badge variant={selected.fitnessReport.studentConflicts > 0 ? "destructive" : "outline"}>
-                  Student conflicts: {selected.fitnessReport.studentConflicts}
-                  {selected.fitnessReport.studentConflicts > 0 && ` (−${selected.fitnessReport.studentConflicts * 20})`}
-                </Badge>
-                <Badge variant={selected.fitnessReport.totalPenalty === 0 ? "outline" : "default"}>
-                  Total penalty: {selected.fitnessReport.totalPenalty}
-                </Badge>
-              </div>
-            )}
+            <CardTitle className="text-base">
+              Saved timetables ({list.data?.length ?? 0})
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <Tabs defaultValue="calendar">
-              <TabsList>
-                <TabsTrigger value="calendar">
-                  <CalendarDays className="h-4 w-4 mr-1" /> Calendar
-                </TabsTrigger>
-                <TabsTrigger value="list">
-                  <List className="h-4 w-4 mr-1" /> List
-                </TabsTrigger>
-              </TabsList>
-              <TabsContent value="calendar" className="pt-3">
-                <TimetableCalendar
-                  timetable={selected}
-                  onMutated={() => qc.invalidateQueries({ queryKey: ["time-table"] })}
-                />
-              </TabsContent>
-              <TabsContent value="list" className="pt-3">
+            {list.isLoading ? (
+                <div className="text-sm text-muted-foreground">Loading…</div>
+            ) : !list.data?.length ? (
+                <div className="text-sm text-muted-foreground">
+                  No timetables yet — generate one above.
+                </div>
+            ) : (
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Course</TableHead>
-                      <TableHead>Sec</TableHead>
-                      <TableHead>Instructor</TableHead>
-                      <TableHead>Days</TableHead>
-                      <TableHead>Time</TableHead>
-                      <TableHead>Room</TableHead>
+                      <TableHead>ID</TableHead>
+                      <TableHead>Generated</TableHead>
+                      <TableHead>Lectures</TableHead>
+                      <TableHead>Fitness penalty</TableHead>
+                      <TableHead />
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {selected.lectures?.map(l => (
-                      <TableRow key={l.id}>
-                        <TableCell className="font-medium">
-                          {l.course ? `${l.course.courseSymbol} ${l.course.courseNumber}` : "—"}
-                        </TableCell>
-                        <TableCell>{l.number}</TableCell>
-                        <TableCell>{l.instructor}</TableCell>
-                        <TableCell>
-                          {l.timeSlot?.days?.map(d => d.slice(0, 3)).join(", ") ?? "—"}
-                        </TableCell>
-                        <TableCell>
-                          {l.timeSlot
-                            ? `${l.timeSlot.startTime?.slice(0, 5)}–${l.timeSlot.endTime?.slice(0, 5)}`
-                            : "—"}
-                        </TableCell>
-                        <TableCell>
-                          {l.room ? `${l.room.building} ${l.room.roomNumber}` : "—"}
-                        </TableCell>
-                      </TableRow>
+                    {sortedTimetables.map((t, idx) => (
+                        <TableRow
+                            key={t.id}
+                            className={`cursor-pointer ${selectedId === t.id ? "bg-muted/60" : ""}`}
+                            onClick={() => setSelectedId(t.id)}>
+                          <TableCell>#{idx + 1}</TableCell>
+                          <TableCell>
+                            {t.generatedAt ? new Date(t.generatedAt).toLocaleString() : "—"}
+                          </TableCell>
+                          <TableCell>{t.lectures?.length ?? 0}</TableCell>
+                          <TableCell>
+                            <Badge variant={t.fitness === 0 ? "default" : "secondary"}>
+                              {t.fitness}
+                            </Badge>
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <Button variant="ghost" size="icon"
+                                    onClick={e => {
+                                      e.stopPropagation();
+                                      remove.mutate(t.id);
+                                      if (selectedId === t.id) setSelectedId(null);
+                                      // Immediately clear the progress panel when any timetable is deleted
+                                      setProgress(null);
+                                    }}>
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </TableCell>
+                        </TableRow>
                     ))}
                   </TableBody>
                 </Table>
-              </TabsContent>
-            </Tabs>
+            )}
           </CardContent>
         </Card>
-      )}
-    </div>
+
+        {selected && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-base">Timetable #{selectedDisplayNum}</CardTitle>
+                {selected.fitnessReport && (
+                    <div className="flex flex-wrap gap-2 pt-1 text-xs">
+                      <Badge variant={selected.fitnessReport.roomConflicts > 0 ? "destructive" : "outline"}>
+                        Room conflicts: {selected.fitnessReport.roomConflicts}
+                        {selected.fitnessReport.roomConflicts > 0 && ` (−${selected.fitnessReport.roomConflicts * 10})`}
+                      </Badge>
+                      <Badge variant={selected.fitnessReport.instructorConflicts > 0 ? "destructive" : "outline"}>
+                        Instructor conflicts: {selected.fitnessReport.instructorConflicts}
+                        {selected.fitnessReport.instructorConflicts > 0 && ` (−${selected.fitnessReport.instructorConflicts * 10})`}
+                      </Badge>
+                      <Badge variant={selected.fitnessReport.studentConflicts > 0 ? "destructive" : "outline"}>
+                        Student conflicts: {selected.fitnessReport.studentConflicts}
+                        {selected.fitnessReport.studentConflicts > 0 && ` (−${selected.fitnessReport.studentConflicts * 20})`}
+                      </Badge>
+                      <Badge variant={selected.fitnessReport.totalPenalty === 0 ? "outline" : "default"}>
+                        Total penalty: {selected.fitnessReport.totalPenalty}
+                      </Badge>
+                    </div>
+                )}
+              </CardHeader>
+              <CardContent>
+                <Tabs defaultValue="calendar">
+                  <TabsList>
+                    <TabsTrigger value="calendar">
+                      <CalendarDays className="h-4 w-4 mr-1" /> Calendar
+                    </TabsTrigger>
+                    <TabsTrigger value="list">
+                      <List className="h-4 w-4 mr-1" /> List
+                    </TabsTrigger>
+                  </TabsList>
+                  <TabsContent value="calendar" className="pt-3">
+                    <TimetableCalendar
+                        timetable={selected}
+                        onMutated={() => qc.invalidateQueries({ queryKey: ["time-table"] })}
+                    />
+                  </TabsContent>
+                  <TabsContent value="list" className="pt-3">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Course</TableHead>
+                          <TableHead>Sec</TableHead>
+                          <TableHead>Instructor</TableHead>
+                          <TableHead>Days</TableHead>
+                          <TableHead>Time</TableHead>
+                          <TableHead>Room</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {selected.lectures?.map(l => (
+                            <TableRow key={l.id}>
+                              <TableCell className="font-medium">
+                                {l.course ? `${l.course.courseSymbol} ${l.course.courseNumber}` : "—"}
+                              </TableCell>
+                              <TableCell>{l.number}</TableCell>
+                              <TableCell>{l.instructor}</TableCell>
+                              <TableCell>
+                                {l.timeSlot?.days?.map(d => d.slice(0, 3)).join(", ") ?? "—"}
+                              </TableCell>
+                              <TableCell>
+                                {l.timeSlot
+                                    ? `${l.timeSlot.startTime?.slice(0, 5)}–${l.timeSlot.endTime?.slice(0, 5)}`
+                                    : "—"}
+                              </TableCell>
+                              <TableCell>
+                                {l.room ? `${l.room.building} ${l.room.roomNumber}` : "—"}
+                              </TableCell>
+                            </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </TabsContent>
+                </Tabs>
+              </CardContent>
+            </Card>
+        )}
+      </div>
   );
 }

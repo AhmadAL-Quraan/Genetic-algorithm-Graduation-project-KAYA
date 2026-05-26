@@ -15,12 +15,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ManualEntryRequest {
 
-    @NotBlank private String courseSymbol;
-    @NotBlank private String courseNumber;
-    @NotNull @Enumerated(EnumType.STRING)
-    private RoomType requiredRoomType;
-    @NotNull @Enumerated(EnumType.STRING)
-    private TeachingMethod teachingMethod;
-
+    private Long courseId;
     private Long instructorId;
 }

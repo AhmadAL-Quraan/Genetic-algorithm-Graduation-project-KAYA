@@ -12,7 +12,7 @@ import { useConflicts } from "@/lib/api";
 
 const SETUP_NAV = [
   { href: "/rooms",       label: "Room",       icon: DoorOpen   },
-  { href: "/teachers",    label: "Instructor", icon: Users      },
+  { href: "/instructors",    label: "Instructor", icon: Users      },
   { href: "/departments", label: "Department", icon: Building2  },
   { href: "/time-slots",  label: "Timeslot",   icon: Clock      },
   { href: "/courses",     label: "Courses",    icon: BookOpen   },

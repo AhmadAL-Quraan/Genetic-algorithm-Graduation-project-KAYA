@@ -26,7 +26,7 @@ import java.util.stream.Stream;
 public class ImportController {
 
     private final CourseRepository    courseRepository;
-    private final InstructorRepository   teacherRepository;
+    private final InstructorRepository   instructorRepository;
     private final RoomRepository      roomRepository;
     private final TimeSlotRepository  timeSlotRepository;
     private final LectureRepository   lectureRepository;
@@ -37,12 +37,12 @@ public class ImportController {
 
         // ── Preload existing data into lookup maps ─────────────────────────
         Map<String, Course>   courseMap  = new HashMap<>();
-        Map<String, Instructor>  teacherMap = new HashMap<>();
+        Map<String, Instructor>  instructorMap = new HashMap<>();
         Map<String, Room>     roomMap    = new HashMap<>();
         Map<String, TimeSlot> slotMap    = new HashMap<>();
 
         courseRepository .findAll().forEach(c -> courseMap .put(courseKey(c.getCourseSymbol(), c.getCourseNumber()), c));
-        teacherRepository.findAll().forEach(t -> teacherMap.put(normalize(t.getInstructorName()), t));
+        instructorRepository.findAll().forEach(t -> instructorMap.put(normalize(t.getInstructorName()), t));
         roomRepository   .findAll().forEach(r -> roomMap   .put(roomKey(r.getBuilding(), r.getRoomNumber()), r));
         timeSlotRepository.findAll().forEach(ts -> {
             if (ts.getDays() != null && ts.getStartTime() != null) {
@@ -51,7 +51,7 @@ public class ImportController {
         });
 
         int rowsProcessed = 0, rowsSkipped = 0;
-        int coursesCreated = 0, teachersCreated = 0, roomsCreated = 0,
+        int coursesCreated = 0, instructorCreated = 0, roomsCreated = 0,
             timeSlotsCreated = 0, lecturesCreated = 0;
         List<String> warnings = new ArrayList<>();
 
@@ -124,17 +124,17 @@ public class ImportController {
                             }
                         }
 
-                        // ── Instructor / Teacher ──────────────────────────
+                        // ── Instructor ──────────────────────────
                         String instructorName = cell(row, 19);
-                        Instructor teacher = null;
+                        Instructor instructor = null;
                         if (!instructorName.isEmpty()) {
                             String nk = normalize(instructorName);
-                            teacher = teacherMap.get(nk);
-                            if (teacher == null) {
-                                teacher = new Instructor(null, instructorName);
-                                teacher = teacherRepository.save(teacher);
-                                teacherMap.put(nk, teacher);
-                                teachersCreated++;
+                            instructor = instructorMap.get(nk);
+                            if (instructor == null) {
+                                instructor = new Instructor(null, instructorName, null, null);
+                                instructor = instructorRepository.save(instructor);
+                                instructorMap.put(nk, instructor);
+                                instructorCreated++;
                             }
                         }
 
@@ -172,8 +172,8 @@ public class ImportController {
                         lecture.setRoom(room);
                         lecture.setTimeSlot(slot);
                         lecture.setSectionNumber(sectionNum);
-                        lecture.setInstructor(teacher);
-                        lecture.setInstructor(instructorName.isEmpty() ? null : teacher);
+                        lecture.setInstructor(instructor);
+                        lecture.setInstructor(instructorName.isEmpty() ? null : instructor);
                         lectureRepository.save(lecture);
                         lecturesCreated++;
 
@@ -188,7 +188,7 @@ public class ImportController {
         return ResponseEntity.ok(new ImportSummary(
                 rowsProcessed, rowsSkipped,
                 coursesCreated, roomsCreated, timeSlotsCreated,
-                lecturesCreated, teachersCreated, warnings));
+                lecturesCreated, instructorCreated, warnings));
     }
 
     // ── Helpers ──────────────────────────────────────────────────────────────
@@ -245,6 +245,6 @@ public class ImportController {
     public record ImportSummary(
             int rowsProcessed, int rowsSkipped,
             int coursesCreated, int roomsCreated, int timeSlotsCreated,
-            int lecturesCreated, int teachersCreated,
+            int lecturesCreated, int instructorCreated,
             List<String> warnings) {}
 }

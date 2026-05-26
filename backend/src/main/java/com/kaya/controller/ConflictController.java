@@ -82,13 +82,12 @@ public class ConflictController {
             types.add("ROOM");
         }
 
-        // Instructor conflict — check both string field and Teacher FK
         boolean sameInstructorStr = a.getInstructor() != null && b.getInstructor() != null
                 && Objects.equals(a.getInstructor(), b.getInstructor());
-        boolean sameTeacherFK = a.getInstructor() != null && b.getInstructor() != null
+        boolean sameInstructorFK = a.getInstructor() != null && b.getInstructor() != null
                 && Objects.equals(a.getInstructor().getId(), b.getInstructor().getId());
-        if (sameInstructorStr || sameTeacherFK) {
-            types.add("TEACHER");
+        if (sameInstructorStr || sameInstructorFK) {
+            types.add("INSTRUCTOR");
         }
 
         // Student-group conflict — same course symbol + same year (first digit of course number)
@@ -127,7 +126,7 @@ public class ConflictController {
         return switch (type) {
             case "ROOM"    -> "Room conflict: " + courseA + " and " + courseB
                     + " share room " + (a.getRoom() != null ? a.getRoom().getRoomNumber() : "?");
-            case "TEACHER" -> "Instructor conflict: " + instructorLabel(a)
+            case "INSTRUCTOR" -> "Instructor conflict: " + instructorLabel(a)
                     + " is teaching " + courseA + " and " + courseB + " simultaneously";
             case "STUDENT" -> "Student conflict: " + courseA + " and " + courseB
                     + " overlap for the same student group (" + studentGroup(a) + ")";

@@ -7,7 +7,7 @@ import { useQueryClient } from "@tanstack/react-query";
 
 const TYPE_LABELS: Record<string, { label: string; color: "destructive" | "secondary" | "outline" }> = {
   ROOM:    { label: "Room",    color: "destructive" },
-  TEACHER: { label: "Doctor",  color: "secondary"   },
+  INSTRUCTOR: { label: "Doctor",  color: "secondary"   },
   STUDENT: { label: "Student", color: "outline"     },
 };
 
@@ -58,7 +58,7 @@ export default function ConflictsPage() {
             </span>
             <span className="flex items-center gap-1">
               <AlertTriangle className="h-4 w-4 text-yellow-500" />
-              {data!.filter(c => c.type === "TEACHER").length} doctor conflict(s)
+              {data!.filter(c => c.type === "INSTRUCTOR").length} doctor conflict(s)
             </span>
             <span className="flex items-center gap-1">
               <AlertTriangle className="h-4 w-4 text-blue-500" />

@@ -11,8 +11,8 @@ tags:
     description: Health operations
   - name: rooms
     description: Room management
-  - name: teachers
-    description: Teacher management
+  - name: instructors
+    description: Instructor management
   - name: departments
     description: Department management
   - name: timeslots
@@ -112,43 +112,43 @@ paths:
               schema:
                 $ref: "#/components/schemas/DeleteResult"
 
-  /teachers:
+  /instructors:
     get:
-      operationId: getTeachers
-      tags: [teachers]
-      summary: List all teachers
+      operationId: getInstructors
+      tags: [instructors]
+      summary: List all instructors
       responses:
         "200":
-          description: List of teachers
+          description: List of instructors
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Teacher"
+                  $ref: "#/components/schemas/Instructor"
     post:
-      operationId: createTeacher
-      tags: [teachers]
-      summary: Create a teacher
+      operationId: createInstructor
+      tags: [instructors]
+      summary: Create a instructor
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/CreateTeacherInput"
+              $ref: "#/components/schemas/CreateInstructorInput"
       responses:
         "201":
-          description: Created teacher
+          description: Created instructor
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Teacher"
+                $ref: "#/components/schemas/Instructor"
 
-  /teachers/{id}:
+  /instructors/{id}:
     put:
-      operationId: updateTeacher
-      tags: [teachers]
-      summary: Update a teacher
+      operationId: updateInstructor
+      tags: [instructors]
+      summary: Update a instructor
       parameters:
         - name: id
           in: path
@@ -160,18 +160,18 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/CreateTeacherInput"
+              $ref: "#/components/schemas/CreateInstructorInput"
       responses:
         "200":
-          description: Updated teacher
+          description: Updated instructor
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Teacher"
+                $ref: "#/components/schemas/Instructor"
     delete:
-      operationId: deleteTeacher
-      tags: [teachers]
-      summary: Delete a teacher
+      operationId: deleteInstructor
+      tags: [instructors]
+      summary: Delete a instructor
       parameters:
         - name: id
           in: path
@@ -186,11 +186,11 @@ paths:
               schema:
                 $ref: "#/components/schemas/DeleteResult"
 
-  /teachers/{id}/availability:
+  /instructors/{id}/availability:
     get:
-      operationId: getTeacherAvailability
-      tags: [teachers]
-      summary: Get teacher unavailability slots
+      operationId: getInstructorAvailability
+      tags: [instructors]
+      summary: Get instructor unavailability slots
       parameters:
         - name: id
           in: path
@@ -199,17 +199,17 @@ paths:
             type: integer
       responses:
         "200":
-          description: Teacher availability list
+          description: Instructor availability list
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/TeacherAvailability"
+                  $ref: "#/components/schemas/InstructorAvailability"
     put:
-      operationId: setTeacherAvailability
-      tags: [teachers]
-      summary: Set teacher unavailability
+      operationId: setInstructorAvailability
+      tags: [instructors]
+      summary: Set instructor unavailability
       parameters:
         - name: id
           in: path
@@ -230,7 +230,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/TeacherAvailability"
+                  $ref: "#/components/schemas/InstructorAvailability"
 
   /departments:
     get:
@@ -603,7 +603,7 @@ components:
         - capacity
         - type
 
-    Teacher:
+    Instructor:
       type: object
       properties:
         id:
@@ -626,7 +626,7 @@ components:
         - departmentName
         - createdAt
 
-    CreateTeacherInput:
+    CreateInstructorInput:
       type: object
       properties:
         name:
@@ -638,12 +638,12 @@ components:
       required:
         - name
 
-    TeacherAvailability:
+    InstructorAvailability:
       type: object
       properties:
         id:
           type: integer
-        teacherId:
+        instructorId:
           type: integer
         timeslotId:
           type: integer
@@ -653,7 +653,7 @@ components:
           type: boolean
       required:
         - id
-        - teacherId
+        - instructorId
         - timeslotId
         - timeslotLabel
         - isUnavailable
@@ -742,9 +742,9 @@ components:
           type: string
         code:
           type: string
-        teacherId:
+        instructorId:
           type: ["integer", "null"]
-        teacherName:
+        instructorName:
           type: ["string", "null"]
         departmentId:
           type: ["integer", "null"]
@@ -767,8 +767,8 @@ components:
         - id
         - name
         - code
-        - teacherId
-        - teacherName
+        - instructorId
+        - instructorName
         - departmentId
         - departmentName
         - studentCount
@@ -784,7 +784,7 @@ components:
           type: string
         code:
           type: string
-        teacherId:
+        instructorId:
           type: ["integer", "null"]
         departmentId:
           type: ["integer", "null"]
@@ -817,9 +817,9 @@ components:
           type: string
         courseCode:
           type: string
-        teacherId:
+        instructorId:
           type: ["integer", "null"]
-        teacherName:
+        instructorName:
           type: ["string", "null"]
         roomId:
           type: integer
@@ -853,8 +853,8 @@ components:
         - courseId
         - courseName
         - courseCode
-        - teacherId
-        - teacherName
+        - instructorId
+        - instructorName
         - roomId
         - roomName
         - timeslotId
@@ -917,7 +917,7 @@ components:
           type: string
         type:
           type: string
-          description: "teacher_conflict, room_conflict, student_conflict, teacher_availability, capacity_exceeded"
+          description: "instructor_conflict, room_conflict, student_conflict, instructor_availability, capacity_exceeded"
         description:
           type: string
         scheduleEntryIds:

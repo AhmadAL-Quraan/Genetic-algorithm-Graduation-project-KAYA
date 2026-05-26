@@ -3,7 +3,7 @@ import {
   BookOpen, DoorOpen, Calendar, Users, Building2, Clock, AlertTriangle,
 } from "lucide-react";
 import {
-  Courses, Rooms, TimeTables, Teachers, Departments, TimeSlots,
+  Courses, Rooms, TimeTables, Instructors, Departments, TimeSlots,
   useConflicts,
 } from "@/lib/api";
 import { Link } from "wouter";
@@ -13,14 +13,14 @@ export default function Dashboard() {
   const courses     = Courses.useList();
   const rooms       = Rooms.useList();
   const timetables  = TimeTables.useList();
-  const teachers    = Teachers.useList();
+  const instructors    = Instructors.useList();
   const departments = Departments.useList();
   const timeSlots   = TimeSlots.useList();
   const conflicts   = useConflicts();
 
   const setupStats = [
     { label: "Room",       icon: DoorOpen,   count: rooms.data?.length,       href: "/rooms"       },
-    { label: "Instructor", icon: Users,       count: teachers.data?.length,    href: "/teachers"    },
+    { label: "Instructor", icon: Users,       count: instructors.data?.length,    href: "/instructors"    },
     { label: "Department", icon: Building2,   count: departments.data?.length, href: "/departments" },
     { label: "Time Slots",  icon: Clock,       count: timeSlots.data?.length,   href: "/time-slots"  },
   ];

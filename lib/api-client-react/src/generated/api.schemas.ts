@@ -33,7 +33,7 @@ export interface CreateRoomInput {
   building?: string | null;
 }
 
-export interface Teacher {
+export interface Instructor {
   id: number;
   name: string;
   /** @nullable */
@@ -45,7 +45,7 @@ export interface Teacher {
   createdAt: string;
 }
 
-export interface CreateTeacherInput {
+export interface CreateInstructorInput {
   name: string;
   /** @nullable */
   email?: string | null;
@@ -53,9 +53,9 @@ export interface CreateTeacherInput {
   departmentId?: number | null;
 }
 
-export interface TeacherAvailability {
+export interface InstructorAvailability {
   id: number;
-  teacherId: number;
+  instructorId: number;
   timeslotId: number;
   timeslotLabel: string;
   isUnavailable: boolean;
@@ -97,9 +97,9 @@ export interface Course {
   name: string;
   code: string;
   /** @nullable */
-  teacherId: number | null;
+  instructorId: number | null;
   /** @nullable */
-  teacherName: string | null;
+  instructorName: string | null;
   /** @nullable */
   departmentId: number | null;
   /** @nullable */
@@ -116,7 +116,7 @@ export interface CreateCourseInput {
   name: string;
   code: string;
   /** @nullable */
-  teacherId?: number | null;
+  instructorId?: number | null;
   /** @nullable */
   departmentId?: number | null;
   studentCount: number;
@@ -131,9 +131,9 @@ export interface ScheduleEntry {
   courseName: string;
   courseCode: string;
   /** @nullable */
-  teacherId: number | null;
+  instructorId: number | null;
   /** @nullable */
-  teacherName: string | null;
+  instructorName: string | null;
   roomId: number;
   roomName: string;
   timeslotId: number;
@@ -171,7 +171,7 @@ export interface PublishResult {
 
 export interface Conflict {
   id: string;
-  /** teacher_conflict, room_conflict, student_conflict, teacher_availability, capacity_exceeded */
+  /** instructor_conflict, room_conflict, student_conflict, instructor_availability, capacity_exceeded */
   type: string;
   description: string;
   scheduleEntryIds: number[];

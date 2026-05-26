@@ -11,7 +11,7 @@ interface ImportSummary {
   roomsCreated: number;
   timeSlotsCreated: number;
   lecturesCreated: number;
-  teachersCreated: number;
+  instructorsCreated: number;
   warnings: string[];
 }
 
@@ -36,7 +36,7 @@ export function ExcelImportButton({ variant = "default" as const }) {
       const parts = [
         `${summary.lecturesCreated} lectures`,
         `${summary.coursesCreated} courses`,
-        summary.teachersCreated > 0 ? `${summary.teachersCreated} doctors` : null,
+        summary.instructorsCreated > 0 ? `${summary.instructorsCreated} doctors` : null,
         `${summary.roomsCreated} rooms`,
         `${summary.timeSlotsCreated} time slots`,
       ].filter(Boolean).join(", ");
@@ -49,7 +49,7 @@ export function ExcelImportButton({ variant = "default" as const }) {
         qc.invalidateQueries({ queryKey: ["rooms"] }),
         qc.invalidateQueries({ queryKey: ["time-slots"] }),
         qc.invalidateQueries({ queryKey: ["lectures"] }),
-        qc.invalidateQueries({ queryKey: ["teachers"] }),
+        qc.invalidateQueries({ queryKey: ["instructors"] }),
       ]);
     } catch (err: any) {
       toast({ title: "Import failed", description: err.message, variant: "destructive" });

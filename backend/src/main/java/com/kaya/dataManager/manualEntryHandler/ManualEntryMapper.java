@@ -2,14 +2,11 @@ package com.kaya.dataManager.manualEntryHandler;
 
 public class ManualEntryMapper {
 
-    public static ManualEntryResponse mapToDTO(ManualEntry entry) {
-        Long instructorId = entry.getInstructor() != null ? entry.getInstructor().getId() : null;
-        String instructorName = entry.getInstructor() != null ? entry.getInstructor().getInstructorName() : null;
+    public static ManualEntryResponse mapToResponse(ManualEntry manualEntry) {
         return new ManualEntryResponse(
-                entry.getId(),
-                entry.getCourseId(),
-                instructorId,
-                instructorName
+                manualEntry.getId(),
+                manualEntry.getCourseId(),
+                manualEntry.getInstructorId()
         );
     }
 }

@@ -10,7 +10,7 @@ export interface CreateCourseInput {
   name: string;
   code: string;
   /** @nullable */
-  teacherId?: number | null;
+  instructorId?: number | null;
   /** @nullable */
   departmentId?: number | null;
   studentCount: number;

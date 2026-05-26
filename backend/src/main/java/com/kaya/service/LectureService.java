@@ -20,7 +20,7 @@ public class LectureService {
     private final CourseService courseService;
     private final RoomService roomService;
     private final TimeSlotService timeSlotService;
-    private final InstructorRepository teacherRepository;
+    private final InstructorRepository instructorRepository;
 
     public List<LectureResponse> getAll() {
         return lectureRepository.findByTimetableIdIsNull()
@@ -66,7 +66,7 @@ public class LectureService {
             lecture.setCourse(courseService.getEntityById(request.getCourseId()));
         }
         if (request.getInstructorId() != null) {
-            lecture.setInstructor(teacherRepository.findById(request.getInstructorId()).orElse(null));
+            lecture.setInstructor(instructorRepository.findById(request.getInstructorId()).orElse(null));
         } else {
             lecture.setInstructor(null);
         }

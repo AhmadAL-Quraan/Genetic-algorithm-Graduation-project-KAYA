@@ -13,6 +13,11 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"courseSymbol", "courseNumber"})
+        }
+)
 public class Course {
 
     @Id

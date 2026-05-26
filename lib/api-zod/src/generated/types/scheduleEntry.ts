@@ -12,9 +12,9 @@ export interface ScheduleEntry {
   courseName: string;
   courseCode: string;
   /** @nullable */
-  teacherId: number | null;
+  instructorId: number | null;
   /** @nullable */
-  teacherName: string | null;
+  instructorName: string | null;
   roomId: number;
   roomName: string;
   timeslotId: number;

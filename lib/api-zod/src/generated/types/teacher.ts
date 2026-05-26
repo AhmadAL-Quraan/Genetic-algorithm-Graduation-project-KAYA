@@ -6,7 +6,7 @@
  * OpenAPI spec version: 0.1.0
  */
 
-export interface Teacher {
+export interface Instructor {
   id: number;
   name: string;
   /** @nullable */

@@ -9,5 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class InstructorRequest {
-    @NotBlank private String instructorName;
+    @NotBlank private String name;
+    private String email;
+    private Long departmentId;
 }

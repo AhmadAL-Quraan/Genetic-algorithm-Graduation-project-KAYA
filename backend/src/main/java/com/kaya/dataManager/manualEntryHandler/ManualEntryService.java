@@ -14,20 +14,18 @@ import java.util.List;
 public class ManualEntryService {
 
     private final ManualEntryRepository manualEntryRepository;
-    private final CourseRepository courseRepository;
-    private final InstructorRepository instructorRepository;
 
     public List<ManualEntryResponse> getAll() {
         return manualEntryRepository.findAll()
                 .stream()
-                .map(ManualEntryMapper::mapToDTO)
+                .map(ManualEntryMapper::mapToResponse)
                 .toList();
     }
 
     public ManualEntryResponse getById(Long id) {
         ManualEntry manualEntry = manualEntryRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("ManualEntry not found"));
-        return ManualEntryMapper.mapToDTO(manualEntry);
+        return ManualEntryMapper.mapToResponse(manualEntry);
     }
 
     public ManualEntryResponse create(ManualEntryRequest request) {
@@ -61,23 +59,11 @@ public class ManualEntryService {
         manualEntryRepository.deleteAll();
     }
 
-    private ManualEntryResponse saveDataManager(ManualEntryRequest request, ManualEntry entry) {
-        Course course = new Course(
-                request.getCourseSymbol(),
-                request.getCourseNumber(),
-                request.getRequiredRoomType(),
-                request.getTeachingMethod()
-        );
-        courseRepository.save(course);
+    private ManualEntryResponse saveDataManager(ManualEntryRequest request, ManualEntry response) {
 
-        Instructor instructor = null;
-        if (request.getInstructorId() != null) {
-            instructor = instructorRepository.findById(request.getInstructorId()).orElse(null);
-        }
-        entry.setInstructor(instructor);
-        entry.setCourseId(course.getId());
-
-        ManualEntry updated = manualEntryRepository.save(entry);
-        return ManualEntryMapper.mapToDTO(updated);
+        response.setInstructorId(request.getInstructorId());
+        response.setCourseId(request.getCourseId());
+        ManualEntry updated = manualEntryRepository.save(response);
+        return ManualEntryMapper.mapToResponse(updated);
     }
 }

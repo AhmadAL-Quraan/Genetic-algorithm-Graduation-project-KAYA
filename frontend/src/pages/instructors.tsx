@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Teachers, Departments, useDeleteAllTeachers, type TeacherInput } from "@/lib/api";
+import { Instructors, Departments, useDeleteAllInstructors, type InstructorInput } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -15,16 +15,16 @@ import {
   AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
-const empty: TeacherInput = { name: "", email: "", departmentId: undefined };
+const empty: InstructorInput = { name: "", email: "", departmentId: undefined };
 
-export default function TeachersPage() {
+export default function InstructorsPage() {
   const { toast } = useToast();
-  const list        = Teachers.useList();
+  const list        = Instructors.useList();
   const departments = Departments.useList();
-  const create      = Teachers.useCreate();
-  const remove      = Teachers.useDelete();
-  const deleteAll   = useDeleteAllTeachers();
-  const [form, setForm] = useState<TeacherInput>(empty);
+  const create      = Instructors.useCreate();
+  const remove      = Instructors.useDelete();
+  const deleteAll   = useDeleteAllInstructors();
+  const [form, setForm] = useState<InstructorInput>(empty);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();

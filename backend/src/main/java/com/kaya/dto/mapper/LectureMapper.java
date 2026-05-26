@@ -22,27 +22,21 @@ public class LectureMapper {
             r.setId(response.getRoom().getId());
             l.setRoom(r);
         }
-        if (response.getTeacher() != null) {
+        if (response.getInstructor() != null) {
             Instructor instructor = new Instructor();
-            instructor.setId(response.getTeacher().getId());
-            instructor.setInstructorName(response.getTeacher().getName());
+            instructor.setId(response.getInstructor().getId());
+            instructor.setInstructorName(response.getInstructor().getName());
             l.setInstructor(instructor);
         }
         return l;
     }
 
     public static LectureResponse mapToResponse(Lecture lecture) {
-        LectureResponse.TeacherInfo teacherInfo = null;
-        if (lecture.getInstructor() != null) {
-            teacherInfo = new LectureResponse.TeacherInfo(
-                    lecture.getInstructor().getId(),
-                    lecture.getInstructor().getInstructorName()
-            );
-        }
+
         return new LectureResponse(
                 lecture.getId(),
                 lecture.getCourse() != null ? CourseMapper.mapToResponse(lecture.getCourse()) : null,
-                teacherInfo,
+                lecture.getInstructor() != null ? InstructorMapper.mapToResponse(lecture.getInstructor()) : null,
                 lecture.getTimeSlot() != null ? TimeSlotMapper.mapToResponse(lecture.getTimeSlot()) : null,
                 lecture.getRoom() != null ? RoomMapper.mapToResponse(lecture.getRoom()) : null
         );

@@ -18,7 +18,7 @@ const STEPS = [
       <>
         Add{" "}
         <Link href="/rooms" className="underline hover:text-foreground transition-colors">Room</Link>,{" "}
-        <Link href="/teachers" className="underline hover:text-foreground transition-colors">Instructor</Link>,{" "}
+        <Link href="/instructors" className="underline hover:text-foreground transition-colors">Instructor</Link>,{" "}
         <Link href="/departments" className="underline hover:text-foreground transition-colors">Department</Link>, and{" "}
         <Link href="/time-slots" className="underline hover:text-foreground transition-colors">Time Slots</Link>{" "}
         as your setup data.
@@ -90,7 +90,7 @@ const FEATURES = [
 
 const QUICK_LINKS = [
   { href: "/rooms",       label: "Rooms",       icon: DoorOpen   },
-  { href: "/teachers",    label: "Instructors",  icon: Users      },
+  { href: "/instructors",    label: "Instructors",  icon: Users      },
   { href: "/departments", label: "Departments",  icon: Building2  },
   { href: "/time-slots",  label: "Time Slots",   icon: Clock      },
   { href: "/courses",     label: "Courses",      icon: BookOpen   },
@@ -98,10 +98,10 @@ const QUICK_LINKS = [
 ];
 
 const TEAM = [
-  "Ahmad Al-Quraan",
-  "Younis Majdalawi",
   "Ahmad Obaidat",
+  "Younis Majdalawi",
   "Kanan Lafi",
+  "Ahmad Al-Quraan"
 ];
 
 export default function WelcomePage() {

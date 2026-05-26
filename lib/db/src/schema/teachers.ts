@@ -3,7 +3,7 @@ import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod/v4";
 import { departmentsTable } from "./departments";
 
-export const teachersTable = pgTable("teachers", {
+export const instructorsTable = pgTable("instructors", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
   email: text("email"),
@@ -11,6 +11,6 @@ export const teachersTable = pgTable("teachers", {
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
-export const insertTeacherSchema = createInsertSchema(teachersTable).omit({ id: true, createdAt: true });
-export type InsertTeacher = z.infer<typeof insertTeacherSchema>;
-export type Teacher = typeof teachersTable.$inferSelect;
+export const insertInstructorSchema = createInsertSchema(instructorsTable).omit({ id: true, createdAt: true });
+export type InsertInstructor = z.infer<typeof insertInstructorSchema>;
+export type Instructor = typeof instructorsTable.$inferSelect;

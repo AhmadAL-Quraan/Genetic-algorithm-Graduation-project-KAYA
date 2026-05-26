@@ -22,7 +22,7 @@ import {
 const empty: CourseInput = {
   courseSymbol: "", courseNumber: "",
   roomGroups: "LECTURE", timeGroups: "IN_PERSON",
-  teacherId: undefined,
+  instructorId: undefined,
   majors: [],
 };
 
