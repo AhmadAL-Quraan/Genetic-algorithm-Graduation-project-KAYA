@@ -10,15 +10,7 @@ import lombok.NoArgsConstructor;
 public class LectureResponse {
     private Long id;
     private CourseResponse course;
-    private TeacherInfo teacher;
+    private InstructorResponse instructor;
     private TimeSlotResponse timeSlot;
     private RoomResponse room;
-
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class TeacherInfo {
-        private Long id;
-        private String name;
-    }
 }

@@ -8,7 +8,11 @@ public class InstructorMapper {
     public static InstructorResponse mapToResponse(Instructor instructor) {
         return new InstructorResponse(
                 instructor.getId(),
-                instructor.getInstructorName()
+                instructor.getInstructorName(),
+                instructor.getEmail(),
+                instructor.getDepartment() != null
+                        ? DepartmentMapper.mapToResponse(instructor.getDepartment())
+                        : null
         );
     }
 

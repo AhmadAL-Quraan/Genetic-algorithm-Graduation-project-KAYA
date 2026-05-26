@@ -11,9 +11,9 @@ export interface Course {
   name: string;
   code: string;
   /** @nullable */
-  teacherId: number | null;
+  instructorId: number | null;
   /** @nullable */
-  teacherName: string | null;
+  instructorName: string | null;
   /** @nullable */
   departmentId: number | null;
   /** @nullable */

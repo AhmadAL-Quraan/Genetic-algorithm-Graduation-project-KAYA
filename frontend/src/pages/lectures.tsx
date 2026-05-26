@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Courses, Teachers, Lectures, useDeleteAllLectures, type LectureInput } from "@/lib/api";
+import { Courses, Instructors, Lectures, useDeleteAllLectures, type LectureInput } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,12 +8,12 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Trash2, Plus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
-const empty: LectureInput = { courseId: 0, teacherId: null };
+const empty: LectureInput = { courseId: 0, instructorId: null };
 
 export default function LecturesPage() {
   const { toast } = useToast();
   const courses  = Courses.useList();
-  const teachers = Teachers.useList();
+  const instructors = Instructors.useList();
   const list     = Lectures.useList();
   const create   = Lectures.useCreate();
   const remove   = Lectures.useDelete();
@@ -84,15 +84,15 @@ export default function LecturesPage() {
             <div>
               <Label>Instructor</Label>
               <Select
-                value={form.teacherId ? String(form.teacherId) : "none"}
-                onValueChange={v => setForm(f => ({ ...f, teacherId: v !== "none" ? Number(v) : null }))}
+                value={form.instructorId ? String(form.instructorId) : "none"}
+                onValueChange={v => setForm(f => ({ ...f, instructorId: v !== "none" ? Number(v) : null }))}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select instructor…" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="none">— None —</SelectItem>
-                  {(teachers.data ?? []).map(t => (
+                  {(instructors.data ?? []).map(t => (
                     <SelectItem key={t.id} value={String(t.id)}>
                       {t.name}{t.department ? ` (${t.department.code})` : ""}
                     </SelectItem>
@@ -146,12 +146,9 @@ export default function LecturesPage() {
                       {l.course ? `${l.course.courseSymbol} ${l.course.courseNumber}` : "—"}
                     </TableCell>
                     <TableCell>
-                      {l.teacher
-                        ? <span>{l.teacher.name}</span>
-                        : l.instructor
-                        ? <span className="text-muted-foreground">{l.instructor}</span>
-                        : <span className="text-muted-foreground text-xs">—</span>}
-                    </TableCell>
+                      {l.instructor
+                          ? <span>{l.instructor.name}</span>
+                          : <span className="text-muted-foreground text-xs">—</span>}                    </TableCell>
                     <TableCell className="text-right">
                       <Button
                         variant="ghost"

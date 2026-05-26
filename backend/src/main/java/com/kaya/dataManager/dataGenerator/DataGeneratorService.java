@@ -61,7 +61,7 @@ public class DataGeneratorService {
 
         List<ManualEntryResponse> retrievedData = manualEntryRepository.findAll()
                 .stream()
-                .map(ManualEntryMapper::mapToDTO)
+                .map(ManualEntryMapper::mapToResponse)
                 .toList();
 
         ArrayList<Lecture> preparedLectures = new ArrayList<>();

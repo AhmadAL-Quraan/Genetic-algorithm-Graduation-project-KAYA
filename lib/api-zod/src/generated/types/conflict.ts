@@ -8,7 +8,7 @@
 
 export interface Conflict {
   id: string;
-  /** teacher_conflict, room_conflict, student_conflict, teacher_availability, capacity_exceeded */
+  /** instructor_conflict, room_conflict, student_conflict, instructor_availability, capacity_exceeded */
   type: string;
   description: string;
   scheduleEntryIds: number[];

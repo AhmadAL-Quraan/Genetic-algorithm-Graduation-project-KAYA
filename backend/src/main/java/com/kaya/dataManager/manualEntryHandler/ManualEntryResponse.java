@@ -11,5 +11,4 @@ public class ManualEntryResponse {
     private Long id;
     private Long courseId;
     private Long instructorId;
-    private String instructorName;
 }

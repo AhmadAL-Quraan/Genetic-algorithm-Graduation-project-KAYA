@@ -75,7 +75,7 @@ public class RoomService {
 
     private RoomResponse saveRoom(RoomRequest request, Room response) {
         response.setRoomNumber(request.getRoomNumber());
-        response.setBuilding(request.getBuilding());
+        response.setBuilding(request.getBuilding().toUpperCase());
         response.setRoomType(request.getRoomType());
         Room updated = roomRepository.save(response);
         return RoomMapper.mapToResponse(updated);

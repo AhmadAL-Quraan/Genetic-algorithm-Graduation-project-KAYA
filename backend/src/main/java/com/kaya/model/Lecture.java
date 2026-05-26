@@ -42,14 +42,10 @@ public class Lecture {
 
     @Override
     public String toString() {
-        String teacherName =
-                instructor != null
-                        ? instructor.getInstructorName()
-                        : "Unknown";
 
         return String.format(
                 "ID: %d | Course: %s | Section: %d | Instructor: %s | Time: [%s] | Room: [%s]",
-                id, course, sectionNumber, teacherName, timeSlot, room
+                id, course, sectionNumber, instructor, timeSlot, room
         );
     }
 }

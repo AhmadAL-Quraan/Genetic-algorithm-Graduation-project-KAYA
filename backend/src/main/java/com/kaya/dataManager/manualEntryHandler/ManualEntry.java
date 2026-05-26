@@ -1,6 +1,5 @@
 package com.kaya.dataManager.manualEntryHandler;
 
-import com.kaya.model.Instructor;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,6 +17,5 @@ public class ManualEntry {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long courseId;
-    @ManyToOne
-    private  Instructor instructor;
+    private Long instructorId;
 }

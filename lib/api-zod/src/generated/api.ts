@@ -74,9 +74,9 @@ export const DeleteRoomResponse = zod.object({
 });
 
 /**
- * @summary List all teachers
+ * @summary List all instructors
  */
-export const GetTeachersResponseItem = zod.object({
+export const GetInstructorsResponseItem = zod.object({
   id: zod.number(),
   name: zod.string(),
   email: zod.string().nullable(),
@@ -84,31 +84,31 @@ export const GetTeachersResponseItem = zod.object({
   departmentName: zod.string().nullable(),
   createdAt: zod.string(),
 });
-export const GetTeachersResponse = zod.array(GetTeachersResponseItem);
+export const GetInstructorsResponse = zod.array(GetInstructorsResponseItem);
 
 /**
- * @summary Create a teacher
+ * @summary Create a instructor
  */
-export const CreateTeacherBody = zod.object({
+export const CreateInstructorBody = zod.object({
   name: zod.string(),
   email: zod.string().nullish(),
   departmentId: zod.number().nullish(),
 });
 
 /**
- * @summary Update a teacher
+ * @summary Update a instructor
  */
-export const UpdateTeacherParams = zod.object({
+export const UpdateInstructorParams = zod.object({
   id: zod.coerce.number(),
 });
 
-export const UpdateTeacherBody = zod.object({
+export const UpdateInstructorBody = zod.object({
   name: zod.string(),
   email: zod.string().nullish(),
   departmentId: zod.number().nullish(),
 });
 
-export const UpdateTeacherResponse = zod.object({
+export const UpdateInstructorResponse = zod.object({
   id: zod.number(),
   name: zod.string(),
   email: zod.string().nullable(),
@@ -118,55 +118,55 @@ export const UpdateTeacherResponse = zod.object({
 });
 
 /**
- * @summary Delete a teacher
+ * @summary Delete a instructor
  */
-export const DeleteTeacherParams = zod.object({
+export const DeleteInstructorParams = zod.object({
   id: zod.coerce.number(),
 });
 
-export const DeleteTeacherResponse = zod.object({
+export const DeleteInstructorResponse = zod.object({
   success: zod.boolean(),
   message: zod.string(),
 });
 
 /**
- * @summary Get teacher unavailability slots
+ * @summary Get instructor unavailability slots
  */
-export const GetTeacherAvailabilityParams = zod.object({
+export const GetInstructorAvailabilityParams = zod.object({
   id: zod.coerce.number(),
 });
 
-export const GetTeacherAvailabilityResponseItem = zod.object({
+export const GetInstructorAvailabilityResponseItem = zod.object({
   id: zod.number(),
-  teacherId: zod.number(),
+  instructorId: zod.number(),
   timeslotId: zod.number(),
   timeslotLabel: zod.string(),
   isUnavailable: zod.boolean(),
 });
-export const GetTeacherAvailabilityResponse = zod.array(
-  GetTeacherAvailabilityResponseItem,
+export const GetInstructorAvailabilityResponse = zod.array(
+  GetInstructorAvailabilityResponseItem,
 );
 
 /**
- * @summary Set teacher unavailability
+ * @summary Set instructor unavailability
  */
-export const SetTeacherAvailabilityParams = zod.object({
+export const SetInstructorAvailabilityParams = zod.object({
   id: zod.coerce.number(),
 });
 
-export const SetTeacherAvailabilityBody = zod.object({
+export const SetInstructorAvailabilityBody = zod.object({
   unavailableTimeslotIds: zod.array(zod.number()),
 });
 
-export const SetTeacherAvailabilityResponseItem = zod.object({
+export const SetInstructorAvailabilityResponseItem = zod.object({
   id: zod.number(),
-  teacherId: zod.number(),
+  instructorId: zod.number(),
   timeslotId: zod.number(),
   timeslotLabel: zod.string(),
   isUnavailable: zod.boolean(),
 });
-export const SetTeacherAvailabilityResponse = zod.array(
-  SetTeacherAvailabilityResponseItem,
+export const SetInstructorAvailabilityResponse = zod.array(
+  SetInstructorAvailabilityResponseItem,
 );
 
 /**
@@ -260,8 +260,8 @@ export const GetCoursesResponseItem = zod.object({
   id: zod.number(),
   name: zod.string(),
   code: zod.string(),
-  teacherId: zod.number().nullable(),
-  teacherName: zod.string().nullable(),
+  instructorId: zod.number().nullable(),
+  instructorName: zod.string().nullable(),
   departmentId: zod.number().nullable(),
   departmentName: zod.string().nullable(),
   studentCount: zod.number(),
@@ -282,7 +282,7 @@ export const GetCoursesResponse = zod.array(GetCoursesResponseItem);
 export const CreateCourseBody = zod.object({
   name: zod.string(),
   code: zod.string(),
-  teacherId: zod.number().nullish(),
+  instructorId: zod.number().nullish(),
   departmentId: zod.number().nullish(),
   studentCount: zod.number(),
   roomType: zod.string(),
@@ -300,7 +300,7 @@ export const UpdateCourseParams = zod.object({
 export const UpdateCourseBody = zod.object({
   name: zod.string(),
   code: zod.string(),
-  teacherId: zod.number().nullish(),
+  instructorId: zod.number().nullish(),
   departmentId: zod.number().nullish(),
   studentCount: zod.number(),
   roomType: zod.string(),
@@ -312,8 +312,8 @@ export const UpdateCourseResponse = zod.object({
   id: zod.number(),
   name: zod.string(),
   code: zod.string(),
-  teacherId: zod.number().nullable(),
-  teacherName: zod.string().nullable(),
+  instructorId: zod.number().nullable(),
+  instructorName: zod.string().nullable(),
   departmentId: zod.number().nullable(),
   departmentName: zod.string().nullable(),
   studentCount: zod.number(),
@@ -347,8 +347,8 @@ export const GetSchedulesResponseItem = zod.object({
   courseId: zod.number(),
   courseName: zod.string(),
   courseCode: zod.string(),
-  teacherId: zod.number().nullable(),
-  teacherName: zod.string().nullable(),
+  instructorId: zod.number().nullable(),
+  instructorName: zod.string().nullable(),
   roomId: zod.number(),
   roomName: zod.string(),
   timeslotId: zod.number(),
@@ -408,8 +408,8 @@ export const UpdateScheduleEntryResponse = zod.object({
   courseId: zod.number(),
   courseName: zod.string(),
   courseCode: zod.string(),
-  teacherId: zod.number().nullable(),
-  teacherName: zod.string().nullable(),
+  instructorId: zod.number().nullable(),
+  instructorName: zod.string().nullable(),
   roomId: zod.number(),
   roomName: zod.string(),
   timeslotId: zod.number(),
@@ -444,7 +444,7 @@ export const GetConflictsResponseItem = zod.object({
   type: zod
     .string()
     .describe(
-      "teacher_conflict, room_conflict, student_conflict, teacher_availability, capacity_exceeded",
+      "instructor_conflict, room_conflict, student_conflict, instructor_availability, capacity_exceeded",
     ),
   description: zod.string(),
   scheduleEntryIds: zod.array(zod.number()),

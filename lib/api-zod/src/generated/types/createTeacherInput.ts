@@ -6,7 +6,7 @@
  * OpenAPI spec version: 0.1.0
  */
 
-export interface CreateTeacherInput {
+export interface CreateInstructorInput {
   name: string;
   /** @nullable */
   email?: string | null;

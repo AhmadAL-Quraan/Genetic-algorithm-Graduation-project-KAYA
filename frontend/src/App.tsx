@@ -8,7 +8,7 @@ import WelcomePage from "@/pages/welcome";
 import Dashboard from "@/pages/dashboard";
 import CoursesPage from "@/pages/courses";
 import RoomsPage from "@/pages/rooms";
-import TeachersPage from "@/pages/teachers";
+import InstructorsPage from "@/pages/instructors";
 import DepartmentsPage from "@/pages/departments";
 import TimeSlotsPage from "@/pages/time-slots";
 import SchedulePage from "@/pages/timetables";
@@ -32,7 +32,7 @@ function App() {
               <Route path="/dashboard" component={Dashboard} />
               <Route path="/courses" component={CoursesPage} />
               <Route path="/rooms" component={RoomsPage} />
-              <Route path="/teachers" component={TeachersPage} />
+              <Route path="/instructors" component={InstructorsPage} />
               <Route path="/departments" component={DepartmentsPage} />
               <Route path="/time-slots" component={TimeSlotsPage} />
               <Route path="/lectures" component={LecturesPage} />

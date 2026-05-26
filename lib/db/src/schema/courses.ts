@@ -1,14 +1,14 @@
 import { pgTable, text, serial, integer, boolean, timestamp } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod/v4";
-import { teachersTable } from "./teachers";
+import { instructorsTable } from "./instructors";
 import { departmentsTable } from "./departments";
 
 export const coursesTable = pgTable("courses", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
   code: text("code").notNull(),
-  teacherId: integer("teacher_id").references(() => teachersTable.id),
+  instructorId: integer("instructor_id").references(() => instructorsTable.id),
   departmentId: integer("department_id").references(() => departmentsTable.id),
   studentCount: integer("student_count").notNull().default(30),
   roomType: text("room_type").notNull().default("lecture"),

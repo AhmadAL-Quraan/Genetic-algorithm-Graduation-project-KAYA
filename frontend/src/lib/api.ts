@@ -8,8 +8,8 @@ export type DayOfWeek =
 export interface Department { id: number; name: string; code: string; }
 export interface DepartmentInput { name: string; code: string; }
 
-export interface Teacher { id: number; name: string; email?: string; department?: Department; }
-export interface TeacherInput { name: string; email?: string; departmentId?: number; }
+export interface Instructor { id: number; name: string; email?: string; department?: Department; }
+export interface InstructorInput { name: string; email?: string; departmentId?: number; }
 
 export interface TimeSlot {
   id: number;
@@ -49,26 +49,34 @@ export interface CourseInput {
   timeSlotId?: number;
 }
 
-export interface Room { id: number; building: string; roomNumber: string; roomType: RoomType; }
-export interface RoomInput { building: string; roomNumber: string; roomType: RoomType; }
+export interface Room {
+  id: number;
+  building: string;
+  roomNumber: string;
+  roomType: RoomType;
+}
+export interface RoomInput {
+  building: string;
+  roomNumber: string;
+  roomType: RoomType;
+}
 
 export interface Lecture {
   id: number;
   course: Course | null;
-  teacher?: { id: number; name: string } | null;
-  instructor?: string | null;
+  instructor?: { id: number; name: string } | null;
   timeSlot: TimeSlot | null;
   room: Room | null;
 }
 export interface LectureInput {
   courseId: number;
-  teacherId?: number | null;
+  instructorId?: number | null;
   timeSlotId?: number | null;
   roomId?: number | null;
 }
 
 export interface ConflictItem {
-  type: "ROOM" | "TEACHER" | "STUDENT";
+  type: "ROOM" | "INSTRUCTOR" | "STUDENT";
   message: string;
   lectureAId: number; lectureBId: number;
   courseA: string; courseB: string;
@@ -139,7 +147,7 @@ function makeResource<T, I>(name: string) {
 }
 
 export const Departments = makeResource<Department, DepartmentInput>("departments");
-export const Teachers    = makeResource<Teacher, TeacherInput>("teachers");
+export const Instructors    = makeResource<Instructor, InstructorInput>("instructors");
 export const Courses     = makeResource<Course, CourseInput>("courses");
 export const Rooms       = makeResource<Room, RoomInput>("rooms");
 export const TimeSlots   = makeResource<TimeSlot, TimeSlotInput>("time-slots");
@@ -168,12 +176,12 @@ export function useDeleteAllRooms() {
   });
 }
 
-export function useDeleteAllTeachers() {
+export function useDeleteAllInstructors() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: () => request<void>("DELETE", "/teachers"),
+    mutationFn: () => request<void>("DELETE", "/instructors"),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["teachers"] });
+      qc.invalidateQueries({ queryKey: ["instructors"] });
       qc.invalidateQueries({ queryKey: ["lectures"] });
     },
   });
@@ -185,7 +193,7 @@ export function useDeleteAllDepartments() {
     mutationFn: () => request<void>("DELETE", "/departments"),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["departments"] });
-      qc.invalidateQueries({ queryKey: ["teachers"] });
+      qc.invalidateQueries({ queryKey: ["instructors"] });
       qc.invalidateQueries({ queryKey: ["courses"] });
     },
   });
@@ -255,7 +263,7 @@ export async function updateLectureAssignment(
 ): Promise<Lecture> {
   const input: LectureInput = {
     courseId: lecture.course?.id ?? 0,
-    teacherId: lecture.teacher?.id ?? null,
+    instructorId: lecture.instructor?.id ?? null,
     timeSlotId: patch.timeSlotId !== undefined ? patch.timeSlotId : lecture.timeSlot?.id ?? null,
     roomId:    patch.roomId    !== undefined ? patch.roomId    : lecture.room?.id ?? null,
   };
@@ -265,7 +273,7 @@ export async function updateLectureAssignment(
 export const ROOM_TYPES: RoomType[] = ["LECTURE", "LAB", "OTHER"];
 export const TEACHING_METHODS: TeachingMethod[] = ["BLENDED", "IN_PERSON", "ONLINE"];
 export const DAYS_OF_WEEK: DayOfWeek[] = [
-  "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY",
+  "SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY",
 ];
 
 export const DURATION_OPTIONS = [

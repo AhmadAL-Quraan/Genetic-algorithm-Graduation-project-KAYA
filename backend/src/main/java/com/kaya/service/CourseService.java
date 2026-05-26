@@ -66,7 +66,7 @@ public class CourseService {
     }
 
     private CourseResponse saveCourse(CourseRequest request, Course course) {
-        course.setCourseSymbol(request.getCourseSymbol());
+        course.setCourseSymbol(request.getCourseSymbol().toUpperCase());
         course.setCourseNumber(request.getCourseNumber());
         course.setTeachingMethod(request.getTimeGroups());
         course.setRequiredRoomType(request.getRoomGroups());

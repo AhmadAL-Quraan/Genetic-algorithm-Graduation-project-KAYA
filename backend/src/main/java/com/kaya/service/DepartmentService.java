@@ -56,8 +56,8 @@ public class DepartmentService {
     }
 
     private DepartmentResponse save(DepartmentRequest request, Department dept) {
-        dept.setName(request.getName());
-        dept.setCode(request.getCode());
+        dept.setName(request.getName().toUpperCase());
+        dept.setCode(request.getCode().toUpperCase());
         return mapToResponse(departmentRepository.save(dept));
     }
 

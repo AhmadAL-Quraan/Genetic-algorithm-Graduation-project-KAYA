@@ -24,12 +24,12 @@ public interface LectureRepository extends JpaRepository<Lecture, Long> {
     void detachAllCourses();
 
     @Modifying(clearAutomatically = true, flushAutomatically = true)
-    @Query("UPDATE Lecture l SET l.instructor = null WHERE l.instructor.id = :teacherId")
-    void detachTeacher(@Param("teacherId") Long teacherId);
+    @Query("UPDATE Lecture l SET l.instructor = null WHERE l.instructor.id = :instructorId")
+    void detachInstructor(@Param("instructorId") Long instructorId);
 
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query("UPDATE Lecture l SET l.instructor = null WHERE l.instructor IS NOT NULL")
-    void detachAllTeachers();
+    void detachAllInstructors();
 
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query("UPDATE Lecture l SET l.room = null WHERE l.room.id = :roomId")

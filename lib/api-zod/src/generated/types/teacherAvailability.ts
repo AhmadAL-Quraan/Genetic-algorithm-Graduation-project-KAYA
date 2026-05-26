@@ -6,9 +6,9 @@
  * OpenAPI spec version: 0.1.0
  */
 
-export interface TeacherAvailability {
+export interface InstructorAvailability {
   id: number;
-  teacherId: number;
+  instructorId: number;
   timeslotId: number;
   timeslotLabel: string;
   isUnavailable: boolean;

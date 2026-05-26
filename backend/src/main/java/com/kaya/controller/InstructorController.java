@@ -1,16 +1,16 @@
 package com.kaya.controller;
 
+import com.kaya.dto.request.InstructorRequest;
 import com.kaya.dto.response.InstructorResponse;
 import com.kaya.service.InstructorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.kaya.dto.request.TeacherRequest;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/teachers")
+@RequestMapping("/instructors")
 @RequiredArgsConstructor
 public class InstructorController {
 
@@ -27,12 +27,12 @@ public class InstructorController {
     }
 
     @PostMapping
-    public ResponseEntity<InstructorResponse> create(@RequestBody TeacherRequest request) {
+    public ResponseEntity<InstructorResponse> create(@RequestBody InstructorRequest request) {
         return ResponseEntity.ok(instructorService.create(request));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<InstructorResponse> update(@PathVariable Long id, @RequestBody TeacherRequest request) {
+    public ResponseEntity<InstructorResponse> update(@PathVariable Long id, @RequestBody InstructorRequest request) {
         return ResponseEntity.ok(instructorService.update(id, request));
     }
 
