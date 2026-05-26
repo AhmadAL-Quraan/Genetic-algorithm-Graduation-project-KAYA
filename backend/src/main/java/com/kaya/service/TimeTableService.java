@@ -93,7 +93,11 @@ public class TimeTableService {
         cancelRequested = false;
 
         GAConfig config = new GAConfig();
+
+        boolean useIslandModel = false; // القيمة الافتراضية
+
         if (configMap != null) {
+            // الإعدادات القديمة
             if (configMap.containsKey("maxGenerations"))
                 config.maxGenerations = toInt(configMap.get("maxGenerations"), config.maxGenerations);
             if (configMap.containsKey("populationSize"))
@@ -106,6 +110,20 @@ public class TimeTableService {
                 config.initialMutationRate = toDouble(configMap.get("initialMutationRate"), config.initialMutationRate);
             if (configMap.containsKey("mutationImpactRatio"))
                 config.mutationImpactRatio = toDouble(configMap.get("mutationImpactRatio"), config.mutationImpactRatio);
+
+            // [NEW]: إعدادات معمارية الجزر والركود
+            if (configMap.containsKey("stagnationToleranceRatio"))
+                config.stagnationToleranceRatio = toDouble(configMap.get("stagnationToleranceRatio"), config.stagnationToleranceRatio);
+            if (configMap.containsKey("numIslands"))
+                config.numIslands = toInt(configMap.get("numIslands"), config.numIslands);
+            if (configMap.containsKey("migrationInterval"))
+                config.migrationInterval = toInt(configMap.get("migrationInterval"), config.migrationInterval);
+            if (configMap.containsKey("migrationRate"))
+                config.migrationRate = toInt(configMap.get("migrationRate"), config.migrationRate);
+
+            // قراءة زر التفعيل الخاص بفرونت إند
+            if (configMap.containsKey("useIslandModel"))
+                useIslandModel = toBoolean(configMap.get("useIslandModel"), true);
         }
 
         currentProgress = new ProgressResponse("initializing", 0, config.maxGenerations, 0, 0, 0, 0, 0.0);
@@ -166,7 +184,7 @@ public class TimeTableService {
 
         final int maxGen = config.maxGenerations;
 
-        TimeTable best = StartPoint.runAlgorithm(lectures, rooms, timeSlots, config,false,
+        TimeTable best = StartPoint.runAlgorithm(lectures, rooms, timeSlots, config,useIslandModel,
                 () -> cancelRequested,
                 (ProgressSnapshot snap) -> {
                     String phase = snap.perfect ? "perfect" : "evolving";
@@ -342,5 +360,10 @@ public class TimeTableService {
     private double toDouble(Object val, double def) {
         if (val instanceof Number) return ((Number) val).doubleValue();
         try { return Double.parseDouble(val.toString()); } catch (Exception e) { return def; }
+    }
+
+    private boolean toBoolean(Object val, boolean def) {
+        if (val instanceof Boolean) return (Boolean) val;
+        try { return Boolean.parseBoolean(val.toString()); } catch (Exception e) { return def; }
     }
 }

@@ -52,7 +52,7 @@ function useReadinessChecks() {
       href: "/lectures",
     });
 
-    const neededRoomTypes = [...new Set(courses.data.map(c => c.roomGroups))];
+    const neededRoomTypes = [...new Set(courses.data.flatMap(c => c.roomGroups))];
     for (const rt of neededRoomTypes) {
       const hasRoom = rooms.data.some(r => r.roomType === rt);
       items.push({
@@ -63,7 +63,7 @@ function useReadinessChecks() {
       });
     }
 
-    const neededMethods = [...new Set(courses.data.map(c => c.timeGroups))];
+    const neededMethods = [...new Set(courses.data.flatMap(c => c.timeGroups))];
     for (const method of neededMethods) {
       const hasSlot = timeSlots.data.some(ts => ts.teachingMethod === method && ts.durationMinutes != null);
       items.push({
