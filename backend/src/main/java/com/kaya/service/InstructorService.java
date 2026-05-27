@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -69,15 +68,7 @@ public class InstructorService {
     }
 
     private InstructorResponse save(InstructorRequest request, Instructor instructor) {
-        String instructorName = request.getName();
-
-        Optional<Instructor> existingInstructor = instructorRepository.findByInstructorName(instructorName);
-        if (existingInstructor.isPresent() && !existingInstructor.get().getId().equals(instructor.getId())) {
-            // Error in this line
-            throw new RuntimeException("Instructor with the same name already exists.");
-        }
-
-        instructor.setInstructorName(instructorName);
+        instructor.setInstructorName(request.getName());
         instructor.setEmail(request.getEmail());
         if (request.getDepartmentId() != null) {
             instructor.setDepartment(

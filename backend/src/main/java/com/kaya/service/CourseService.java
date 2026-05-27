@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -67,20 +66,11 @@ public class CourseService {
     }
 
     private CourseResponse saveCourse(CourseRequest request, Course course) {
-        String courseSymbol = request.getCourseSymbol().toUpperCase();
-        String courseNumber = request.getCourseNumber();
-
-        Optional<Course> existingCourse = courseRepository.findByCourseSymbolAndCourseNumber(courseSymbol, courseNumber);
-        if (existingCourse.isPresent() && !existingCourse.get().getId().equals(course.getId())) {
-            // Error in this line
-            throw new RuntimeException("Course with the same symbol and number already exists.");
-        }
-
-        course.setCourseSymbol(courseSymbol);
-        course.setCourseNumber(courseNumber);
+        course.setCourseSymbol(request.getCourseSymbol().toUpperCase());
+        course.setCourseNumber(request.getCourseNumber());
         course.setTeachingMethod(request.getTimeGroups());
         course.setRequiredRoomType(request.getRoomGroups());
-
+        // check if is existed before save
         Course updated = courseRepository.save(course);
         return CourseMapper.mapToResponse(updated);
     }
