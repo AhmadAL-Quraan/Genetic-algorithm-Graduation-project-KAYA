@@ -61,7 +61,7 @@ public class EvolutionEngineIsland {
 
         ArrayList<TimeTable> population = island.getPopulation();
         int stagnationThreshold = Math.max(1, (int) (config.maxGenerations * config.stagnationToleranceRatio));
-        int actualElites = Math.max(1, (int) (population.size() * config.elitismCount));
+        int actualElites = Math.max(1, (int) (population.size() * config.elitismRatio));
 
         evolutionLoop:
         for (int gen = 1; gen <= epochsToRun; gen++) {
