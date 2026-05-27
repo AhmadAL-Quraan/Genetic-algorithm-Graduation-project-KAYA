@@ -161,11 +161,11 @@ const PARAM_GUIDE = [
     recommended: "5",
   },
   {
-    name: "Elitism", field: "elitismCount" as keyof GAConfig, default: 10, step: 1,
+    name: "Elitism", field: "elitismRatio" as keyof GAConfig, default: 0.015, step: 1,
     description: "Number of top schedules passed unchanged to the next generation. (عدد أفضل جداول تنتقل للجيل القادم مباشرة)",
     higher: { effect: "Best solution always preserved", cost: "Reduces diversity" },
     lower:  { effect: "More exploration", cost: "May lose good solutions" },
-    recommended: "10",
+    recommended: "0.015",
   },
   {
     name: "Mutation Rate", field: "initialMutationRate" as keyof GAConfig, default: 0.15, step: 0.01,
@@ -486,7 +486,7 @@ export default function TimetablesPage() {
     maxGenerations: 400,
     populationSize: 100,
     tournamentSize: 5,
-    elitismCount: 10,
+    elitismRatio: 0.015,
     initialMutationRate: 0.15,
     mutationImpactRatio: 0.10,
     stagnationToleranceRatio: 0.10,

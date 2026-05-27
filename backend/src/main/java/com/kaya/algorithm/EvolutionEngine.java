@@ -140,7 +140,7 @@ public class EvolutionEngine {
             long newGenerationBestFitness = currentBestFitness;
 
             // 2. ELITISM: Carry over the absolute best schedules to the next generation unchanged.
-            int actualElites = Math.max(1, (int) (population.size() * config.elitismCount));
+            int actualElites = Math.max(1, (int) (population.size() * config.elitismRatio));
             for (int i = 0; i < population.size() && i < actualElites; i++) {
                 nextGen.add(population.get(i));
             }
