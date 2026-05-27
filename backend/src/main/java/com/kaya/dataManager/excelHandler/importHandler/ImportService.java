@@ -27,6 +27,24 @@ public class ImportService {
     private final LectureRepository lectureRepository;
     private final ImportHelper helper;
 
+    // Define column indices as constants for readability and maintainability
+    private static final int COL_SYMBOL = 0;
+    private static final int COL_NUMBER = 1;
+    private static final int COL_SECTION = 2;
+    private static final int COL_SAT = 6;
+    private static final int COL_SUN = 7;
+    private static final int COL_MON = 8;
+    private static final int COL_TUE = 9;
+    private static final int COL_WED = 10;
+    private static final int COL_THU = 11;
+    private static final int COL_FRI = 12;
+    private static final int COL_START_TIME = 13;
+    private static final int COL_END_TIME = 14;
+    private static final int COL_CANCELLED = 16;
+    private static final int COL_ROOM_CODE = 17;
+    private static final int COL_INSTRUCTOR_NAME = 19;
+    private static final int COL_TEACHING_METHOD = 20;
+
     @Transactional
     public ImportSummary importExcel(MultipartFile file) throws Exception {
         // ── Preload existing data into lookup maps ─────────────────────────
@@ -44,9 +62,14 @@ public class ImportService {
             }
         });
 
+        // Lists to hold new entities for batch saving
+        List<Course> newCourses = new ArrayList<>();
+        List<Instructor> newInstructors = new ArrayList<>();
+        List<Room> newRooms = new ArrayList<>();
+//        List<TimeSlot> newTimeSlots = new ArrayList<>();
+        List<Lecture> newLectures = new ArrayList<>();
+
         int rowsProcessed = 0, rowsSkipped = 0;
-        int coursesCreated = 0, instructorsCreated = 0, roomsCreated = 0,
-                timeSlotsCreated = 0, lecturesCreated = 0;
         List<String> warnings = new ArrayList<>();
 
         try (ReadableWorkbook wb = new ReadableWorkbook(file.getInputStream())) {
@@ -60,35 +83,34 @@ public class ImportService {
 
                     try {
                         // ── Basic fields ──────────────────────────────────
-                        String symbol  = helper.cell(row, 0);
-                        String number  = helper.cell(row, 1);
-                        String section = helper.cell(row, 2);
+                        String symbol  = helper.cell(row, COL_SYMBOL);
+                        String number  = helper.cell(row, COL_NUMBER);
+                        String section = helper.cell(row, COL_SECTION);
 
                         if (symbol.isEmpty() || number.isEmpty()) { rowsSkipped++; continue; }
 
-                        // Skip cancelled sections
-                        String cancelled = helper.cell(row, 16);
+                        // Skip canceled sections
+                        String cancelled = helper.cell(row, COL_CANCELLED);
                         if (!cancelled.equals("لا") && !cancelled.isEmpty()) { rowsSkipped++; continue; }
 
                         // ── Teaching method ───────────────────────────────
-                        String methodAr = helper.cell(row, 20);
+                        String methodAr = helper.cell(row, COL_TEACHING_METHOD);
                         TeachingMethod method = helper.parseMethod(methodAr);
 
                         // ── Days ──────────────────────────────────────────
-                        // cols 6=SAT, 7=SUN, 8=MON, 9=TUE, 10=WED, 11=THU, 12=FRI
                         Set<DayOfWeek> days = new LinkedHashSet<>();
-                        if (helper.isX(row, 6))  days.add(DayOfWeek.SATURDAY);
-                        if (helper.isX(row, 7))  days.add(DayOfWeek.SUNDAY);
-                        if (helper.isX(row, 8))  days.add(DayOfWeek.MONDAY);
-                        if (helper.isX(row, 9))  days.add(DayOfWeek.TUESDAY);
-                        if (helper.isX(row, 10)) days.add(DayOfWeek.WEDNESDAY);
-                        if (helper.isX(row, 11)) days.add(DayOfWeek.THURSDAY);
-                        if (helper.isX(row, 12)) days.add(DayOfWeek.FRIDAY);
+                        if (helper.isX(row, COL_SAT))  days.add(DayOfWeek.SATURDAY);
+                        if (helper.isX(row, COL_SUN))  days.add(DayOfWeek.SUNDAY);
+                        if (helper.isX(row, COL_MON))  days.add(DayOfWeek.MONDAY);
+                        if (helper.isX(row, COL_TUE))  days.add(DayOfWeek.TUESDAY);
+                        if (helper.isX(row, COL_WED)) days.add(DayOfWeek.WEDNESDAY);
+                        if (helper.isX(row, COL_THU)) days.add(DayOfWeek.THURSDAY);
+                        if (helper.isX(row, COL_FRI)) days.add(DayOfWeek.FRIDAY);
 
                         // ── Times ─────────────────────────────────────────
                         LocalTime startTime = null, endTime = null;
-                        String startRaw = helper.cell(row, 13);
-                        String endRaw   = helper.cell(row, 14);
+                        String startRaw = helper.cell(row, COL_START_TIME);
+                        String endRaw   = helper.cell(row, COL_END_TIME);
                         if (!startRaw.isEmpty() && !endRaw.isEmpty()) {
                             try {
                                 startTime = helper.excelFractionToTime(Double.parseDouble(startRaw));
@@ -97,7 +119,7 @@ public class ImportService {
                         }
 
                         // ── Room ──────────────────────────────────────────
-                        String roomCode = helper.cell(row, 17);
+                        String roomCode = helper.cell(row, COL_ROOM_CODE);
                         Room room = null;
                         boolean isOnline = roomCode.isEmpty()
                                 || roomCode.toLowerCase().contains("oline")
@@ -112,23 +134,21 @@ public class ImportService {
                             room = roomMap.get(rk);
                             if (room == null) {
                                 room = new Room(null, building, roomNum, RoomType.LECTURE);
-                                room = roomRepository.save(room);
+                                newRooms.add(room); // Add to list for batch save
                                 roomMap.put(rk, room);
-                                roomsCreated++;
                             }
                         }
 
                         // ── Instructor ──────────────────────────
-                        String instructorName = helper.cell(row, 19);
+                        String instructorName = helper.cell(row, COL_INSTRUCTOR_NAME);
                         Instructor instructor = null;
                         if (!instructorName.isEmpty()) {
                             String nk = helper.normalize(instructorName);
                             instructor = instructorMap.get(nk);
                             if (instructor == null) {
-                                instructor = new Instructor(null, instructorName);
-                                instructor = instructorRepository.save(instructor);
+                                instructor = new Instructor(null, instructorName,null,null);
+                                newInstructors.add(instructor); // Add to list for batch save
                                 instructorMap.put(nk, instructor);
-                                instructorsCreated++;
                             }
                         }
 
@@ -138,24 +158,22 @@ public class ImportService {
                         Course course = courseMap.get(ck);
                         if (course == null) {
                             course = new Course(symbol, number, roomType, method);
-                            course = courseRepository.save(course);
+                            newCourses.add(course); // Add to list for batch save
                             courseMap.put(ck, course);
-                            coursesCreated++;
                         }
 
                         // ── TimeSlot ──────────────────────────────────────
-                        TimeSlot slot = null;
-                        if (startTime != null && endTime != null && !days.isEmpty()) {
-                            TimeSlot probe = new TimeSlot(null, startTime, endTime, days, method, null);
-                            String sk = helper.slotKey(probe);
-                            slot = slotMap.get(sk);
-                            if (slot == null) {
-                                slot = new TimeSlot(null, startTime, endTime, days, method, null);
-                                slot = timeSlotRepository.save(slot);
-                                slotMap.put(sk, slot);
-                                timeSlotsCreated++;
-                            }
-                        }
+//                        TimeSlot slot = null;
+//                        if (startTime != null && endTime != null && !days.isEmpty()) {
+//                            TimeSlot probe = new TimeSlot(null, startTime, endTime, days, method, null);
+//                            String sk = helper.slotKey(probe);
+//                            slot = slotMap.get(sk);
+//                            if (slot == null) {
+//                                slot = new TimeSlot(null, startTime, endTime, days, method, null);
+//                                newTimeSlots.add(slot); // Add to list for batch save
+//                                slotMap.put(sk, slot);
+//                            }
+//                        }
 
                         // ── Lecture (template) ────────────────────────────
                         Integer sectionNum = null;
@@ -164,12 +182,10 @@ public class ImportService {
                         Lecture lecture = new Lecture();
                         lecture.setCourse(course);
                         lecture.setRoom(room);
-                        lecture.setTimeSlot(slot);
+                       // lecture.setTimeSlot(slot);
                         lecture.setSectionNumber(sectionNum);
-                        lecture.setInstructor(instructor);
-                        lecture.setInstructor(instructorName.isEmpty() ? null : instructor);
-                        lectureRepository.save(lecture);
-                        lecturesCreated++;
+                        lecture.setInstructor(instructor); // This is sufficient
+                        newLectures.add(lecture); // Add to list for batch save
 
                     } catch (Exception e) {
                         warnings.add("Row " + (i + 1) + ": " + e.getMessage());
@@ -178,10 +194,22 @@ public class ImportService {
                 }
             }
         }
+        
+        // --- Batch save all new entities after the loop ---
+        courseRepository.saveAll(newCourses);
+        instructorRepository.saveAll(newInstructors);
+        roomRepository.saveAll(newRooms);
+       // timeSlotRepository.saveAll(newTimeSlots);
+        lectureRepository.saveAll(newLectures);
 
         return new ImportSummary(
                 rowsProcessed, rowsSkipped,
-                coursesCreated, roomsCreated, timeSlotsCreated,
-                lecturesCreated, instructorsCreated, warnings);
+                newCourses.size(),
+                newRooms.size(),
+                0,
+                newLectures.size(),
+                newInstructors.size(),
+                warnings
+        );
     }
 }

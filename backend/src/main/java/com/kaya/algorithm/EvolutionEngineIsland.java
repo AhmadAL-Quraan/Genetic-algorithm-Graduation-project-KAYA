@@ -101,7 +101,7 @@ public class EvolutionEngineIsland {
             long newGenerationBestFitness = currentBestFitness;
 
             // 2. ELITISM
-            for (int i = 0; i < actualElites; i++) {
+            for (int i = 0; i < population.size() && i < actualElites; i++) {
                 nextGen.add(population.get(i));
             }
 

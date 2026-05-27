@@ -89,7 +89,7 @@ public class StartPoint {
         //bestSchedule = finalPop.get(0);
         System.out.println("=====================================");
         System.out.println("Best Fitness Report:");
-        System.out.println(bestSchedule.getReport());
+        System.out.println(bestSchedule.getReport().getTotalPenalty());
         System.out.println("=====================================");
 
         return bestSchedule;
