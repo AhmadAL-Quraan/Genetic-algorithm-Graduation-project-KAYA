@@ -70,6 +70,7 @@ public class CourseService {
         course.setCourseNumber(request.getCourseNumber());
         course.setTeachingMethod(request.getTimeGroups());
         course.setRequiredRoomType(request.getRoomGroups());
+        // check if is existed before save
         Course updated = courseRepository.save(course);
         return CourseMapper.mapToResponse(updated);
     }
