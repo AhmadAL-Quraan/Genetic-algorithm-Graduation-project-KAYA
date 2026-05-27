@@ -161,11 +161,11 @@ const PARAM_GUIDE = [
     recommended: "5",
   },
   {
-    name: "Elitism Ratio", field: "elitismRatio" as keyof GAConfig, default: 0.015, step: 0.005,
-    description: "Fraction of top schedules passed unchanged. (نسبة مئوية لأفضل جداول تنتقل للجيل القادم، 0.015 تعني 1.5%)",
+    name: "Elitism", field: "elitismRatio" as keyof GAConfig, default: 0.015, step: 1,
+    description: "Number of top schedules passed unchanged to the next generation. (عدد أفضل جداول تنتقل للجيل القادم مباشرة)",
     higher: { effect: "Best solution always preserved", cost: "Reduces diversity" },
     lower:  { effect: "More exploration", cost: "May lose good solutions" },
-    recommended: "0.01 - 0.05",
+    recommended: "0.015",
   },
   {
     name: "Mutation Rate", field: "initialMutationRate" as keyof GAConfig, default: 0.15, step: 0.01,
@@ -617,7 +617,7 @@ export default function TimetablesPage() {
           </CardHeader>
           <CardContent className="space-y-4">
 
-            {/* use Island Model checkbox */}
+            {/* زر تفعيل معمارية الجزر */}
             <div className="flex items-center gap-3 p-3 mb-4 rounded-lg border bg-muted/20">
               <input
                   type="checkbox"
