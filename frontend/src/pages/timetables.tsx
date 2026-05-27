@@ -617,7 +617,7 @@ export default function TimetablesPage() {
           </CardHeader>
           <CardContent className="space-y-4">
 
-            {/* زر تفعيل معمارية الجزر */}
+            {/* use Island Model checkbox */}
             <div className="flex items-center gap-3 p-3 mb-4 rounded-lg border bg-muted/20">
               <input
                   type="checkbox"

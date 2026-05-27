@@ -95,10 +95,9 @@ public class TimeTableService {
 
         GAConfig config = new GAConfig();
 
-        boolean useIslandModel = false; // القيمة الافتراضية
+        boolean useIslandModel = false;
 
         if (configMap != null) {
-            // الإعدادات القديمة
             if (configMap.containsKey("maxGenerations"))
                 config.maxGenerations = toInt(configMap.get("maxGenerations"), config.maxGenerations);
             if (configMap.containsKey("populationSize"))
@@ -112,7 +111,7 @@ public class TimeTableService {
             if (configMap.containsKey("mutationImpactRatio"))
                 config.mutationImpactRatio = toDouble(configMap.get("mutationImpactRatio"), config.mutationImpactRatio);
 
-            // [NEW]: إعدادات معمارية الجزر والركود
+
             if (configMap.containsKey("stagnationToleranceRatio"))
                 config.stagnationToleranceRatio = toDouble(configMap.get("stagnationToleranceRatio"), config.stagnationToleranceRatio);
             if (configMap.containsKey("numIslands"))
@@ -122,9 +121,8 @@ public class TimeTableService {
             if (configMap.containsKey("migrationRate"))
                 config.migrationRate = toInt(configMap.get("migrationRate"), config.migrationRate);
 
-            // قراءة زر التفعيل الخاص بفرونت إند
             if (configMap.containsKey("useIslandModel"))
-                useIslandModel = toBoolean(configMap.get("useIslandModel"), true);
+                useIslandModel = toBoolean(configMap.get("useIslandModel"), false);
         }
 
         currentProgress = new ProgressResponse("initializing", 0, config.maxGenerations, 0, 0, 0, 0, 0.0);
