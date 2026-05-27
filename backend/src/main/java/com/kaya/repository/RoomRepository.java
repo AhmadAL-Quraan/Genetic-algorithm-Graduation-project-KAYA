@@ -3,4 +3,8 @@ package com.kaya.repository;
 import com.kaya.model.Room;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface RoomRepository extends JpaRepository<Room, Long> {}
+import java.util.Optional;
+
+public interface RoomRepository extends JpaRepository<Room, Long> {
+    Optional<Room> findByBuildingAndRoomNumber(String building, String roomNumber);
+}
