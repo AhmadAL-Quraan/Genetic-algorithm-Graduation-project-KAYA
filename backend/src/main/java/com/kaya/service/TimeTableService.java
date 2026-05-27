@@ -103,7 +103,7 @@ public class TimeTableService {
                 config.maxGenerations = toInt(configMap.get("maxGenerations"), config.maxGenerations);
             if (configMap.containsKey("populationSize"))
                 config.populationSize = toInt(configMap.get("populationSize"), config.populationSize);
-            if (configMap.containsKey("elitismCount"))
+            if (configMap.containsKey("elitismRatio"))
                 config.elitismRatio = toDouble(configMap.get("elitismRatio"), config.elitismRatio);
             if (configMap.containsKey("tournamentSize"))
                 config.tournamentSize = toInt(configMap.get("tournamentSize"), config.tournamentSize);
