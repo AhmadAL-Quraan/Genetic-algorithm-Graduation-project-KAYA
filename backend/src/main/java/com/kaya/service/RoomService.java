@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -73,11 +74,20 @@ public class RoomService {
         roomRepository.deleteAll();
     }
 
-    private RoomResponse saveRoom(RoomRequest request, Room response) {
-        response.setRoomNumber(request.getRoomNumber());
-        response.setBuilding(request.getBuilding().toUpperCase());
-        response.setRoomType(request.getRoomType());
-        Room updated = roomRepository.save(response);
+    private RoomResponse saveRoom(RoomRequest request, Room room) {
+        String building = request.getBuilding().toUpperCase();
+        String roomNumber = request.getRoomNumber();
+
+        Optional<Room> existingRoom = roomRepository.findByBuildingAndRoomNumber(building, roomNumber);
+        if (existingRoom.isPresent() && !existingRoom.get().getId().equals(room.getId())) {
+            // Error in this line
+            throw new RuntimeException("Room in the same building and with the same number already exists.");
+        }
+
+        room.setRoomNumber(roomNumber);
+        room.setBuilding(building);
+        room.setRoomType(request.getRoomType());
+        Room updated = roomRepository.save(room);
         return RoomMapper.mapToResponse(updated);
     }
 }
