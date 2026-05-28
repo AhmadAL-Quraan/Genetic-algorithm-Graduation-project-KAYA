@@ -6,12 +6,15 @@
   <component name="ChangeListManager">
     <list default="true" id="ad8daef5-eb06-4d1b-a3c3-0e405d9a00b6" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/repository/CourseRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/kaya/repository/CourseRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/repository/InstructorRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/kaya/repository/InstructorRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/repository/RoomRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/kaya/repository/RoomRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/service/CourseService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/kaya/service/CourseService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/service/InstructorService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/kaya/service/InstructorService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/service/RoomService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/kaya/service/RoomService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/controller/TimeSlotController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/kaya/controller/TimeSlotController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/controller/TimeTableController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/kaya/controller/TimeTableController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/service/TimeSlotService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/kaya/service/TimeSlotService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/service/TimeTableService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/kaya/service/TimeTableService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/timetable-calendar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/timetable-calendar.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/lib/api.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/lib/api.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/dashboard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/dashboard.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/time-slots.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/time-slots.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/timetables.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/timetables.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -139,7 +142,8 @@
       <workItem from="1779846990158" duration="6642000" />
       <workItem from="1779878335249" duration="487000" />
       <workItem from="1779898748764" duration="2304000" />
-      <workItem from="1779909911679" duration="1443000" />
+      <workItem from="1779909911679" duration="3368000" />
+      <workItem from="1779994672850" duration="9979000" />
     </task>
     <servers />
   </component>

@@ -86,7 +86,7 @@ public class EvolutionEngineIsland {
                         topReport.getRoomConflicts() != null ? topReport.getRoomConflicts() : 0,
                         topReport.getInstructorConflicts() != null ? topReport.getInstructorConflicts() : 0,
                         topReport.getStudentConflicts() != null ? topReport.getStudentConflicts() : 0,
-                        island.getCurrentMutationRate(), // <--- تم التصحيح هنا (نسبة الطفرة للجزيرة)
+                        island.getCurrentMutationRate(),
                         currentBestPenalty == 0
                 ));
             }

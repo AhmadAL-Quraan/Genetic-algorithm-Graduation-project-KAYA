@@ -138,27 +138,9 @@ export function CalendarInner({
     console.log("========== TIMETABLE EVENTS ==========");
 
     for (const l of timetable.lectures ?? []) {
-
       if (!l.timeSlot || !l.timeSlot.days?.length) {
-        console.log("SKIP lecture without timeslot:", l.id);
         continue;
       }
-
-      // IMPORTANT:
-      // Backend GA now schedules ONE concrete slot per lecture.
-      // So we render ONLY the actual stored day.
-      const day = l.timeSlot.days[0];
-
-      if (!day) {
-        console.log("SKIP lecture without day:", l.id);
-        continue;
-      }
-
-      const base = dayDateFor(day);
-
-      const start = withTime(base, l.timeSlot.startTime);
-
-      const end = withTime(base, l.timeSlot.endTime);
 
       const title =
           (l.course
@@ -168,32 +150,28 @@ export function CalendarInner({
               ? ` · ${l.room.building} ${l.room.roomNumber}`
               : "");
 
-      console.log({
-        lectureId: l.id,
-        course: l.course
-            ? `${l.course.courseSymbol} ${l.course.courseNumber}`
-            : "UNKNOWN",
-        instructor: l.instructor?.instructorName,
-        day,
-        start: l.timeSlot.startTime,
-        end: l.timeSlot.endTime,
-        teachingMethod: l.timeSlot.teachingMethod,
-      });
+      for (const day of l.timeSlot.days) {
+        if (!day) continue;
 
-      out.push({
-        id: `${l.id}:${day}`,
-        title,
-        start,
-        end,
-        backgroundColor: colorFor(l.id),
-        borderColor: colorFor(l.id),
+        const base = dayDateFor(day);
+        const start = withTime(base, l.timeSlot.startTime);
+        const end = withTime(base, l.timeSlot.endTime);
 
-        extendedProps: {
-          lectureId: l.id,
-          day,
-          instructor: l.instructor,
-        },
-      });
+        out.push({
+          id: `${l.id}:${day}`,
+          title,
+          start,
+          end,
+          backgroundColor: colorFor(l.id),
+          borderColor: colorFor(l.id),
+
+          extendedProps: {
+            lectureId: l.id,
+            day,
+            instructor: l.instructor,
+          },
+        });
+      }
     }
 
     console.log("======================================");

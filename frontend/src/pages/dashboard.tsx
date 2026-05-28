@@ -27,7 +27,7 @@ export default function Dashboard() {
 
   const overviewStats = [
     { label: "Courses",     icon: BookOpen,    count: courses.data?.length,     href: "/courses"     },
-    { label: "Timetables",  icon: Calendar,    count: timetables.data?.length,  href: "/schedule"    },
+    { label: "Algorithm & Schedules",  icon: Calendar,    count: timetables.data?.length,  href: "/schedule"    },
     { label: "Conflicts",   icon: AlertTriangle, count: conflicts.data?.length, href: "/conflicts",
       danger: (conflicts.data?.length ?? 0) > 0 },
   ];

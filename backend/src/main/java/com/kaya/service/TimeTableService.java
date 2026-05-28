@@ -161,7 +161,8 @@ public class TimeTableService {
         }
 
         List<Room> rooms = roomRepository.findAll();
-        List<TimeSlot> timeSlots = expandAndPersistWindows(timeSlotRepository.findAll());
+        //List<TimeSlot> timeSlots = expandAndPersistWindows(timeSlotRepository.findAll());
+        List<TimeSlot> timeSlots = timeSlotRepository.findAll();
 
         // Guard: every teaching method required by at least one lecture must have ≥1 slot
         Set<String> neededMethods = lectures.stream()
@@ -286,65 +287,65 @@ public class TimeTableService {
         return TimeTableMapper.mapToResponse(updated);
     }
 
-    /**
-     * Expands "window" timeslots (those with durationMinutes set) into individual
-     * fixed-length slots. Slots are persisted to DB (find-or-create) so they get
-     * real IDs the algorithm can reference. Window slots themselves are passed
-     * through unchanged — the algorithm will ignore them because StartPoint only
-     * uses slots that match the course's teaching method, and windows are the parent.
-     */
-    @Transactional
-    public List<TimeSlot> expandAndPersistWindows(List<TimeSlot> allSlots) {
-        // Separate windows (have durationMinutes) from already-individual slots
-        List<TimeSlot> windows     = allSlots.stream().filter(s -> s.getDurationMinutes() != null).collect(Collectors.toList());
-        List<TimeSlot> individuals = allSlots.stream().filter(s -> s.getDurationMinutes() == null).collect(Collectors.toList());
-
-        if (windows.isEmpty()) {
-            return allSlots; // nothing to expand
-        }
-
-        // Build a lookup key set of already-existing individual slots
-        Map<String, TimeSlot> existingMap = new HashMap<>();
-        for (TimeSlot s : individuals) {
-            existingMap.put(slotKey(s), s);
-        }
-
-        // Only return slots derived from the CURRENT windows — not orphaned individuals
-        // from previously deleted windows. existingMap is only used for find-or-create.
-        List<TimeSlot> result = new ArrayList<>();
-
-        for (TimeSlot window : windows) {
-            int duration = window.getDurationMinutes();
-            LocalTime windowEnd = window.getEndTime();
-
-            // Expand per day so the algorithm treats MON 08:00 and WED 08:00 as
-            // separate slots. This doubles the effective pool and allows the genetic
-            // algorithm to avoid student-year conflicts entirely.
-            for (DayOfWeek day : window.getDays()) {
-                LocalTime cursor = window.getStartTime();
-                while (!cursor.plusMinutes(duration).isAfter(windowEnd)) {
-                    LocalTime slotEnd = cursor.plusMinutes(duration);
-
-                    TimeSlot candidate = new TimeSlot();
-                    candidate.setStartTime(cursor);
-                    candidate.setEndTime(slotEnd);
-                    candidate.setDays(new HashSet<>(Set.of(day)));
-                    candidate.setTeachingMethod(window.getTeachingMethod());
-                    candidate.setDurationMinutes(null);
-
-                    String key = slotKey(candidate);
-                    TimeSlot saved = existingMap.computeIfAbsent(key, k -> timeSlotRepository.save(candidate));
-                    result.add(saved);
-
-                    cursor = slotEnd;
-                }
-            }
-        }
-
-        System.out.println("[TimeTableService] Expanded " + windows.size() + " window(s) into "
-                + (result.size() - individuals.size()) + " individual slot(s) for the algorithm.");
-        return result;
-    }
+//    /**
+//     * Expands "window" timeslots (those with durationMinutes set) into individual
+//     * fixed-length slots. Slots are persisted to DB (find-or-create) so they get
+//     * real IDs the algorithm can reference. Window slots themselves are passed
+//     * through unchanged — the algorithm will ignore them because StartPoint only
+//     * uses slots that match the course's teaching method, and windows are the parent.
+//     */
+//    @Transactional
+//    public List<TimeSlot> expandAndPersistWindows(List<TimeSlot> allSlots) {
+//        // Separate windows (have durationMinutes) from already-individual slots
+//        List<TimeSlot> windows     = allSlots.stream().filter(s -> s.getDurationMinutes() != null).collect(Collectors.toList());
+//        List<TimeSlot> individuals = allSlots.stream().filter(s -> s.getDurationMinutes() == null).collect(Collectors.toList());
+//
+//        if (windows.isEmpty()) {
+//            return allSlots; // nothing to expand
+//        }
+//
+//        // Build a lookup key set of already-existing individual slots
+//        Map<String, TimeSlot> existingMap = new HashMap<>();
+//        for (TimeSlot s : individuals) {
+//            existingMap.put(slotKey(s), s);
+//        }
+//
+//        // Only return slots derived from the CURRENT windows — not orphaned individuals
+//        // from previously deleted windows. existingMap is only used for find-or-create.
+//        List<TimeSlot> result = new ArrayList<>();
+//
+//        for (TimeSlot window : windows) {
+//            int duration = window.getDurationMinutes();
+//            LocalTime windowEnd = window.getEndTime();
+//
+//            // Expand per day so the algorithm treats MON 08:00 and WED 08:00 as
+//            // separate slots. This doubles the effective pool and allows the genetic
+//            // algorithm to avoid student-year conflicts entirely.
+//            for (DayOfWeek day : window.getDays()) {
+//                LocalTime cursor = window.getStartTime();
+//                while (!cursor.plusMinutes(duration).isAfter(windowEnd)) {
+//                    LocalTime slotEnd = cursor.plusMinutes(duration);
+//
+//                    TimeSlot candidate = new TimeSlot();
+//                    candidate.setStartTime(cursor);
+//                    candidate.setEndTime(slotEnd);
+//                    candidate.setDays(new HashSet<>(Set.of(day)));
+//                    candidate.setTeachingMethod(window.getTeachingMethod());
+//                    candidate.setDurationMinutes(null);
+//
+//                    String key = slotKey(candidate);
+//                    TimeSlot saved = existingMap.computeIfAbsent(key, k -> timeSlotRepository.save(candidate));
+//                    result.add(saved);
+//
+//                    cursor = slotEnd;
+//                }
+//            }
+//        }
+//
+//        System.out.println("[TimeTableService] Expanded " + windows.size() + " window(s) into "
+//                + (result.size() - individuals.size()) + " individual slot(s) for the algorithm.");
+//        return result;
+//    }
 
     private String slotKey(TimeSlot s) {
         List<String> sortedDays = s.getDays().stream().map(Enum::name).sorted().collect(Collectors.toList());

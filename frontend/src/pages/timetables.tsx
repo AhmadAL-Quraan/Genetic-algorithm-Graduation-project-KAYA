@@ -65,7 +65,7 @@ function useReadinessChecks() {
 
     const neededMethods = [...new Set(courses.data.flatMap(c => c.timeGroups))];
     for (const method of neededMethods) {
-      const hasSlot = timeSlots.data.some(ts => ts.teachingMethod === method && ts.durationMinutes != null);
+      const hasSlot = timeSlots.data.some(ts => ts.teachingMethod === method);
       items.push({
         label: `Time window for "${METHOD_LABEL[method] ?? method}" defined`,
         ok: hasSlot,
@@ -807,8 +807,12 @@ export default function TimetablesPage() {
                               <TableCell className="font-medium">
                                 {l.course ? `${l.course.courseSymbol} ${l.course.courseNumber}` : "—"}
                               </TableCell>
-                              <TableCell>{l.number}</TableCell>
-                              <TableCell>{l.instructor}</TableCell>
+                              {/* التعديل: قراءة رقم الشعبة الصحيح من الباك إند */}
+                              <TableCell>{(l as any).sectionNumber ?? "—"}</TableCell>
+
+                              {/* التعديل الأهم: قراءة الاسم من الأوبجيكت لمنع الكراش */}
+                              <TableCell>{l.instructor?.name ?? "—"}</TableCell>
+
                               <TableCell>
                                 {l.timeSlot?.days?.map(d => d.slice(0, 3)).join(", ") ?? "—"}
                               </TableCell>
