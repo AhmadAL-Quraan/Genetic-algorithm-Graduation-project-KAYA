@@ -229,8 +229,17 @@ export function useConflicts() {
 }
 
 export interface GAConfig {
-  maxGenerations?: number; populationSize?: number; elitismCount?: number;
-  tournamentSize?: number; initialMutationRate?: number; mutationImpactRatio?: number;
+  maxGenerations?: number;
+  populationSize?: number;
+  elitismRatio?: number;
+  tournamentSize?: number;
+  initialMutationRate?: number;
+  mutationImpactRatio?: number;
+  stagnationToleranceRatio?: number;
+  numIslands?: number;
+  migrationInterval?: number;
+  migrationRate?: number;
+  useIslandModel?: boolean;
 }
 
 export function useGenerateTimetable() {
@@ -242,7 +251,7 @@ export function useGenerateTimetable() {
 }
 
 export function exportScheduleUrl() { return `${API_BASE}/export/schedule`; }
-export function exportTimetableUrl(id: number) { return `${API_BASE}/export/schedule/latest`; }
+export function exportTimetableUrl(id: number) { return `${API_BASE}/export/schedule/${id}`; }
 
 export async function findOrCreateTimeSlot(input: TimeSlotInput): Promise<TimeSlot> {
   const all = await request<TimeSlot[]>("GET", "/time-slots");
@@ -252,10 +261,13 @@ export async function findOrCreateTimeSlot(input: TimeSlotInput): Promise<TimeSl
     days: [...input.days].sort().join(","), method: input.teachingMethod,
   };
   const existing = all.find(t =>
-    norm(t.startTime) === want.start && norm(t.endTime) === want.end &&
-    [...t.days].sort().join(",") === want.days && t.teachingMethod === want.method);
+      norm(t.startTime) === want.start && norm(t.endTime) === want.end &&
+      [...t.days].sort().join(",") === want.days && t.teachingMethod === want.method);
+
   if (existing) return existing;
-  return request<TimeSlot>("POST", "/time-slots", input);
+
+  const createdSlots = await request<TimeSlot[]>("POST", "/time-slots", input);
+  return createdSlots[0];
 }
 
 export async function updateLectureAssignment(

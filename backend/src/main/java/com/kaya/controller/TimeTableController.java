@@ -1,8 +1,11 @@
 package com.kaya.controller;
 
+import com.kaya.dto.request.TimeSlotRequest;
 import com.kaya.dto.request.TimeTableRequest;
 import com.kaya.dto.response.ProgressResponse;
+import com.kaya.dto.response.TimeSlotResponse;
 import com.kaya.dto.response.TimeTableResponse;
+import com.kaya.service.TimeSlotService;
 import com.kaya.service.TimeTableService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +20,7 @@ import java.util.Map;
 public class TimeTableController {
 
     private final TimeTableService timeTableService;
+    private final TimeSlotService timeSlotService;
 
     @GetMapping
     public List<TimeTableResponse> getAll() {
@@ -37,9 +41,13 @@ public class TimeTableController {
         return ResponseEntity.ok(timeTableService.getById(id));
     }
 
+    //@PostMapping
+    //public ResponseEntity<TimeTableResponse> create(@RequestBody TimeTableRequest request) {
+    //    return ResponseEntity.ok(timeTableService.create(request));
+   // }
     @PostMapping
-    public ResponseEntity<TimeTableResponse> create(@RequestBody TimeTableRequest request) {
-        return ResponseEntity.ok(timeTableService.create(request));
+    public ResponseEntity<List<TimeSlotResponse>> createTimeSlot(@RequestBody TimeSlotRequest request) {
+        return ResponseEntity.ok(timeSlotService.create(request));
     }
 
     @PutMapping("/{id}")

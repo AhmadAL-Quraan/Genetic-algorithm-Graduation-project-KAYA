@@ -27,8 +27,12 @@ public class TimeSlotController {
         return ResponseEntity.ok(timeSlotService.getById(id));
     }
 
+//    @PostMapping
+//    public ResponseEntity<TimeSlotResponse> create(@RequestBody TimeSlotRequest request) {
+//        return ResponseEntity.ok(timeSlotService.create(request));
+//    }
     @PostMapping
-    public ResponseEntity<TimeSlotResponse> create(@RequestBody TimeSlotRequest request) {
+    public ResponseEntity<List<TimeSlotResponse>> create(@RequestBody TimeSlotRequest request) {
         return ResponseEntity.ok(timeSlotService.create(request));
     }
 
