@@ -104,7 +104,7 @@ function SidebarLogo() {
         alt="Yarmouk University"
         className="h-14 w-14 object-contain rounded-sm flex-shrink-0"
       />
-      <div className="min-w-0">
+      <div className="min-w-0" >
         <div className="text-[11px] font-bold tracking-wide text-sidebar-foreground leading-tight truncate">Yarmouk University</div>
         <div className="text-base font-bold tracking-wide" style={{ color: "hsl(43 88% 58%)" }}>KAYA</div>
         <div className="text-[8px] uppercase tracking-[0.15em] text-sidebar-foreground/45 leading-tight">UCTT System</div>
@@ -116,9 +116,9 @@ function SidebarLogo() {
 export function AppLayout({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useState(false);
   return (
-    <div className="flex h-screen w-full bg-background text-foreground">
-      <aside className="hidden md:flex w-56 flex-col border-r bg-sidebar">
-        <SidebarLogo />
+      <div className="fixed inset-0 flex overflow-hidden bg-background text-foreground">
+        <aside className="hidden md:flex w-56 flex-col border-r bg-sidebar">
+          <SidebarLogo />
         <div className="flex-1 overflow-y-auto p-3 pt-4">
           <NavLinks />
         </div>
