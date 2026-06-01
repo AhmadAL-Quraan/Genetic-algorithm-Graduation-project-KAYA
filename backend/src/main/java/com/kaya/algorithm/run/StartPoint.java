@@ -4,10 +4,7 @@ import com.kaya.algorithm.EvolutionEngine;
 import com.kaya.algorithm.GAConfig;
 import com.kaya.algorithm.IslandManager;
 import com.kaya.algorithm.ProgressSnapshot;
-import com.kaya.model.Lecture;
-import com.kaya.model.Room;
-import com.kaya.model.TimeSlot;
-import com.kaya.model.TimeTable;
+import com.kaya.model.*;
 import com.kaya.model.enums.RoomType;
 import com.kaya.model.enums.TeachingMethod;
 
@@ -33,26 +30,33 @@ public class StartPoint {
         System.out.println("Time Slot Size "+ allTimeSlots.size());
         for (String key : deptYearGroups.keySet()){
             int courceOnline = 0;
-            int courceLec = 0;
-            int courceBli = 0;
+            int courceInPerson = 0;
+            int courceBlended = 0;
+            int uniqCourse = 0;
 
+            Set<Course> IseeThis = new HashSet<>();
             for (Lecture lecture1 : deptYearGroups.get(key)) {
 
+                if (!IseeThis.contains(lecture1.getCourse())){
+                    uniqCourse++;
+                    IseeThis.add(lecture1.getCourse());
+                }
                 if (lecture1.getCourse().getTeachingMethod() == TeachingMethod.ONLINE){
                     courceOnline++;
                 }
                 else if (lecture1.getCourse().getTeachingMethod() == TeachingMethod.IN_PERSON ){
-                        courceLec ++;
+                    courceInPerson ++;
                 }
                 else {
-                    courceBli ++;
+                    courceBlended ++;
                 }
             }
 
             System.out.println(key +": "+ deptYearGroups.get(key).size());
+            System.out.println("Number Of uniq Course : " + uniqCourse);
             System.out.println("number of online: " + courceOnline);
-            System.out.println("number of InPerson: " + courceLec);
-            System.out.println("number of Blended: " + courceBli);
+            System.out.println("number of InPerson: " + courceInPerson);
+            System.out.println("number of Blended: " + courceBlended);
 
             System.out.println("----------------------");
         }
@@ -69,7 +73,7 @@ public class StartPoint {
 
         System.out.println("Starting KAYA Timetable Scheduler from Database...");
 
-        //printData(lectures, allTimeSlots, allRooms);
+        printData(lectures, allTimeSlots, allRooms);
         Map<RoomType, HashSet<Room>> roomPools = new HashMap<>();
         Map<TeachingMethod, HashSet<TimeSlot>> timePools = new HashMap<>();
 
