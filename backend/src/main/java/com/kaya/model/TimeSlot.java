@@ -52,6 +52,6 @@ public class TimeSlot {
 
     @Override
     public String toString() {
-        return "Days: " + days + " Start: " + startTime + " End: " + endTime;
+        return "Days: " + days + " Start: " + startTime + " End: " + endTime + " Type: " + teachingMethod;
     }
 }

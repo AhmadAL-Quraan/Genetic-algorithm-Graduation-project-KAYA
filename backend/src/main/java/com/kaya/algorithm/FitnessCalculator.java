@@ -102,7 +102,14 @@ public class FitnessCalculator {
                 Lecture c1 = group.get(i);
                 Lecture c2 = group.get(j);
 
-                // Check for temporal intersection using the external data extractor utility
+                // ignore deference sections for same course
+                if (conflictType.equals("Student Year Conflict")
+                        && c1.getCourse().getCourseSymbol().equals(c2.getCourse().getCourseSymbol())
+                        && c1.getCourse().getCourseNumber().equals(c2.getCourse().getCourseNumber())){
+                    continue;
+                }
+
+                    // Check for temporal intersection using the external data extractor utility
                 if (conflictsWith(c1.getTimeSlot(), c2.getTimeSlot())) {
 
                     // Log the conflicting classes so the Mutation operator knows what to target

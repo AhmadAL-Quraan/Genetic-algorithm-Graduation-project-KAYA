@@ -92,10 +92,16 @@ public class ConflictController {
 
         // Student-group conflict — same course symbol + same year (first digit of course number)
         // mirrors the FitnessCalculator grouping: courseSymbol + "-" + courseNumber.charAt(0)
-        String groupA = studentGroup(a);
-        String groupB = studentGroup(b);
-        if (groupA != null && groupA.equals(groupB)) {
-            types.add("STUDENT");
+
+        // ignore deference sections for same course
+        if (! ( a.getCourse().getCourseSymbol().equals(b.getCourse().getCourseSymbol())
+                && a.getCourse().getCourseNumber().equals(b.getCourse().getCourseNumber()) ) ){
+
+            String groupA = studentGroup(a);
+            String groupB = studentGroup(b);
+            if (groupA != null && groupA.equals(groupB)) {
+                types.add("STUDENT");
+            }
         }
 
         return types;
