@@ -6,9 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="ad8daef5-eb06-4d1b-a3c3-0e405d9a00b6" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/algorithm/EvolutionEngine.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/kaya/algorithm/EvolutionEngine.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/algorithm/EvolutionEngineIsland.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/kaya/algorithm/EvolutionEngineIsland.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/layout.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/algorithm/FitnessCalculator.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/kaya/algorithm/FitnessCalculator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/algorithm/run/StartPoint.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/kaya/algorithm/run/StartPoint.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/controller/ConflictController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/kaya/controller/ConflictController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/kaya/model/TimeSlot.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/kaya/model/TimeSlot.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -138,7 +139,9 @@
       <workItem from="1779898748764" duration="2304000" />
       <workItem from="1779909911679" duration="3368000" />
       <workItem from="1779994672850" duration="11855000" />
-      <workItem from="1780177153307" duration="3370000" />
+      <workItem from="1780177153307" duration="3833000" />
+      <workItem from="1780256095847" duration="1200000" />
+      <workItem from="1780278848471" duration="12025000" />
     </task>
     <servers />
   </component>

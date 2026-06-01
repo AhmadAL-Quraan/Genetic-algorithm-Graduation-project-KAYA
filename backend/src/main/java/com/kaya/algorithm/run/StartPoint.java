@@ -17,6 +17,48 @@ import java.util.function.Consumer;
 
 public class StartPoint {
 
+    public static void printData(List<Lecture> lecture, List<TimeSlot> allTimeSlots, List<Room> allRooms) {
+        Map<String, List<Lecture>> deptYearGroups = new HashMap<>();
+
+        for (Lecture c : lecture) {
+
+
+            String deptYearKey =
+                    c.getCourse().getCourseSymbol() + "-" +
+                            c.getCourse().getCourseNumber().charAt(0);
+
+            deptYearGroups.computeIfAbsent(deptYearKey, k -> new ArrayList<>()).add(c);
+        }
+
+        System.out.println("Time Slot Size "+ allTimeSlots.size());
+        for (String key : deptYearGroups.keySet()){
+            int courceOnline = 0;
+            int courceLec = 0;
+            int courceBli = 0;
+
+            for (Lecture lecture1 : deptYearGroups.get(key)) {
+
+                if (lecture1.getCourse().getTeachingMethod() == TeachingMethod.ONLINE){
+                    courceOnline++;
+                }
+                else if (lecture1.getCourse().getTeachingMethod() == TeachingMethod.IN_PERSON ){
+                        courceLec ++;
+                }
+                else {
+                    courceBli ++;
+                }
+            }
+
+            System.out.println(key +": "+ deptYearGroups.get(key).size());
+            System.out.println("number of online: " + courceOnline);
+            System.out.println("number of InPerson: " + courceLec);
+            System.out.println("number of Blended: " + courceBli);
+
+            System.out.println("----------------------");
+        }
+
+    }
+
     public static TimeTable runAlgorithm(List<Lecture> lectures,
                                          List<Room> allRooms,
                                          List<TimeSlot> allTimeSlots,
@@ -27,6 +69,7 @@ public class StartPoint {
 
         System.out.println("Starting KAYA Timetable Scheduler from Database...");
 
+        //printData(lectures, allTimeSlots, allRooms);
         Map<RoomType, HashSet<Room>> roomPools = new HashMap<>();
         Map<TeachingMethod, HashSet<TimeSlot>> timePools = new HashMap<>();
 
