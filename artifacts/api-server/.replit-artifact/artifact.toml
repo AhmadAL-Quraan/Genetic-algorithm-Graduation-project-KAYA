@@ -1,0 +1,27 @@
+kind = "web"
+previewPath = "/"
+title = "KAYA Scheduler"
+version = "1.0.0"
+id = "artifacts/api-server"
+router = "path"
+
+[[services]]
+localPort = 3000
+name = "web"
+paths = ["/"]
+
+[services.development]
+run = "PORT=3000 pnpm --filter @workspace/scripts run proxy"
+
+[services.env]
+PORT = "3000"
+BASE_PATH = "/"
+
+[services.production]
+build = ["pnpm", "--filter", "@workspace/university-scheduler", "run", "build"]
+publicDir = "frontend/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"

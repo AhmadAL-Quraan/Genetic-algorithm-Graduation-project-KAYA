@@ -1,0 +1,19 @@
+packages:
+  "framer-motion": "For page transitions and polished micro-interactions"
+  "react-hook-form": "For robust form state management and validation"
+  "@hookform/resolvers": "Zod resolver for react-hook-form"
+  "zod": "Schema validation for forms"
+  "date-fns": "For formatting times and dates in the schedule"
+  "recharts": "For dashboard statistical charts"
+  "lucide-react": "For beautiful, consistent iconography"
+  "clsx": "Utility for constructing className strings"
+  "tailwind-merge": "Utility for merging tailwind classes"
+
+images:
+  - path: "artifacts/university-scheduler/public/images/dashboard-header.png"
+    description: "Abstract geometric mesh gradient in deep academic blues and soft whites, professional, clean, subtle light leaks"
+    aspect_ratio: "16:9"
+
+notes:
+  - Using generated Orval hooks from @workspace/api-client-react for all data fetching.
+  - Relying on existing shadcn UI components in src/components/ui/ structure.

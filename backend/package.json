@@ -1,0 +1,10 @@
+{
+  "name": "@workspace/api-server",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "mvn -q spring-boot:run",
+    "build": "mvn -q -DskipTests package",
+    "start": "java -jar target/kaya.jar"
+  }
+}
