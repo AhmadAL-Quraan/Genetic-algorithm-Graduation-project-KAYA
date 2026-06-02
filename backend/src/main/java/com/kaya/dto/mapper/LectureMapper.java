@@ -1,8 +1,11 @@
 package com.kaya.dto.mapper;
 
+import com.kaya.dto.request.LectureRequest;
 import com.kaya.dto.response.LectureResponse;
 import com.kaya.model.Instructor;
 import com.kaya.model.Lecture;
+
+import java.util.List;
 
 public class LectureMapper {
 

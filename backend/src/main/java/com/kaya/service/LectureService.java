@@ -1,15 +1,19 @@
 package com.kaya.service;
 
 import com.kaya.dto.request.LectureRequest;
+import com.kaya.dto.request.RoomRequest;
 import com.kaya.dto.response.LectureResponse;
 import com.kaya.dto.mapper.LectureMapper;
+import com.kaya.dto.response.RoomResponse;
 import com.kaya.model.Lecture;
+import com.kaya.model.Room;
 import com.kaya.repository.InstructorRepository;
 import com.kaya.repository.LectureRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -38,6 +42,15 @@ public class LectureService {
     public LectureResponse create(LectureRequest request) {
         Lecture lecture = new Lecture();
         return saveLecture(request, lecture);
+    }
+
+    public List<LectureResponse> createBulk(List<LectureRequest> request) {
+        List<LectureResponse> l = new ArrayList<>();
+        for (LectureRequest lectureRequest : request) {
+            Lecture response = new Lecture();
+            l.add(saveLecture(lectureRequest, response));
+        }
+        return l;
     }
 
     public LectureResponse update(Long id, LectureRequest request) {

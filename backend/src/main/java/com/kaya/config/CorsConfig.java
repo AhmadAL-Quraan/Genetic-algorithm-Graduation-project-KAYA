@@ -6,10 +6,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 
 /*
-*Cross-Origin Resource Sharing
-*
-* Allow frontend to communicate with the backend --> WIthout it broweser block request between different origins.
-* */
+ Cross-Origin Resource Sharing
+ Allow frontend to communicate with the backend --> Without it browser block request between different origins.
+*/
 @Configuration
 public class CorsConfig implements WebMvcConfigurer {
 

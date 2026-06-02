@@ -244,8 +244,10 @@ export interface GAConfig {
 
 export function useGenerateTimetable() {
   const qc = useQueryClient();
+
   return useMutation({
-    mutationFn: (cfg: GAConfig) => request<TimeTable>("POST", `/time-table/generate`, cfg),
+    mutationFn: (cfg: GAConfig) =>
+        request<TimeTableResponse>("POST", "/generator/generate", cfg),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["time-table"] }),
   });
 }

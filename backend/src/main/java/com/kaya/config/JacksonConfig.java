@@ -9,10 +9,8 @@ import org.springframework.context.annotation.Configuration;
 
 
 /*
-*
-* convert Java objects ↔ JSON using Jackson.
-*
-* */
+ Convert Java objects ↔ JSON using Jackson.
+*/
 @Configuration
 public class JacksonConfig {
 
@@ -21,7 +19,7 @@ public class JacksonConfig {
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
         mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-        mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES); //Ignore unknown json fields like {name: Ahmad, email: a@tt, random:hello"} last will be ignored
+        mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES); // Ignore unknown JSON fields like {name: Ahmad, email: a@tt, random:hello} last will be ignored
         return mapper;
     }
 }

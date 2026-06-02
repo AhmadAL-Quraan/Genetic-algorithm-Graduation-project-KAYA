@@ -1,9 +1,5 @@
 package com.kaya.dataManager.manualEntryHandler;
 
-import com.kaya.model.Course;
-import com.kaya.model.Instructor;
-import com.kaya.repository.CourseRepository;
-import com.kaya.repository.InstructorRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

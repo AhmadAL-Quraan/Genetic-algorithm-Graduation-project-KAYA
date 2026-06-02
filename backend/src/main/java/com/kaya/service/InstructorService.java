@@ -3,11 +3,14 @@ package com.kaya.service;
 import com.kaya.dto.mapper.InstructorMapper;
 import com.kaya.dto.request.InstructorRequest;
 import com.kaya.dto.response.InstructorResponse;
+import com.kaya.exception.InstructorException;
+import com.kaya.exception.RoomException;
 import com.kaya.model.Instructor;
 import com.kaya.repository.DepartmentRepository;
 import com.kaya.repository.InstructorRepository;
 import com.kaya.repository.LectureRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,30 +33,37 @@ public class InstructorService {
 
     public InstructorResponse getById(Long id) {
         Instructor instructor = instructorRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Instructor not found"));
+                .orElseThrow(InstructorException::notFound);
         return InstructorMapper.mapToResponse(instructor);
     }
 
     public Instructor getEntityById(Long id) {
         return instructorRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Instructor not found"));
+                .orElseThrow(InstructorException::notFound);
     }
 
     public InstructorResponse create(InstructorRequest request) {
         Instructor instructor = new Instructor();
-        return save(request, instructor);
+
+        try {
+            return save(request, instructor);
+        } catch (DataIntegrityViolationException e) {
+            throw InstructorException.alreadyExists(
+                    request.getName().toUpperCase()
+            );
+        }
     }
 
     public InstructorResponse update(Long id, InstructorRequest request) {
         Instructor instructor = instructorRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Instructor not found"));
+                .orElseThrow(InstructorException::notFound);
         return save(request, instructor);
     }
 
     @Transactional
     public void delete(Long id) {
         if (!instructorRepository.existsById(id)) {
-            throw new RuntimeException("Instructor not found");
+            throw InstructorException.notFound();
         }
         lectureRepository.clearAllConflictingLectureRefs();
         lectureRepository.detachInstructor(id);
@@ -68,7 +78,7 @@ public class InstructorService {
     }
 
     private InstructorResponse save(InstructorRequest request, Instructor instructor) {
-        instructor.setInstructorName(request.getName());
+        instructor.setInstructorName(request.getName().toUpperCase());
         instructor.setEmail(request.getEmail());
         if (request.getDepartmentId() != null) {
             instructor.setDepartment(

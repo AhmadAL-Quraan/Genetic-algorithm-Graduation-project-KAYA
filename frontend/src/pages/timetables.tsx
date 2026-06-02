@@ -532,7 +532,7 @@ export default function TimetablesPage() {
     const pollInterval = setInterval(async () => {
       if (ac.signal.aborted) { clearInterval(pollInterval); return; }
       try {
-        const r = await fetch(`${BASE}/api/time-table/progress`, { signal: ac.signal });
+        const r = await fetch(`${BASE}/api/generator/progress`, { signal: ac.signal });
         if (r.status === 204) return; // no progress yet
         if (!r.ok) return;
         const p = (await r.json()) as ProgressState;
@@ -553,7 +553,7 @@ export default function TimetablesPage() {
 
     try {
       // Fire the long-running POST (blocks until GA completes)
-      const res = await fetch(`${BASE}/api/time-table/generate`, {
+      const res = await fetch(`${BASE}/api/generator/generate`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(cfg),
@@ -668,8 +668,7 @@ export default function TimetablesPage() {
                       variant="outline"
                       className="gap-2 border-red-300 text-red-600 hover:bg-red-50 hover:text-red-700"
                       onClick={async () => {
-                        try { await fetch(`${BASE}/api/time-table/cancel`, { method: "POST" }); } catch {}
-                        abortRef.current?.abort();
+                        try { await fetch(`${BASE}/api/generator/cancel`, { method: "POST" }); } catch {}                        abortRef.current?.abort();
                       }}
                   >
                     <span className="h-2 w-2 rounded-full bg-red-500 inline-block" />

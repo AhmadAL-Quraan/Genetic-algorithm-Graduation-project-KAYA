@@ -2,9 +2,12 @@ package com.kaya.service;
 
 import com.kaya.dto.request.DepartmentRequest;
 import com.kaya.dto.response.DepartmentResponse;
+import com.kaya.exception.CourseException;
+import com.kaya.exception.DepartmentException;
 import com.kaya.model.Department;
 import com.kaya.repository.DepartmentRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,29 +27,36 @@ public class DepartmentService {
 
     public DepartmentResponse getById(Long id) {
         Department dept = departmentRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Department not found"));
+                .orElseThrow(DepartmentException::notFound);
         return mapToResponse(dept);
     }
 
     public Department getEntityById(Long id) {
         return departmentRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Department not found"));
+                .orElseThrow(DepartmentException::notFound);
     }
 
     public DepartmentResponse create(DepartmentRequest request) {
         Department dept = new Department();
-        return save(request, dept);
+        try {
+            return save(request, dept);
+        } catch (DataIntegrityViolationException e) {
+            throw DepartmentException.alreadyExists(
+                    request.getName().toUpperCase(),
+                    request.getCode().toUpperCase()
+            );
+        }
     }
 
     public DepartmentResponse update(Long id, DepartmentRequest request) {
         Department dept = departmentRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Department not found"));
+                .orElseThrow(DepartmentException::notFound);
         return save(request, dept);
     }
 
     public void delete(Long id) {
         if (!departmentRepository.existsById(id)) {
-            throw new RuntimeException("Department not found");
+            throw DepartmentException.notFound();
         }
         departmentRepository.deleteById(id);
     }

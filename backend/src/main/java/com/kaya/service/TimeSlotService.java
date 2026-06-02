@@ -44,7 +44,7 @@ public class TimeSlotService {
     // Modified: The method now returns a List because a single window is split into multiple time slots
     @Transactional
     public List<TimeSlotResponse> create(TimeSlotRequest request) {
-        List<TimeSlot> generatedSlots = expandRequestToSlots(request);
+        List<TimeSlot> generatedSlots = saveTimeSlot(request);
         List<TimeSlot> savedSlots = timeSlotRepository.saveAll(generatedSlots);
         return savedSlots.stream().map(TimeSlotMapper::mapToResponse).toList();
     }
@@ -53,7 +53,7 @@ public class TimeSlotService {
     public List<TimeSlotResponse> createBulk(List<TimeSlotRequest> requests) {
         List<TimeSlot> allGenerated = new ArrayList<>();
         for (TimeSlotRequest request : requests) {
-            allGenerated.addAll(expandRequestToSlots(request));
+            allGenerated.addAll(saveTimeSlot(request));
         }
         List<TimeSlot> savedSlots = timeSlotRepository.saveAll(allGenerated);
         return savedSlots.stream().map(TimeSlotMapper::mapToResponse).toList();
@@ -90,7 +90,7 @@ public class TimeSlotService {
         timeSlotRepository.deleteAll();
     }
 
-    private List<TimeSlot> expandRequestToSlots(TimeSlotRequest request) {
+    private List<TimeSlot> saveTimeSlot(TimeSlotRequest request) {
         if (request.getDurationMinutes() == null || request.getStartTime() == null || request.getEndTime() == null) {
             throw new IllegalArgumentException("Duration, Start Time, and End Time must be provided.");
         }
